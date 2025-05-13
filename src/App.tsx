@@ -12,16 +12,6 @@ function App() {
           rel="noopener noreferrer"
           className="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition"
         >
-          GitHub
-        </a>
-        <a
-          href="/resume.pdf"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="px-4 py-2 bg-white border border-black text-black rounded-lg hover:bg-gray-200 transition"
-        >
-          Download Resume
-        </a>
       </div>
     </div>
   );
