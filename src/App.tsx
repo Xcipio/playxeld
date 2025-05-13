@@ -1,35 +1,35 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center px-4 py-10 text-gray-800">
+      <img
+        src="/profile.jpg"
+        alt="Your Avatar"
+        className="w-32 h-32 rounded-full shadow-lg mb-6"
+      />
+      <h1 className="text-4xl font-bold mb-2">Nap Wang</h1>
+      <p className="text-lg text-center max-w-xl mb-6">
+        Software Developer based in Tokyo. I love building elegant user experiences, solving complex problems, and drinking strong coffee.
       </p>
-    </>
-  )
+      <div className="flex gap-4">
+        <a
+          href="https://github.com/yourusername"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition"
+        >
+          GitHub
+        </a>
+        <a
+          href="/resume.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="px-4 py-2 bg-white border border-black text-black rounded-lg hover:bg-gray-200 transition"
+        >
+          Download Resume
+        </a>
+      </div>
+    </div>
+  );
 }
 
-export default App
+export default App;
