@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 // --- 图标组件 (内嵌 SVG 以解决依赖缺失问题) ---
 const IconBase = ({ size = 24, className = "", children, ...props }: any) => (
@@ -12,7 +12,7 @@ const IconBase = ({ size = 24, className = "", children, ...props }: any) => (
     strokeWidth="2" 
     strokeLinecap="round" 
     strokeLinejoin="round" 
-    className={className} 
+    className={`${className}`} 
     {...props}
   >
     {children}
@@ -49,6 +49,12 @@ const ChevronLeft = (props: any) => (
   </IconBase>
 );
 
+const ChevronRight = (props: any) => (
+  <IconBase {...props}>
+    <path d="m9 18 6-6-6-6" />
+  </IconBase>
+);
+
 const Play = (props: any) => (
   <IconBase {...props}>
     <polygon points="5 3 19 12 5 21 5 3" />
@@ -79,6 +85,12 @@ const Mail = (props: any) => (
   </IconBase>
 );
 
+const ArrowRight = (props: any) => (
+  <IconBase {...props}>
+    <path d="M5 12h14" /><path d="m12 5 7 7-7 7" />
+  </IconBase>
+);
+
 // --- 类型定义 ---
 interface Post {
   id: number;
@@ -88,7 +100,7 @@ interface Post {
   image: string;
   date: string;
   category: string;
-  color: string;
+  readTime?: string;
 }
 
 interface Podcast {
@@ -109,41 +121,50 @@ interface NewPostState {
   content: string;
 }
 
-// --- 模拟数据：博客文章 ---
+// --- 模拟数据 ---
 const INITIAL_POSTS: Post[] = [
   {
     id: 1,
     title: "探索城市的光影瞬间",
-    excerpt: "在繁忙的街道上，每个人都有自己的故事。这次我带上了相机，捕捉那些被遗忘的角落...",
+    excerpt: "在繁忙的街道上，每个人都有自己的故事。这次我带上了相机，捕捉那些被遗忘的角落，寻找光与影的对话。",
     content: "这是一篇关于城市摄影的深度文章。在现代都市中，光影的变化赋予了建筑物生命。我发现清晨六点的阳光最为迷人，它斜射在老旧的磁砖墙上，营造出一种怀旧的氛围。\n\n当我们慢下脚步，会发现街角的咖啡厅、生锈的铁门、甚至是地上的雨水倒影，都充满了诗意。这就是摄影的魅力，让我们重新认识习以为常的世界。",
     image: "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&q=80&w=1000",
     date: "2023-12-25",
     category: "视觉日记",
-    color: "bg-blue-100 text-blue-700"
+    readTime: "5 min read"
   },
   {
     id: 2,
     title: "极简主义的生活美学",
-    excerpt: "减少不必要的杂物，是为了让灵魂有更多空间去呼吸。分享我的居家改造心得...",
+    excerpt: "减少不必要的杂物，是为了让灵魂有更多空间去呼吸。分享我的居家改造心得，以及如何通过做减法来丰富生活。",
     content: "断舍离不只是丢掉东西，更是一种心态的整理。当我把书桌上多余的文具清除，只留下一盆绿植和一盏台灯时，我的专注力得到了显著提升。\n\n这篇文章记录了我从杂乱到极简的转变过程，希望能带给你一些启发。",
     image: "https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?auto=format&fit=crop&q=80&w=1000",
     date: "2023-12-20",
     category: "生活方式",
-    color: "bg-green-100 text-green-700"
+    readTime: "3 min read"
   },
   {
     id: 3,
     title: "冬日里的温暖手冲咖啡",
-    excerpt: "寒冷的午後，一杯耶加雪菲的香气足以抚平所有的焦虑。手冲咖啡的仪式感...",
+    excerpt: "寒冷的午後，一杯耶加雪菲的香气足以抚平所有的焦虑。关于选豆、研磨与冲煮的私人笔记。",
     content: "水温 92 度，闷蒸 30 秒。看着咖啡粉在滤纸中微微隆起，释放出迷人的果香，这是我一天中最享受的时刻。\n\n每种豆子都有它的个性，水流的速度、研磨的粗细都会影响最终的味道。这就像生活一样，细节决定了品质。",
     image: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&q=80&w=1000",
     date: "2023-12-15",
     category: "味蕾探索",
-    color: "bg-orange-100 text-orange-700"
+    readTime: "4 min read"
+  },
+   {
+    id: 4,
+    title: "富士山下的露营记",
+    excerpt: "逃离城市的喧嚣，在湖边搭起帐篷。清晨的雾气、夜晚的篝火，以及那座永恒的山。",
+    content: "没有什么比在自然中醒来更治愈的事情了。这次我们选择了富士山脚下的露营地，这里的空气清新得让人想打包带走。\n\n夜晚，我们围坐在篝火旁，烤着棉花糖，聊着那些平时没空聊的话题。头顶是璀璨的星空，远处是富士山模糊的轮廓。",
+    image: "https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?auto=format&fit=crop&q=80&w=1000",
+    date: "2023-12-10",
+    category: "旅行日志",
+    readTime: "6 min read"
   }
 ];
 
-// --- 模拟数据：音频播客 ---
 const INITIAL_PODCASTS: Podcast[] = [
   {
     id: 101,
@@ -176,7 +197,6 @@ const INITIAL_PODCASTS: Podcast[] = [
 
 const App = () => {
   const [posts, setPosts] = useState<Post[]>(INITIAL_POSTS);
-  // Remove unused setPodcasts to fix TS6133
   const [podcasts] = useState<Podcast[]>(INITIAL_PODCASTS);
   
   type ViewState = 'home' | 'detail' | 'create';
@@ -186,6 +206,7 @@ const App = () => {
   const [activeTab, setActiveTab] = useState<TabState>('blog');
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   
   // 音频播放器状态
   const [currentTrack, setCurrentTrack] = useState<Podcast | null>(null);
@@ -200,7 +221,15 @@ const App = () => {
     content: ''
   });
 
-  // 切换播放状态
+  // 监听滚动以优化导航栏效果
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   const togglePlay = (track: Podcast) => {
     if (currentTrack?.id === track.id) {
       setIsPlaying(!isPlaying);
@@ -210,21 +239,19 @@ const App = () => {
     }
   };
 
-  // 切换到文章详情
   const openDetail = (post: Post) => {
     setSelectedPost(post);
     setView('detail');
     window.scrollTo(0, 0);
   };
 
-  // 提交新文章
   const handlePublish = (e: React.FormEvent) => {
     e.preventDefault();
     const postToAdd: Post = {
       ...newPost,
       id: Date.now(),
       date: new Date().toISOString().split('T')[0],
-      color: "bg-purple-100 text-purple-700"
+      readTime: "1 min read"
     };
     setPosts([postToAdd, ...posts]);
     setView('home');
@@ -233,130 +260,181 @@ const App = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F5F5F7] text-[#1D1D1F] font-sans selection:bg-[#0071E3] selection:text-white">
-      {/* 导航栏 - Apple Style Frosted Glass */}
-      <nav className="sticky top-0 z-50 bg-white/70 backdrop-blur-xl border-b border-gray-200/50 transition-all duration-300">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-[52px] flex items-center justify-between">
-          {/* Logo 区域 */}
+    <div className="min-h-screen bg-[#FAFAFA] text-[#1D1D1F] font-sans selection:bg-[#0071E3] selection:text-white">
+      {/* 导航栏 - 优化毛玻璃和阴影效果 */}
+      <nav 
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 border-b 
+        ${scrolled ? 'bg-white/80 backdrop-blur-xl border-gray-200/60 shadow-sm' : 'bg-transparent border-transparent'}
+        `}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-[60px] flex items-center justify-between">
           <div 
-            className="flex items-center gap-2 cursor-pointer group hover:opacity-70 transition-opacity"
+            className="flex items-center gap-2 cursor-pointer group hover:opacity-80 transition-opacity"
             onClick={() => setView('home')}
           >
-            <Sparkles size={18} className="text-[#1D1D1F]" strokeWidth={2.5} />
-            <span className="text-lg font-semibold tracking-tight text-[#1D1D1F]">Playxeld</span>
+            <div className="w-8 h-8 bg-black text-white rounded-lg flex items-center justify-center">
+                <Sparkles size={16} strokeWidth={2.5} className="animate-pulse-slow"/>
+            </div>
+            <span className="text-lg font-bold tracking-tight text-[#1D1D1F]">Playxeld</span>
           </div>
 
-          {/* 桌面导航 - Clean Pills */}
-          <div className="hidden md:flex items-center gap-1 bg-gray-100/50 p-1 rounded-full">
+          <div className="hidden md:flex items-center gap-1.5 bg-gray-100/80 p-1.5 rounded-full border border-gray-200/50 backdrop-blur-sm">
             <button 
               onClick={() => { setView('home'); setActiveTab('blog'); }}
-              className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all duration-300 ${view === 'home' && activeTab === 'blog' ? 'bg-white text-black shadow-sm' : 'text-gray-500 hover:text-black'}`}
+              className={`px-5 py-1.5 rounded-full text-xs font-semibold transition-all duration-300 ${view === 'home' && activeTab === 'blog' ? 'bg-white text-black shadow-sm ring-1 ring-black/5' : 'text-gray-500 hover:text-black hover:bg-gray-200/50'}`}
             >
-              图文博客
+              Stories
             </button>
             <button 
               onClick={() => { setView('home'); setActiveTab('podcast'); }}
-              className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all duration-300 ${view === 'home' && activeTab === 'podcast' ? 'bg-white text-black shadow-sm' : 'text-gray-500 hover:text-black'}`}
+              className={`px-5 py-1.5 rounded-full text-xs font-semibold transition-all duration-300 ${view === 'home' && activeTab === 'podcast' ? 'bg-white text-black shadow-sm ring-1 ring-black/5' : 'text-gray-500 hover:text-black hover:bg-gray-200/50'}`}
             >
-              音频播客
+              Podcasts
             </button>
           </div>
 
-          <div className="hidden md:flex items-center">
+          <div className="hidden md:flex items-center gap-4">
+            <button className="text-gray-400 hover:text-black transition-colors">
+               <span className="sr-only">Search</span>
+               {/* Search icon placeholder for future use */}
+            </button>
             <button 
               onClick={() => setView('create')}
-              className="bg-[#1D1D1F] text-white px-4 py-1.5 rounded-full text-xs font-medium hover:bg-black/80 transition-all active:scale-95 flex items-center gap-1.5"
+              className="bg-[#1D1D1F] text-white px-5 py-2 rounded-full text-xs font-semibold hover:bg-black hover:scale-105 transition-all active:scale-95 flex items-center gap-1.5 shadow-lg shadow-black/10"
             >
-              <Plus size={14} />
-              <span>创作</span>
+              <Plus size={14} strokeWidth={3} />
+              <span>Create</span>
             </button>
           </div>
 
-          {/* 手机菜单按钮 */}
-          <button className="md:hidden text-[#1D1D1F]" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-            {isMenuOpen ? <X size={20} /> : <Layout size={20} />}
+          <button className="md:hidden text-[#1D1D1F] p-2" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+            {isMenuOpen ? <X size={24} /> : <Layout size={24} />}
           </button>
         </div>
         
-        {/* 移动端菜单 */}
         {isMenuOpen && (
-          <div className="md:hidden bg-white/95 backdrop-blur-xl border-b border-gray-100 p-6 space-y-4 absolute w-full animate-in fade-in slide-in-from-top-4 z-40">
-            <button onClick={() => {setView('home'); setActiveTab('blog'); setIsMenuOpen(false);}} className="w-full text-left py-2 font-medium text-[#1D1D1F] border-b border-gray-100">
-              图文博客
+          <div className="md:hidden bg-white/95 backdrop-blur-xl border-b border-gray-100 p-6 space-y-4 absolute w-full animate-in fade-in slide-in-from-top-4 z-40 shadow-xl">
+            <button onClick={() => {setView('home'); setActiveTab('blog'); setIsMenuOpen(false);}} className="w-full text-left py-3 font-semibold text-lg text-[#1D1D1F] border-b border-gray-100">
+              Stories
             </button>
-            <button onClick={() => {setView('home'); setActiveTab('podcast'); setIsMenuOpen(false);}} className="w-full text-left py-2 font-medium text-[#1D1D1F] border-b border-gray-100">
-              音频播客
+            <button onClick={() => {setView('home'); setActiveTab('podcast'); setIsMenuOpen(false);}} className="w-full text-left py-3 font-semibold text-lg text-[#1D1D1F] border-b border-gray-100">
+              Podcasts
             </button>
             <button 
               onClick={() => {setView('create'); setIsMenuOpen(false);}}
-              className="w-full bg-[#0071E3] text-white p-3 rounded-xl font-medium flex items-center justify-center gap-2 mt-4"
+              className="w-full bg-[#0071E3] text-white p-4 rounded-2xl font-semibold flex items-center justify-center gap-2 mt-4 text-base"
             >
-              <Plus size={18} />
-              <span>开始创作</span>
+              <Plus size={20} />
+              <span>Create New</span>
             </button>
           </div>
         )}
       </nav>
 
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-16 pb-32">
-        {/* 首页视图 */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 pt-24 pb-32">
         {view === 'home' && (
-          <div className="space-y-20 animate-in fade-in duration-700">
-            {/* Hero Section - Apple Style Big Typography */}
-            <section className="text-center space-y-6 py-12">
-              <h1 className="text-5xl md:text-7xl font-semibold text-[#1D1D1F] tracking-tight leading-tight">
-                All We Need Is Play.
-              </h1>
-              
-              <p className="text-xl md:text-2xl text-gray-500 max-w-2xl mx-auto leading-relaxed font-light">
-                简单，纯粹，充满乐趣。<br/>这里是 Playxeld 的数字游乐场。
-              </p>
+          <div className="space-y-24 animate-in fade-in duration-700">
+            {/* Hero Section - 视觉重构：左右布局或大标题+图片拼贴 */}
+            <section className="relative py-12 md:py-20">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div className="space-y-8 max-w-2xl">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-[#0071E3] text-xs font-bold uppercase tracking-wider">
+                        <span className="w-2 h-2 rounded-full bg-[#0071E3] animate-pulse"></span>
+                        New Updates
+                    </div>
+                    <h1 className="text-6xl md:text-8xl font-semibold text-[#1D1D1F] tracking-tighter leading-[0.95]">
+                      All We Need<br/>Is <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0071E3] to-[#42a1ff]">Play.</span>
+                    </h1>
+                    <p className="text-xl text-gray-500 max-w-md leading-relaxed font-light">
+                      Playxeld 是一个数字游乐场。在这里，我们将简单、纯粹的灵感转化为视觉与声音的故事。
+                    </p>
+                    <div className="flex flex-wrap gap-4 pt-2">
+                         <button className="px-8 py-3 bg-[#1D1D1F] text-white rounded-full font-semibold hover:bg-black transition-transform hover:scale-105 active:scale-95">
+                             Start Exploring
+                         </button>
+                         <button className="px-8 py-3 bg-white text-[#1D1D1F] border border-gray-200 rounded-full font-semibold hover:bg-gray-50 transition-colors">
+                             Read Manifesto
+                         </button>
+                    </div>
+                </div>
+                
+                {/* 视觉拼贴 Hero Image */}
+                <div className="relative h-[400px] md:h-[500px] hidden lg:block">
+                    <div className="absolute top-0 right-0 w-2/3 h-full rounded-[40px] overflow-hidden shadow-2xl rotate-3 hover:rotate-0 transition-all duration-700 z-10">
+                         <img src={posts[0].image} className="w-full h-full object-cover" alt="Hero 1"/>
+                    </div>
+                    <div className="absolute top-12 right-1/3 w-1/2 h-3/4 rounded-[32px] overflow-hidden shadow-xl -rotate-6 hover:-rotate-3 transition-all duration-700 bg-white p-2 z-0">
+                         <div className="w-full h-full rounded-[24px] overflow-hidden relative">
+                             <img src={posts[1].image} className="w-full h-full object-cover" alt="Hero 2"/>
+                             <div className="absolute inset-0 bg-black/10"></div>
+                         </div>
+                    </div>
+                    {/* 装饰元素 */}
+                    <div className="absolute bottom-20 left-10 p-4 bg-white/80 backdrop-blur-md rounded-2xl shadow-lg z-20 flex items-center gap-3 animate-bounce-slow">
+                        <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-600">
+                            <Sparkles size={20}/>
+                        </div>
+                        <div>
+                            <p className="text-xs font-bold text-gray-900">Featured</p>
+                            <p className="text-[10px] text-gray-500">Editor's Choice</p>
+                        </div>
+                    </div>
+                </div>
+              </div>
             </section>
 
             {/* 内容区域：博客模式 */}
             {activeTab === 'blog' && (
-              <div className="space-y-10">
-                <div className="flex items-center justify-between border-b border-gray-200 pb-4">
-                  <h2 className="text-2xl font-semibold tracking-tight">最新文章</h2>
-                  <div className="flex gap-2">
-                    {['全部', '摄影', '生活', '美食'].map(tag => (
-                      <button key={tag} className="px-3 py-1 rounded-full text-xs font-medium text-gray-500 hover:bg-gray-200 hover:text-black transition-colors">
+              <div className="space-y-12">
+                <div className="flex items-end justify-between border-b border-gray-200 pb-6 sticky top-[60px] bg-[#FAFAFA]/95 backdrop-blur z-30 pt-4">
+                  <div>
+                      <h2 className="text-3xl font-bold tracking-tight text-[#1D1D1F]">Latest Stories</h2>
+                      <p className="text-gray-500 mt-1 text-sm">探索生活中的每一个微小瞬间</p>
+                  </div>
+                  <div className="flex gap-2 hidden sm:flex">
+                    {['全部', '摄影', '生活', '美食', '旅行'].map((tag, idx) => (
+                      <button key={tag} className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all ${idx === 0 ? 'bg-black text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-black'}`}>
                         {tag}
                       </button>
                     ))}
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
-                  {posts.map(post => (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
+                  {posts.map((post, idx) => (
                     <article 
                       key={post.id} 
-                      className="group cursor-pointer flex flex-col gap-4"
+                      className="group cursor-pointer flex flex-col gap-5"
                       onClick={() => openDetail(post)}
+                      style={{ animationDelay: `${idx * 100}ms` }}
                     >
-                      <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-gray-100 shadow-sm transition-all duration-500 group-hover:shadow-md group-hover:scale-[1.01]">
+                      <div className="relative aspect-[16/10] overflow-hidden rounded-[24px] bg-gray-200 shadow-sm transition-all duration-500 group-hover:shadow-xl group-hover:translate-y-[-4px]">
                         <img 
                           src={post.image} 
                           alt={post.title} 
                           className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-105"
                           onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1000"; }}
                         />
-                        <div className="absolute top-3 left-3">
-                          <span className="bg-white/80 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-semibold text-black uppercase tracking-wide">
+                        <div className="absolute top-4 left-4">
+                          <span className="bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold text-black uppercase tracking-wide shadow-sm">
                             {post.category}
                           </span>
                         </div>
                       </div>
-                      <div className="flex flex-col gap-2">
-                        <div className="flex items-center gap-2 text-xs font-medium text-gray-400 uppercase tracking-wide">
+                      <div className="flex flex-col gap-2.5 px-1">
+                        <div className="flex items-center justify-between text-xs font-semibold text-gray-400 uppercase tracking-wide">
                           <span>{post.date}</span>
+                          <span className="flex items-center gap-1">{post.readTime}</span>
                         </div>
-                        <h3 className="text-xl font-semibold text-[#1D1D1F] group-hover:text-[#0071E3] transition-colors leading-snug">
+                        <h3 className="text-2xl font-bold text-[#1D1D1F] group-hover:text-[#0071E3] transition-colors leading-tight">
                           {post.title}
                         </h3>
-                        <p className="text-gray-500 text-sm line-clamp-2 leading-relaxed">
+                        <p className="text-gray-500 text-sm line-clamp-2 leading-relaxed font-normal">
                           {post.excerpt}
                         </p>
+                        <div className="pt-2 flex items-center gap-1 text-[#0071E3] text-xs font-semibold opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0 duration-300">
+                             Read Story <ArrowRight size={12}/>
+                        </div>
                       </div>
                     </article>
                   ))}
@@ -364,58 +442,66 @@ const App = () => {
               </div>
             )}
 
-            {/* 内容区域：播客模式 */}
             {activeTab === 'podcast' && (
-              <div className="space-y-10 animate-in fade-in slide-in-from-bottom-8">
-                 <div className="flex items-center justify-between border-b border-gray-200 pb-4">
-                  <h2 className="text-2xl font-semibold tracking-tight">本周精选</h2>
+              <div className="space-y-12 animate-in fade-in slide-in-from-bottom-8">
+                 <div className="flex items-end justify-between border-b border-gray-200 pb-6">
+                  <div>
+                      <h2 className="text-3xl font-bold tracking-tight text-[#1D1D1F]">Weekly Podcasts</h2>
+                      <p className="text-gray-500 mt-1 text-sm">戴上耳机，听见世界的另一种声音</p>
+                  </div>
                 </div>
 
-                <div className="grid grid-cols-1 gap-4">
-                  {podcasts.map(podcast => (
+                <div className="grid grid-cols-1 gap-6">
+                  {podcasts.map((podcast, idx) => (
                     <div 
                       key={podcast.id}
-                      className={`relative bg-white rounded-2xl p-6 transition-all duration-300 flex flex-col md:flex-row gap-8 items-center group hover:bg-white hover:shadow-lg
-                        ${currentTrack?.id === podcast.id ? 'shadow-md ring-1 ring-gray-200' : 'shadow-sm'}
+                      style={{ animationDelay: `${idx * 100}ms` }}
+                      className={`relative bg-white rounded-[32px] p-6 pr-10 transition-all duration-300 flex flex-col md:flex-row gap-8 items-center group hover:shadow-xl hover:translate-y-[-2px] border border-gray-100
+                        ${currentTrack?.id === podcast.id ? 'ring-2 ring-[#0071E3] ring-offset-2' : ''}
                       `}
                     >
-                      <div className="relative w-full md:w-40 aspect-square shrink-0 rounded-xl overflow-hidden bg-gray-100 shadow-inner group-hover:shadow-none transition-all">
-                        <img src={podcast.cover} alt={podcast.title} className="w-full h-full object-cover" />
+                      <div className="relative w-full md:w-48 aspect-square shrink-0 rounded-2xl overflow-hidden bg-gray-100 shadow-inner">
+                        <img src={podcast.cover} alt={podcast.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                         <button 
                           onClick={() => togglePlay(podcast)}
-                          className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-[1px]"
+                          className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-[2px]"
                         >
-                          <div className="w-12 h-12 bg-white/90 backdrop-blur rounded-full flex items-center justify-center shadow-lg transform scale-90 group-hover:scale-100 transition-all">
-                             {currentTrack?.id === podcast.id && isPlaying ? <Pause size={20} className="fill-black text-black"/> : <Play size={20} className="fill-black text-black ml-1"/>}
+                          <div className="w-14 h-14 bg-white/95 backdrop-blur rounded-full flex items-center justify-center shadow-xl transform scale-90 group-hover:scale-100 transition-all text-black">
+                             {currentTrack?.id === podcast.id && isPlaying ? <Pause size={24} className="fill-current"/> : <Play size={24} className="fill-current ml-1"/>}
                           </div>
                         </button>
                       </div>
                       
-                      <div className="flex-1 space-y-3 text-center md:text-left w-full">
-                        <div className="flex flex-wrap items-center justify-center md:justify-start gap-2">
-                           <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{podcast.date}</span>
-                           <span className="text-gray-300">•</span>
-                           <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{podcast.duration}</span>
+                      <div className="flex-1 space-y-4 text-center md:text-left w-full py-2">
+                        <div className="flex flex-wrap items-center justify-center md:justify-start gap-3">
+                           <span className="px-2.5 py-0.5 rounded-md bg-gray-100 text-[10px] font-bold text-gray-500 uppercase tracking-wider">{podcast.date}</span>
+                           <span className="px-2.5 py-0.5 rounded-md bg-blue-50 text-[10px] font-bold text-blue-600 uppercase tracking-wider">{podcast.duration}</span>
                         </div>
                         
                         <div>
-                          <h3 className="text-xl font-semibold text-[#1D1D1F] mb-1">{podcast.title}</h3>
-                          <p className="text-gray-500 text-sm leading-relaxed">{podcast.description}</p>
+                          <h3 className="text-2xl font-bold text-[#1D1D1F] mb-2">{podcast.title}</h3>
+                          <p className="text-gray-500 text-sm leading-relaxed max-w-2xl">{podcast.description}</p>
                         </div>
 
-                        <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 pt-2">
+                        <div className="flex flex-wrap items-center justify-center md:justify-start gap-2">
                           {podcast.tags.map(tag => (
-                            <span key={tag} className="px-2 py-0.5 rounded-md bg-gray-100 text-[10px] font-medium text-gray-600">#{tag}</span>
+                            <span key={tag} className="text-xs font-medium text-gray-400 hover:text-[#0071E3] cursor-pointer transition-colors">#{tag}</span>
                           ))}
                         </div>
                       </div>
                       
-                      <button 
-                         onClick={() => togglePlay(podcast)}
-                         className="hidden md:flex items-center justify-center w-10 h-10 rounded-full border border-gray-200 text-gray-400 hover:text-black hover:border-black transition-all"
-                       >
-                         {currentTrack?.id === podcast.id && isPlaying ? <Pause size={16} fill="currentColor"/> : <Play size={16} fill="currentColor" className="ml-0.5"/>}
-                       </button>
+                      <div className="hidden md:block">
+                          <button 
+                             onClick={() => togglePlay(podcast)}
+                             className={`flex items-center justify-center w-12 h-12 rounded-full border transition-all
+                                ${currentTrack?.id === podcast.id && isPlaying 
+                                    ? 'bg-[#1D1D1F] text-white border-transparent' 
+                                    : 'border-gray-200 text-gray-400 hover:border-[#1D1D1F] hover:text-[#1D1D1F]'}
+                             `}
+                           >
+                             {currentTrack?.id === podcast.id && isPlaying ? <Pause size={20} fill="currentColor"/> : <Play size={20} fill="currentColor" className="ml-1"/>}
+                           </button>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -424,32 +510,37 @@ const App = () => {
           </div>
         )}
 
-        {/* 文章详情视图 */}
+        {/* 文章详情视图 - 沉浸式阅读体验 */}
         {view === 'detail' && selectedPost && (
-          <div className="max-w-3xl mx-auto space-y-12 animate-in fade-in zoom-in-95 duration-500">
+          <div className="max-w-4xl mx-auto space-y-12 animate-in fade-in zoom-in-95 duration-500 pt-8">
             <button 
               onClick={() => setView('home')}
-              className="flex items-center space-x-1 text-gray-500 hover:text-black transition-colors mb-4 group text-sm font-medium"
+              className="flex items-center space-x-2 text-gray-500 hover:text-black transition-colors mb-4 group text-sm font-semibold px-4 py-2 rounded-full hover:bg-gray-100 w-fit"
             >
-              <ChevronLeft size={16} className="group-hover:-translate-x-0.5 transition-transform" />
-              <span>返回列表</span>
+              <ChevronLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
+              <span>Back</span>
             </button>
             
-            <div className="space-y-8 text-center">
-               <div className="inline-block px-3 py-1 rounded-full bg-blue-50 text-[#0071E3] text-xs font-semibold tracking-wide uppercase">
+            <div className="space-y-8 text-center max-w-2xl mx-auto">
+               <div className="inline-block px-4 py-1.5 rounded-full bg-blue-50 text-[#0071E3] text-xs font-bold tracking-wide uppercase">
                   {selectedPost.category}
                </div>
-               <h1 className="text-3xl md:text-5xl font-semibold tracking-tight text-[#1D1D1F] leading-tight">
+               <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-[#1D1D1F] leading-[1.1]">
                   {selectedPost.title}
                </h1>
-               <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
-                  <span className="font-medium text-gray-900">Playxeld 编辑部</span>
+               <div className="flex items-center justify-center gap-4 text-sm text-gray-500 font-medium">
+                  <div className="flex items-center gap-2">
+                      <div className="w-6 h-6 rounded-full bg-gray-200"></div>
+                      <span className="text-gray-900">Playxeld Team</span>
+                  </div>
                   <span>•</span>
                   <span>{selectedPost.date}</span>
+                  <span>•</span>
+                  <span>{selectedPost.readTime}</span>
                </div>
             </div>
 
-            <div className="rounded-3xl overflow-hidden shadow-sm aspect-[21/10]">
+            <div className="rounded-[32px] overflow-hidden shadow-2xl aspect-[21/9]">
               <img 
                 src={selectedPost.image} 
                 alt={selectedPost.title} 
@@ -457,163 +548,198 @@ const App = () => {
               />
             </div>
             
-            <div className="prose prose-lg prose-slate max-w-none mx-auto">
-                 <p className="text-xl text-gray-600 font-light leading-relaxed mb-10 border-l-2 border-[#0071E3] pl-6">
+            <div className="prose prose-lg prose-slate max-w-2xl mx-auto pb-20">
+                 <p className="text-2xl text-gray-600 font-normal leading-relaxed mb-12 first-letter:text-5xl first-letter:font-bold first-letter:mr-2 first-letter:float-left">
                    {selectedPost.excerpt}
                  </p>
                  {selectedPost.content.split('\n').map((para, i) => (
-                   <p key={i} className="text-[#1D1D1F] leading-8 mb-6 text-lg font-light tracking-wide">
+                   <p key={i} className="text-[#1D1D1F] leading-8 mb-8 text-lg font-light tracking-wide text-justify">
                      {para}
                    </p>
                  ))}
+                 
+                 <div className="my-12 pt-12 border-t border-gray-100 flex justify-between items-center">
+                     <div className="text-sm font-bold text-gray-900">Share this story</div>
+                     <div className="flex gap-4">
+                        <button className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-[#1DA1F2] hover:text-white transition-colors"><Twitter size={18}/></button>
+                        <button className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-black hover:text-white transition-colors"><Mail size={18}/></button>
+                     </div>
+                 </div>
             </div>
           </div>
         )}
 
-        {/* 发布视图 */}
+        {/* 发布视图 - 模态框样式 */}
         {view === 'create' && (
-          <div className="max-w-2xl mx-auto bg-white p-8 md:p-12 rounded-3xl shadow-xl animate-in zoom-in-95 duration-300">
-            <div className="flex justify-between items-center mb-8 pb-4 border-b border-gray-100">
-              <h2 className="text-2xl font-semibold text-[#1D1D1F]">
-                创作新内容
-              </h2>
-              <button onClick={() => setView('home')} className="p-2 rounded-full hover:bg-gray-100 transition-colors">
-                <X size={20} className="text-gray-500" />
-              </button>
-            </div>
-            
-            <form onSubmit={handlePublish} className="space-y-8">
-              <div className="space-y-2">
-                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">标题</label>
-                <input 
-                  type="text" 
-                  required
-                  placeholder="请输入标题..."
-                  className="w-full py-2 bg-transparent border-b border-gray-200 focus:border-[#0071E3] outline-none transition-all text-xl font-medium placeholder:text-gray-300 placeholder:font-light"
-                  value={newPost.title}
-                  onChange={e => setNewPost({...newPost, title: e.target.value})}
-                />
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="space-y-2">
-                  <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">分类</label>
-                  <select 
-                    className="w-full py-2 bg-transparent border-b border-gray-200 focus:border-[#0071E3] outline-none font-medium"
-                    value={newPost.category}
-                    onChange={e => setNewPost({...newPost, category: e.target.value})}
-                  >
-                    <option>视觉日记</option>
-                    <option>生活方式</option>
-                    <option>味蕾探索</option>
-                    <option>灵感笔记</option>
-                  </select>
+          <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/20 backdrop-blur-sm animate-in fade-in duration-200">
+             <div className="absolute inset-0" onClick={() => setView('home')}></div>
+             <div className="relative w-full max-w-2xl bg-white p-8 md:p-12 rounded-[40px] shadow-2xl animate-in zoom-in-95 slide-in-from-bottom-4 duration-300 max-h-[90vh] overflow-y-auto">
+                <div className="flex justify-between items-center mb-8 sticky top-0 bg-white pb-4 border-b border-gray-100 z-10">
+                  <h2 className="text-3xl font-bold text-[#1D1D1F]">
+                    Create Story
+                  </h2>
+                  <button onClick={() => setView('home')} className="p-2 rounded-full hover:bg-gray-100 transition-colors bg-gray-50">
+                    <X size={24} className="text-gray-500" />
+                  </button>
                 </div>
-                <div className="space-y-2">
-                  <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">封面链接</label>
-                  <input 
-                    type="url" 
-                    placeholder="https://..."
-                    className="w-full py-2 bg-transparent border-b border-gray-200 focus:border-[#0071E3] outline-none transition-all font-light"
-                    value={newPost.image}
-                    onChange={e => setNewPost({...newPost, image: e.target.value})}
-                  />
-                </div>
-              </div>
+                
+                <form onSubmit={handlePublish} className="space-y-8">
+                  <div className="space-y-3">
+                    <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">Title</label>
+                    <input 
+                      type="text" 
+                      required
+                      placeholder="Enter a captivating title..."
+                      className="w-full py-3 px-4 bg-gray-50 rounded-xl border-transparent focus:bg-white focus:ring-2 focus:ring-[#0071E3] focus:outline-none transition-all text-xl font-semibold placeholder:text-gray-300 placeholder:font-normal"
+                      value={newPost.title}
+                      onChange={e => setNewPost({...newPost, title: e.target.value})}
+                    />
+                  </div>
 
-              <div className="space-y-2">
-                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">摘要</label>
-                <input 
-                  type="text" 
-                  required
-                  placeholder="简短的介绍..."
-                  className="w-full py-2 bg-transparent border-b border-gray-200 focus:border-[#0071E3] outline-none font-light"
-                  value={newPost.excerpt}
-                  onChange={e => setNewPost({...newPost, excerpt: e.target.value})}
-                />
-              </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-3">
+                      <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">Category</label>
+                      <div className="relative">
+                          <select 
+                            className="w-full py-3 px-4 bg-gray-50 rounded-xl border-transparent focus:bg-white focus:ring-2 focus:ring-[#0071E3] focus:outline-none font-medium appearance-none"
+                            value={newPost.category}
+                            onChange={e => setNewPost({...newPost, category: e.target.value})}
+                          >
+                            <option>视觉日记</option>
+                            <option>生活方式</option>
+                            <option>味蕾探索</option>
+                            <option>灵感笔记</option>
+                          </select>
+                          <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                              <ChevronRight size={16} className="rotate-90"/>
+                          </div>
+                      </div>
+                    </div>
+                    <div className="space-y-3">
+                      <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">Cover Image URL</label>
+                      <input 
+                        type="url" 
+                        placeholder="https://..."
+                        className="w-full py-3 px-4 bg-gray-50 rounded-xl border-transparent focus:bg-white focus:ring-2 focus:ring-[#0071E3] focus:outline-none transition-all font-light"
+                        value={newPost.image}
+                        onChange={e => setNewPost({...newPost, image: e.target.value})}
+                      />
+                    </div>
+                  </div>
 
-              <div className="space-y-2">
-                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">正文</label>
-                <textarea 
-                  required
-                  rows={8}
-                  placeholder="开始书写..."
-                  className="w-full py-2 bg-transparent border-b border-gray-200 focus:border-[#0071E3] outline-none resize-none leading-relaxed font-light"
-                  value={newPost.content}
-                  onChange={e => setNewPost({...newPost, content: e.target.value})}
-                ></textarea>
-              </div>
+                  <div className="space-y-3">
+                    <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">Excerpt</label>
+                    <input 
+                      type="text" 
+                      required
+                      placeholder="A short summary..."
+                      className="w-full py-3 px-4 bg-gray-50 rounded-xl border-transparent focus:bg-white focus:ring-2 focus:ring-[#0071E3] focus:outline-none font-light"
+                      value={newPost.excerpt}
+                      onChange={e => setNewPost({...newPost, excerpt: e.target.value})}
+                    />
+                  </div>
 
-              <div className="pt-4">
-                 <button 
-                  type="submit"
-                  className="w-full bg-[#0071E3] text-white py-4 rounded-xl font-medium text-sm hover:bg-[#0077ED] transition-colors shadow-lg shadow-blue-100 active:scale-[0.99]"
-                >
-                  发布作品
-                </button>
-              </div>
-            </form>
+                  <div className="space-y-3">
+                    <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">Content</label>
+                    <textarea 
+                      required
+                      rows={8}
+                      placeholder="Start writing your story..."
+                      className="w-full py-3 px-4 bg-gray-50 rounded-xl border-transparent focus:bg-white focus:ring-2 focus:ring-[#0071E3] focus:outline-none resize-none leading-relaxed font-light"
+                      value={newPost.content}
+                      onChange={e => setNewPost({...newPost, content: e.target.value})}
+                    ></textarea>
+                  </div>
+
+                  <div className="pt-4 flex gap-4">
+                     <button type="button" onClick={() => setView('home')} className="flex-1 py-4 rounded-xl font-bold text-sm text-gray-500 hover:bg-gray-100 transition-colors">Cancel</button>
+                     <button 
+                      type="submit"
+                      className="flex-[2] bg-[#1D1D1F] text-white py-4 rounded-xl font-bold text-sm hover:bg-black transition-colors shadow-xl shadow-black/10 active:scale-[0.98]"
+                    >
+                      Publish Story
+                    </button>
+                  </div>
+                </form>
+             </div>
           </div>
         )}
       </main>
 
-      {/* 固定底部播放器 - Frosted Glass Dock Style */}
+      {/* 固定底部播放器 - 动态岛风格 */}
       {currentTrack && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-4xl bg-white/80 backdrop-blur-2xl border border-white/20 p-3 rounded-2xl shadow-2xl z-50 animate-in slide-in-from-bottom-20 flex items-center gap-4">
-           <img src={currentTrack.cover} className="w-12 h-12 rounded-lg object-cover shadow-sm" alt="cover"/>
+        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 w-[92%] max-w-[500px] bg-[#1D1D1F]/90 backdrop-blur-2xl text-white p-3 pr-6 rounded-[24px] shadow-2xl z-50 animate-in slide-in-from-bottom-20 flex items-center gap-4 ring-1 ring-white/10">
+           <div className={`relative w-12 h-12 rounded-full overflow-hidden shrink-0 ${isPlaying ? 'animate-spin-slow' : ''}`}>
+              <img src={currentTrack.cover} className="w-full h-full object-cover" alt="cover"/>
+              <div className="absolute inset-0 bg-black/10 border border-white/10 rounded-full"></div>
+           </div>
            
-           <div className="flex-1 min-w-0 flex flex-col justify-center">
-              <h4 className="font-semibold text-sm text-[#1D1D1F] truncate">{currentTrack.title}</h4>
-              <p className="text-[10px] text-gray-500 font-medium truncate uppercase tracking-wide">正在播放 • {currentTrack.duration}</p>
+           <div className="flex-1 min-w-0 flex flex-col justify-center gap-0.5">
+              <h4 className="font-bold text-sm text-white truncate">{currentTrack.title}</h4>
+              <p className="text-[10px] text-gray-400 font-medium truncate uppercase tracking-wider">Now Playing • {currentTrack.duration}</p>
            </div>
 
-           <div className="flex items-center gap-4 px-2">
-               <button className="text-gray-400 hover:text-black transition-colors"><ChevronLeft size={20} className="rotate-180"/></button>
+           <div className="flex items-center gap-5">
+               <button className="text-gray-400 hover:text-white transition-colors"><ChevronLeft size={22} className="rotate-180"/></button>
                <button 
                  onClick={() => setIsPlaying(!isPlaying)}
-                 className="w-10 h-10 bg-[#1D1D1F] text-white rounded-full flex items-center justify-center hover:scale-105 transition-transform shadow-md"
+                 className="w-10 h-10 bg-white text-black rounded-full flex items-center justify-center hover:scale-105 transition-transform shadow-lg"
                >
-                  {isPlaying ? <Pause size={16} fill="currentColor"/> : <Play size={16} fill="currentColor" className="ml-0.5"/>}
+                  {isPlaying ? <Pause size={18} fill="currentColor"/> : <Play size={18} fill="currentColor" className="ml-1"/>}
                </button>
-               <button className="text-gray-400 hover:text-black transition-colors"><ChevronLeft size={20}/></button>
+               <button className="text-gray-400 hover:text-white transition-colors"><ChevronLeft size={22}/></button>
            </div>
            
-           <button onClick={() => setCurrentTrack(null)} className="p-2 text-gray-400 hover:text-black hover:bg-gray-100 rounded-full transition-colors">
-             <X size={16}/>
+           <button onClick={() => setCurrentTrack(null)} className="absolute -top-3 -right-3 p-1.5 bg-gray-200 text-black rounded-full shadow-md hover:scale-110 transition-transform">
+             <X size={12} strokeWidth={3}/>
            </button>
         </div>
       )}
 
-      {/* 页脚 - Minimalist */}
-      <footer className="bg-white border-t border-gray-100 py-12">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
-            <div className="space-y-2">
+      {/* 页脚 */}
+      <footer className="bg-white border-t border-gray-100 py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
+            <div className="col-span-1 md:col-span-2 space-y-4">
               <div className="flex items-center gap-2 text-[#1D1D1F]">
-                <Sparkles size={16} />
-                <span className="font-semibold tracking-tight">Playxeld</span>
+                <div className="w-6 h-6 bg-black text-white rounded-md flex items-center justify-center">
+                    <Sparkles size={12} strokeWidth={3}/>
+                </div>
+                <span className="font-bold tracking-tight text-lg">Playxeld</span>
               </div>
-              <p className="text-xs text-gray-400 max-w-xs leading-relaxed">
-                致力于探索生活乐趣的内容平台。<br/>好设计与好故事，值得被看见。
+              <p className="text-sm text-gray-400 max-w-xs leading-relaxed font-medium">
+                Designed for storytellers. <br/>Crafted with precision and joy.
               </p>
             </div>
             
-            <div className="flex gap-8 text-xs font-medium text-gray-500">
-               <button className="hover:text-[#0071E3] transition-colors">关于我们</button>
-               <button className="hover:text-[#0071E3] transition-colors">隐私政策</button>
-               <button className="hover:text-[#0071E3] transition-colors">服务条款</button>
+            <div className="space-y-4">
+               <h4 className="text-xs font-bold text-gray-900 uppercase tracking-wider">Platform</h4>
+               <ul className="space-y-2 text-sm text-gray-500 font-medium">
+                   <li><button className="hover:text-[#0071E3] transition-colors">Stories</button></li>
+                   <li><button className="hover:text-[#0071E3] transition-colors">Podcasts</button></li>
+                   <li><button className="hover:text-[#0071E3] transition-colors">Creators</button></li>
+               </ul>
             </div>
 
-            <div className="flex gap-4">
-               <button className="text-gray-400 hover:text-black transition-colors"><Twitter size={16}/></button>
-               <button className="text-gray-400 hover:text-black transition-colors"><Github size={16}/></button>
-               <button className="text-gray-400 hover:text-black transition-colors"><Mail size={16}/></button>
+            <div className="space-y-4">
+               <h4 className="text-xs font-bold text-gray-900 uppercase tracking-wider">Company</h4>
+               <ul className="space-y-2 text-sm text-gray-500 font-medium">
+                   <li><button className="hover:text-[#0071E3] transition-colors">About</button></li>
+                   <li><button className="hover:text-[#0071E3] transition-colors">Careers</button></li>
+                   <li><button className="hover:text-[#0071E3] transition-colors">Privacy</button></li>
+               </ul>
             </div>
           </div>
           
-          <div className="mt-12 pt-8 border-t border-gray-50 text-center text-[10px] text-gray-300">
-            Copyright © 2024 Playxeld Inc. All rights reserved.
+          <div className="mt-16 pt-8 border-t border-gray-50 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="text-[11px] text-gray-400 font-medium">
+                © 2024 Playxeld Inc. All rights reserved.
+            </div>
+            <div className="flex gap-6">
+               <button className="text-gray-400 hover:text-black transition-colors"><Twitter size={18}/></button>
+               <button className="text-gray-400 hover:text-black transition-colors"><Github size={18}/></button>
+               <button className="text-gray-400 hover:text-black transition-colors"><Mail size={18}/></button>
+            </div>
           </div>
         </div>
       </footer>
