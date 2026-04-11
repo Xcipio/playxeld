@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
+import { Link, Route, Routes } from "react-router-dom";
 import "./App.css";
 import { supabase } from "./lib/supabase";
+import PostPage from "./PostPage";
 
 type Post = {
   id: number;
@@ -12,7 +14,7 @@ type Post = {
   is_published: boolean;
 };
 
-function App() {
+function HomePage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -54,13 +56,23 @@ function App() {
               borderBottom: "1px solid #ddd",
             }}
           >
-            <h2>{post.title}</h2>
+            <h2>
+              <Link to={`/post/${post.slug}`}>{post.title}</Link>
+            </h2>
             <p>{post.excerpt}</p>
             <small>{new Date(post.published_at).toLocaleDateString()}</small>
-            <div style={{ marginTop: "12px" }}>{post.content}</div>
           </article>
         ))}
     </div>
+  );
+}
+
+function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<HomePage />} />
+      <Route path="/post/:slug" element={<PostPage />} />
+    </Routes>
   );
 }
 
