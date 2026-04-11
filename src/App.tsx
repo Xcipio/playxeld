@@ -1,182 +1,214 @@
-import React, { useState, useEffect } from 'react';
+import "./App.css";
 
-// 定义数据类型
-interface Comment {
-  id: number;
-  author: string;
-  text: string;
-}
-
-interface Post {
+type Post = {
   id: number;
   title: string;
-  content: string;
-  comments: Comment[];
-}
+  date: string;
+  tag: string;
+  excerpt: string;
+  featured?: boolean;
+  link?: string;
+};
 
-export default function App() {
-  // 从本地缓存读取数据，如果没有则显示默认文章
-  const [posts, setPosts] = useState<Post[]>(() => {
-    const savedPosts = localStorage.getItem('playxeld_posts');
-    if (savedPosts) {
-      return JSON.parse(savedPosts);
-    }
-    return [
-      {
-        id: 1,
-        title: "深入理解苏格拉底的质问",
-        content: "苏格拉底的处方：治疗现代人的“回声室效应”与“概念通胀”...\n我们在推特/微博上互相叫骂，却从来没想过这些词到底是什么意思。",
-        comments: [{ id: 1, author: "读者", text: "非常受启发！" }]
-      }
-    ];
-  });
+const posts: Post[] = [
+  {
+    id: 1,
+    title: "How I Use Play as a Way to Think",
+    date: "April 2026",
+    tag: "Essay",
+    excerpt:
+      "A personal note on why I treat books, cities, games, and conversations not as content to consume, but as systems to play with.",
+    featured: true,
+    link: "#",
+  },
+  {
+    id: 2,
+    title: "Tokyo as a Puzzle Board",
+    date: "March 2026",
+    tag: "Design",
+    excerpt:
+      "What urban streets, station exits, and everyday signs can teach us about mystery design, navigation, and storytelling.",
+    link: "#",
+  },
+  {
+    id: 3,
+    title: "Running, Language, and Repetition",
+    date: "February 2026",
+    tag: "Notes",
+    excerpt:
+      "Why improvement often looks boring from the outside: a thought on rhythm, habit, and building fluency through repeated motion.",
+    link: "#",
+  },
+  {
+    id: 4,
+    title: "Why I Still Love Strange Games",
+    date: "January 2026",
+    tag: "Games",
+    excerpt:
+      "Some games do not just entertain. They reorganize attention, memory, and desire. Those are the ones worth keeping.",
+    link: "#",
+  },
+];
 
-  const [isEditing, setIsEditing] = useState(false);
-  const [currentPostId, setCurrentPostId] = useState<number | null>(null);
-  const [editTitle, setEditTitle] = useState('');
-  const [editContent, setEditContent] = useState('');
-  const [commentInputs, setCommentInputs] = useState<Record<number, { author: string; text: string }>>({});
-
-  // 每次文章数据改变时，保存到本地缓存
-  useEffect(() => {
-    localStorage.setItem('playxeld_posts', JSON.stringify(posts));
-  }, [posts]);
-
-  // 保存或发布文章
-  const handleSavePost = () => {
-    if (!editTitle || !editContent) {
-      alert('标题和内容不能为空！');
-      return;
-    }
-
-    if (currentPostId !== null) {
-      // 更新现有文章
-      setPosts(posts.map(p => (p.id === currentPostId ? { ...p, title: editTitle, content: editContent } : p)));
-    } else {
-      // 发布新文章
-      const newPost: Post = {
-        id: Date.now(),
-        title: editTitle,
-        content: editContent,
-        comments: []
-      };
-      setPosts([newPost, ...posts]);
-    }
-    cancelEdit();
-  };
-
-  const startEdit = (post: Post) => {
-    setIsEditing(true);
-    setCurrentPostId(post.id);
-    setEditTitle(post.title);
-    setEditContent(post.content);
-    window.scrollTo(0, 0);
-  };
-
-  const cancelEdit = () => {
-    setIsEditing(false);
-    setCurrentPostId(null);
-    setEditTitle('');
-    setEditContent('');
-  };
-
-  // 提交评论
-  const handleAddComment = (postId: number) => {
-    const input = commentInputs[postId] || { author: '', text: '' };
-    if (!input.text) {
-      alert('评论内容不能为空！');
-      return;
-    }
-
-    const newComment: Comment = {
-      id: Date.now(),
-      author: input.author || '匿名',
-      text: input.text
-    };
-
-    setPosts(
-      posts.map(p => {
-        if (p.id === postId) {
-          return { ...p, comments: [...p.comments, newComment] };
-        }
-        return p;
-      })
-    );
-
-    setCommentInputs({ ...commentInputs, [postId]: { author: '', text: '' } });
-  };
+function App() {
+  const featuredPost = posts.find((post) => post.featured);
+  const otherPosts = posts.filter((post) => !post.featured);
 
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px', fontFamily: 'sans-serif', color: '#333' }}>
-      <h1 style={{ textAlign: 'center', borderBottom: '2px solid #eee', paddingBottom: '10px' }}>PlayxelD 思想博客</h1>
+    <div className="site">
+      <header className="topbar">
+        <div className="brand">PlayXeld</div>
+        <nav className="nav">
+          <a href="#about">About</a>
+          <a href="#blog">Blog</a>
+          <a href="#notes">Notes</a>
+          <a href="#contact">Contact</a>
+        </nav>
+      </header>
 
-      {/* 发布/编辑区域 */}
-      <div style={{ background: '#f9f9f9', padding: '20px', borderRadius: '8px', marginBottom: '30px' }}>
-        <h2>{isEditing ? '编辑文章' : '发布新文章'}</h2>
-        <input
-          type="text"
-          placeholder="文章标题"
-          value={editTitle}
-          onChange={e => setEditTitle(e.target.value)}
-          style={{ width: '100%', padding: '10px', marginBottom: '10px', boxSizing: 'border-box' }}
-        />
-        <textarea
-          placeholder="正文内容..."
-          rows={6}
-          value={editContent}
-          onChange={e => setEditContent(e.target.value)}
-          style={{ width: '100%', padding: '10px', marginBottom: '10px', boxSizing: 'border-box' }}
-        />
-        <button onClick={handleSavePost} style={{ padding: '10px 20px', background: '#333', color: 'white', border: 'none', cursor: 'pointer' }}>
-          {isEditing ? '保存修改' : '发布文章'}
-        </button>
-        {isEditing && (
-          <button onClick={cancelEdit} style={{ padding: '10px 20px', background: '#ccc', color: 'black', border: 'none', cursor: 'pointer', marginLeft: '10px' }}>
-            取消
-          </button>
-        )}
-      </div>
+      <main>
+        <section className="hero">
+          <p className="eyebrow">Artist / Engineer / Game Creator</p>
+          <h1>
+            A blog about play,
+            <br />
+            systems, cities, stories,
+            <br />
+            and becoming sharper.
+          </h1>
+          <p className="hero-text">
+            I write about games, design, language, films, history, running, and
+            the strange mechanics of everyday life.
+          </p>
+          <div className="hero-actions">
+            <a className="button primary" href="#blog">
+              Read the blog
+            </a>
+            <a className="button secondary" href="#about">
+              About me
+            </a>
+          </div>
+        </section>
 
-      {/* 文章列表区域 */}
-      <div>
-        {posts.map(post => (
-          <div key={post.id} style={{ border: '1px solid #ddd', padding: '20px', borderRadius: '8px', marginBottom: '20px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <h2 style={{ margin: 0 }}>{post.title}</h2>
-              <button onClick={() => startEdit(post)} style={{ padding: '5px 10px', cursor: 'pointer' }}>编辑</button>
+        <section id="about" className="section about">
+          <div className="section-heading">
+            <span>About</span>
+            <h2>What this site is for</h2>
+          </div>
+          <p>
+            PlayXeld is my personal space for publishing essays, project notes,
+            and ideas. I am interested in the way people think, the way cities
+            hide stories, and the way games turn abstract systems into something
+            tangible.
+          </p>
+          <p>
+            This is not a corporate portfolio wearing a fake smile. It is a
+            workshop, a notebook, and occasionally a small battlefield where I
+            test ideas in public.
+          </p>
+        </section>
+
+        {featuredPost && (
+          <section className="section featured">
+            <div className="section-heading">
+              <span>Featured</span>
+              <h2>Latest highlighted post</h2>
             </div>
-            <p style={{ whiteSpace: 'pre-wrap', lineHeight: '1.6' }}>{post.content}</p>
 
-            {/* 评论区 */}
-            <div style={{ marginTop: '20px', borderTop: '1px dashed #ccc', paddingTop: '10px' }}>
-              <h4 style={{ margin: '10px 0' }}>评论区 ({post.comments.length})</h4>
-              {post.comments.map(c => (
-                <div key={c.id} style={{ background: '#f1f1f1', padding: '8px', marginBottom: '5px', borderRadius: '4px', fontSize: '14px' }}>
-                  <strong>{c.author}: </strong> {c.text}
-                </div>
-              ))}
-              
-              <div style={{ marginTop: '10px', display: 'flex', gap: '10px' }}>
-                <input
-                  type="text"
-                  placeholder="昵称"
-                  value={commentInputs[post.id]?.author || ''}
-                  onChange={e => setCommentInputs({ ...commentInputs, [post.id]: { ...commentInputs[post.id], author: e.target.value } })}
-                  style={{ flex: 1, padding: '5px' }}
-                />
-                <input
-                  type="text"
-                  placeholder="说点什么..."
-                  value={commentInputs[post.id]?.text || ''}
-                  onChange={e => setCommentInputs({ ...commentInputs, [post.id]: { ...commentInputs[post.id], text: e.target.value } })}
-                  style={{ flex: 3, padding: '5px' }}
-                />
-                <button onClick={() => handleAddComment(post.id)} style={{ padding: '5px 15px' }}>提交</button>
+            <article className="featured-card">
+              <div className="post-meta">
+                <span>{featuredPost.tag}</span>
+                <span>{featuredPost.date}</span>
               </div>
+              <h3>{featuredPost.title}</h3>
+              <p>{featuredPost.excerpt}</p>
+              <a className="text-link" href={featuredPost.link || "#"}>
+                Read article →
+              </a>
+            </article>
+          </section>
+        )}
+
+        <section id="blog" className="section blog">
+          <div className="section-heading">
+            <span>Blog</span>
+            <h2>Recent writing</h2>
+          </div>
+
+          <div className="post-grid">
+            {otherPosts.map((post) => (
+              <article key={post.id} className="post-card">
+                <div className="post-meta">
+                  <span>{post.tag}</span>
+                  <span>{post.date}</span>
+                </div>
+                <h3>{post.title}</h3>
+                <p>{post.excerpt}</p>
+                <a className="text-link" href={post.link || "#"}>
+                  Read more →
+                </a>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section id="notes" className="section notes">
+          <div className="section-heading">
+            <span>Notes</span>
+            <h2>What I usually write about</h2>
+          </div>
+
+          <div className="note-list">
+            <div className="note-item">
+              <h3>Games & Systems</h3>
+              <p>
+                Mechanics, level design, player psychology, and why some games
+                stay alive in the mind long after the screen goes dark.
+              </p>
+            </div>
+            <div className="note-item">
+              <h3>Cities & Observation</h3>
+              <p>
+                Tokyo, maps, walking, visual clues, quiet social rituals, and
+                the hidden architecture of ordinary places.
+              </p>
+            </div>
+            <div className="note-item">
+              <h3>Language & Practice</h3>
+              <p>
+                Notes on English, Japanese, speaking, repetition, and the brutal
+                comedy of trying to become more precise every day.
+              </p>
             </div>
           </div>
-        ))}
-      </div>
+        </section>
+
+        <section id="contact" className="section contact">
+          <div className="section-heading">
+            <span>Contact</span>
+            <h2>Say hello</h2>
+          </div>
+          <p>
+            You can replace this section with your email, social links, GitHub,
+            or newsletter.
+          </p>
+          <div className="contact-links">
+            <a href="https://github.com/" target="_blank" rel="noreferrer">
+              GitHub
+            </a>
+            <a href="https://x.com/" target="_blank" rel="noreferrer">
+              X / Twitter
+            </a>
+            <a href="mailto:hello@example.com">Email</a>
+          </div>
+        </section>
+      </main>
+
+      <footer className="footer">
+        <p>© 2026 PlayXeld. Built with React and stubbornness.</p>
+      </footer>
     </div>
   );
 }
+
+export default App;
