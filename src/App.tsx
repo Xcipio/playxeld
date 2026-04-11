@@ -39,30 +39,119 @@ function HomePage() {
   }, []);
 
   return (
-    <div style={{ maxWidth: "900px", margin: "0 auto", padding: "40px 20px" }}>
-      <h1>All we need is PLAY!</h1>
-      <p>PlayXeld Blog</p>
+    <div className="page">
+      <header className="hero">
+        <div className="hero-top">
+          <div className="hero-brand">PlayXeld</div>
+          <nav className="hero-nav">
+            <a href="#posts">Posts</a>
+            <a href="#about">About</a>
+          </nav>
+        </div>
 
-      {loading && <p>Loading...</p>}
+        <div className="hero-body hero-grid">
+          <div className="hero-main">
+            <p className="hero-kicker">ARTIST / ENGINEER / GAME CREATOR</p>
 
-      {!loading && posts.length === 0 && <p>No posts yet.</p>}
+            <h1 className="hero-title">All we need is PLAY!</h1>
 
-      {!loading &&
-        posts.map((post) => (
-          <article
-            key={post.id}
-            style={{
-              padding: "24px 0",
-              borderBottom: "1px solid #ddd",
-            }}
-          >
-            <h2>
-              <Link to={`/post/${post.slug}`}>{post.title}</Link>
-            </h2>
-            <p>{post.excerpt}</p>
-            <small>{new Date(post.published_at).toLocaleDateString()}</small>
-          </article>
-        ))}
+            <p className="hero-subtitle">
+              A space for writing about systems, cities, stories, language, and
+              the strange pleasure of treating life as something to be explored
+              rather than merely endured.
+            </p>
+
+            <div className="hero-actions">
+              <a className="hero-button hero-button-primary" href="#posts">
+                Read posts
+              </a>
+              <a className="hero-button hero-button-secondary" href="#about">
+                About this site
+              </a>
+            </div>
+          </div>
+
+          <aside className="hero-side">
+            <p className="hero-side-label">Now</p>
+
+            <h2 className="hero-side-title">What this site is becoming</h2>
+
+            <p className="hero-side-text">
+              Not just a blog, but a small publishing system for essays, notes,
+              experiments, and playable ways of thinking.
+            </p>
+
+            <div className="hero-side-card">
+              <p className="hero-side-card-label">Current focus</p>
+              <p className="hero-side-card-text">
+                Writing about play, systems, cities, stories, and the structure
+                of attention.
+              </p>
+            </div>
+          </aside>
+        </div>
+      </header>
+
+      <section id="about" className="section">
+        <p className="section-label">About</p>
+        <h2 className="section-title">What this site is for</h2>
+
+        <p className="section-text">
+          PlayXeld is my personal publishing space. I use it to write essays,
+          notes, and fragments about design, games, books, films, cities, and
+          whatever else sharpens attention.
+        </p>
+
+        <p className="section-text">
+          The point is not just to archive thoughts. It is to test them in
+          public, shape them into something readable, and gradually build a body
+          of work.
+        </p>
+      </section>
+
+      <section id="posts" className="section">
+        <div className="section-header">
+          <h2 className="section-title">Recent writing</h2>
+          <span className="section-meta">
+            {!loading ? `${posts.length} posts` : ""}
+          </span>
+        </div>
+
+        {loading && <p className="state-text">Loading...</p>}
+
+        {!loading && posts.length === 0 && (
+          <p className="state-text">No posts yet.</p>
+        )}
+
+        {!loading && posts.length > 0 && (
+          <div className="posts-grid">
+            {posts.map((post, index) => (
+              <article
+                key={post.id}
+                className={
+                  index === 0 ? "post-card post-card-featured" : "post-card"
+                }
+              >
+                <div className="post-meta">
+                  {new Date(post.published_at).toLocaleDateString()}
+                </div>
+
+                <h3 className="post-title">
+                  <Link to={`/post/${post.slug}`}>{post.title}</Link>
+                </h3>
+
+                <p className="post-excerpt">
+                  {post.excerpt || "No excerpt yet."}
+                </p>
+
+                <Link className="post-link" to={`/post/${post.slug}`}>
+                  Read article →
+                </Link>
+              </article>
+            ))}
+          </div>
+        )}
+      </section>
     </div>
   );
 }
