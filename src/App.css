@@ -717,8 +717,8 @@ body[data-theme="light"] .pagination-button.active {
 
 .post-tag-badge {
   position: absolute;
-  top: 20px;
-  right: 20px;
+  top: 15px;
+  right: 15px;
 
   display: inline-flex;
   align-items: center;
