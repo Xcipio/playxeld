@@ -42,7 +42,7 @@ function HomePage() {
     <div className="page">
       <header className="hero">
         <div className="hero-top">
-          <div className="hero-brand">PlayXeld</div>
+          <div className="hero-brand">Playxeld</div>
           <nav className="hero-nav">
             <a href="#posts">Posts</a>
             <a href="#about">About</a>
@@ -97,7 +97,7 @@ function HomePage() {
         <h2 className="section-title">What this site is for</h2>
 
         <p className="section-text">
-          PlayXeld is my personal publishing space. I use it to write essays,
+          Playxeld is my personal publishing space. I use it to write essays,
           notes, and fragments about design, games, books, films, cities, and
           whatever else sharpens attention.
         </p>
