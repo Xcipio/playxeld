@@ -145,7 +145,7 @@ function HomePage() {
                 </p>
 
                 <Link className="post-link" to={`/post/${post.slug}`}>
-                  Read article →
+                  阅读全文 →
                 </Link>
               </article>
             ))}
