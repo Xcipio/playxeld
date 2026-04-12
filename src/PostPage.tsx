@@ -20,6 +20,16 @@ function PostPage() {
   const [post, setPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // 新增：主题 state
+  const [theme, setTheme] = useState<"dark" | "light">("dark");
+
+  // 新增：初始化主题
+  useEffect(() => {
+    const saved = localStorage.getItem("theme") || "dark";
+    document.body.setAttribute("data-theme", saved);
+    setTheme(saved as "dark" | "light");
+  }, []);
+
   useEffect(() => {
     const fetchPost = async () => {
       if (!slug) {
@@ -61,19 +71,62 @@ function PostPage() {
       <div
         style={{ maxWidth: "900px", margin: "0 auto", padding: "40px 20px" }}
       >
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: "24px",
+          }}
+        >
+          <p style={{ margin: 0 }}>
+            <Link to="/">← Back to home</Link>
+          </p>
+
+          <button
+            className="theme-toggle"
+            onClick={() => {
+              const next = theme === "light" ? "dark" : "light";
+              document.body.setAttribute("data-theme", next);
+              localStorage.setItem("theme", next);
+              setTheme(next);
+            }}
+          >
+            {theme === "light" ? "深色" : "浅色"}
+          </button>
+        </div>
+
         <p>Post not found.</p>
-        <p>
-          <Link to="/">← Back to home</Link>
-        </p>
       </div>
     );
   }
 
   return (
     <div style={{ maxWidth: "900px", margin: "0 auto", padding: "40px 20px" }}>
-      <p>
-        <Link to="/">← Back to home</Link>
-      </p>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "24px",
+        }}
+      >
+        <p style={{ margin: 0 }}>
+          <Link to="/">← Back to home</Link>
+        </p>
+
+        <button
+          className="theme-toggle"
+          onClick={() => {
+            const next = theme === "light" ? "dark" : "light";
+            document.body.setAttribute("data-theme", next);
+            localStorage.setItem("theme", next);
+            setTheme(next);
+          }}
+        >
+          {theme === "light" ? "深色" : "浅色"}
+        </button>
+      </div>
 
       <h1>{post.title}</h1>
       <p>{post.excerpt}</p>
