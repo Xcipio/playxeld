@@ -72,6 +72,7 @@ a {
 .hero-nav {
   display: flex;
   gap: 28px;
+  align-items: center;
 }
 
 .hero-nav a {
@@ -428,4 +429,128 @@ a {
   .hero-side {
     padding: 24px;
   }
+}
+
+/* =========================
+   浅色模式（新增，不改原有）
+========================= */
+
+body[data-theme="light"] {
+  background: #f5f7fb;
+  color: #05070d;
+}
+
+/* 覆盖 hero 背景 */
+body[data-theme="light"] .page {
+  background:
+    radial-gradient(900px at 10% 10%, rgba(67, 102, 255, 0.08), transparent),
+    radial-gradient(1000px at 90% 0%, rgba(115, 71, 255, 0.06), transparent),
+    #f5f7fb;
+}
+
+/* 导航 */
+body[data-theme="light"] .hero-nav a {
+  color: rgba(5, 7, 13, 0.7);
+}
+
+body[data-theme="light"] .hero-nav a:hover {
+  color: #05070d;
+}
+
+/* 文本 */
+body[data-theme="light"] .hero-subtitle,
+body[data-theme="light"] .section-text,
+body[data-theme="light"] .post-excerpt {
+  color: rgba(5, 7, 13, 0.7);
+}
+
+/* 卡片 */
+body[data-theme="light"] .post-card {
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+body[data-theme="light"] .post-card:hover {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.16);
+}
+
+/* 右侧面板 */
+body[data-theme="light"] .hero-side {
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.04),
+    rgba(0, 0, 0, 0.02)
+  );
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+/* 按钮样式 */
+.theme-toggle {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: inherit;
+  padding: 6px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.theme-toggle:hover {
+  opacity: 0.8;
+}
+
+/* 浅色按钮 */
+body[data-theme="light"] .theme-toggle {
+  border: 1px solid rgba(0, 0, 0, 0.16);
+}
+
+/* =========================
+   浅色模式文字修复
+========================= */
+
+body[data-theme="light"] {
+  color: #05070d;
+}
+
+/* 主标题 */
+body[data-theme="light"] .hero-title {
+  color: #05070d;
+}
+
+/* 副标题 */
+body[data-theme="light"] .hero-subtitle {
+  color: rgba(5, 7, 13, 0.75);
+}
+
+/* 右侧卡片 */
+body[data-theme="light"] .hero-side-title {
+  color: #05070d;
+}
+
+body[data-theme="light"] .hero-side-text,
+body[data-theme="light"] .hero-side-card-text {
+  color: rgba(5, 7, 13, 0.75);
+}
+
+/* section */
+body[data-theme="light"] .section-text {
+  color: rgba(5, 7, 13, 0.75);
+}
+
+/* post */
+body[data-theme="light"] .post-excerpt {
+  color: rgba(5, 7, 13, 0.75);
+}
+
+/* 按钮（最重要） */
+body[data-theme="light"] .hero-button-primary {
+  background: #05070d;
+  color: #ffffff;
+}
+
+body[data-theme="light"] .hero-button-secondary {
+  color: #05070d;
+  border: 1px solid rgba(0, 0, 0, 0.16);
+  background: rgba(0, 0, 0, 0.04);
 }

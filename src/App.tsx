@@ -17,6 +17,13 @@ type Post = {
 function HomePage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
+  const [theme, setTheme] = useState<"dark" | "light">("dark");
+
+  useEffect(() => {
+    const saved = localStorage.getItem("theme") || "dark";
+    document.body.setAttribute("data-theme", saved);
+    setTheme(saved as "dark" | "light");
+  }, []);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -46,6 +53,18 @@ function HomePage() {
           <nav className="hero-nav">
             <a href="#posts">Posts</a>
             <a href="#about">About</a>
+
+            <button
+              className="theme-toggle"
+              onClick={() => {
+                const next = theme === "light" ? "dark" : "light";
+                document.body.setAttribute("data-theme", next);
+                localStorage.setItem("theme", next);
+                setTheme(next); // ✅ 关键
+              }}
+            >
+              {theme === "light" ? "深色" : "浅色"}
+            </button>
           </nav>
         </div>
 
