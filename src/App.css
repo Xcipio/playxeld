@@ -284,10 +284,44 @@ a {
     background 0.18s ease;
 }
 
+/* 卡片整体动画 */
+.post-card {
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+/* hover 效果 */
 .post-card:hover {
-  transform: translateY(-2px);
-  border-color: rgba(255, 255, 255, 0.14);
-  background: rgba(255, 255, 255, 0.04);
+  transform: translateY(-3px);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* 标题动画 */
+.post-title {
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.post-card:hover .post-title {
+  opacity: 0.9;
+  transform: translateX(4px);
+}
+
+/* Read more 动效 */
+.post-link {
+  transition:
+    transform 0.2s ease,
+    color 0.2s ease;
+}
+
+.post-card:hover .post-link {
+  transform: translateX(6px);
 }
 
 .post-card-featured {
@@ -306,6 +340,14 @@ a {
   font-size: 32px;
   line-height: 1.08;
   letter-spacing: -0.04em;
+}
+
+.post-title {
+  transition: opacity 0.2s ease;
+}
+
+.post-card:hover .post-title {
+  opacity: 0.85;
 }
 
 .post-card-featured .post-title {
@@ -477,11 +519,7 @@ body[data-theme="light"] .post-card:hover {
 
 /* 右侧面板 */
 body[data-theme="light"] .hero-side {
-  background: linear-gradient(
-    180deg,
-    rgba(0, 0, 0, 0.04),
-    rgba(0, 0, 0, 0.02)
-  );
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.04), rgba(0, 0, 0, 0.02));
   border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
@@ -553,4 +591,48 @@ body[data-theme="light"] .hero-button-secondary {
   color: #05070d;
   border: 1px solid rgba(0, 0, 0, 0.16);
   background: rgba(0, 0, 0, 0.04);
+}
+
+/* PLAY 彩色字母 */
+
+.play-word .p {
+  color: #ff8c42; /* 橙色 */
+}
+
+.play-word .l {
+  color: #4ea8ff; /* 蓝色 */
+}
+
+.play-word .a {
+  color: #ff4d4f; /* 红色 */
+}
+
+.play-word .y {
+  color: #2ecc71; /* 绿色 */
+}
+
+/* 标题颜色循环 */
+
+/* 第1个：橙色 */
+.posts-grid .post-card:nth-child(4n + 1) .post-title,
+.posts-grid .post-card:nth-child(4n + 1) .post-title a {
+  color: #ff8c42;
+}
+
+/* 第2个：蓝色 */
+.posts-grid .post-card:nth-child(4n + 2) .post-title,
+.posts-grid .post-card:nth-child(4n + 2) .post-title a {
+  color: #4ea8ff;
+}
+
+/* 第3个：红色 */
+.posts-grid .post-card:nth-child(4n + 3) .post-title,
+.posts-grid .post-card:nth-child(4n + 3) .post-title a {
+  color: #ff4d4f;
+}
+
+/* 第4个：绿色 */
+.posts-grid .post-card:nth-child(4n + 4) .post-title,
+.posts-grid .post-card:nth-child(4n + 4) .post-title a {
+  color: #2ecc71;
 }

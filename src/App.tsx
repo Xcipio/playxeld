@@ -72,7 +72,16 @@ function HomePage() {
           <div className="hero-main">
             <p className="hero-kicker">WRITER / GAME CREATOR / PLAYER</p>
 
-            <h1 className="hero-title">All we need is PLAY!</h1>
+            <h1 className="hero-title">
+              All we need is{" "}
+              <span className="play-word">
+                <span className="p">P</span>
+                <span className="l">L</span>
+                <span className="a">A</span>
+                <span className="y">Y</span>
+              </span>{" "}
+              !
+            </h1>
 
             <p className="hero-subtitle">
               A space for writing about systems, cities, stories, language, and
