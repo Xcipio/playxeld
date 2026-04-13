@@ -1,6 +1,6 @@
 import { FormEvent, useEffect, useState } from "react";
 import { createComment, fetchApprovedComments } from "../lib/comments";
-import { notifyReplyByEmail } from "../lib/notifications";
+import { sendReplyNotification } from "../lib/notifications";
 import { Comment } from "../types/comment";
 
 type CommentsSectionProps = {
@@ -193,7 +193,7 @@ function CommentsSection({ postSlug, postTitle }: CommentsSectionProps) {
     if (replyTarget) {
       const postUrl = `${window.location.origin}/post/${postSlug}`;
 
-      const { error: notifyError } = await notifyReplyByEmail({
+      const { error: notifyError } = await sendReplyNotification({
         postSlug,
         postTitle,
         replyAuthorName: authorName.trim(),

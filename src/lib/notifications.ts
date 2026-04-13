@@ -1,5 +1,3 @@
-import { supabase } from "./supabase";
-
 type ReplyNotificationPayload = {
   postSlug: string;
   postTitle: string;
@@ -10,11 +8,55 @@ type ReplyNotificationPayload = {
   postUrl: string;
 };
 
-export async function notifyReplyByEmail(payload: ReplyNotificationPayload) {
-  return supabase.functions.invoke("smooth-processor", {
-    body: {
-      to: "playxeld@gmail.com",
-      ...payload,
-    },
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+export async function sendReplyNotification(payload: ReplyNotificationPayload) {
+  console.log("[sendReplyNotification] env", {
+    hasSupabaseUrl: Boolean(supabaseUrl),
+    hasAnonKey: Boolean(anonKey),
   });
+
+  if (!supabaseUrl || !anonKey) {
+    return {
+      data: null,
+      error: new Error("Missing VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY"),
+    };
+  }
+
+  try {
+    const response = await fetch(`${supabaseUrl}/functions/v1/smooth-processor`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${anonKey}`,
+        apikey: anonKey,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        to: "playxeld@gmail.com",
+        ...payload,
+      }),
+    });
+
+    console.log("[sendReplyNotification] response.status", response.status);
+
+    const data = await response.json().catch(() => null);
+    console.log("[sendReplyNotification] response.data", data);
+
+    if (!response.ok) {
+      return {
+        data: null,
+        error: new Error(`smooth-processor returned ${response.status}`),
+      };
+    }
+
+    return { data, error: null };
+  } catch (error) {
+    console.log("[sendReplyNotification] request.error", error);
+
+    return {
+      data: null,
+      error: error instanceof Error ? error : new Error("Unknown notification error"),
+    };
+  }
 }

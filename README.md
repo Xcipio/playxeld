@@ -23,7 +23,7 @@ npm install
 
 ```bash
 VITE_SUPABASE_URL=your-supabase-url
-VITE_SUPABASE_PUBLISHABLE_KEY=your-supabase-anon-key
+VITE_SUPABASE_ANON_KEY=your-supabase-anon-key
 ```
 
 启动开发环境：
@@ -59,4 +59,4 @@ npm run preview
 项目当前通过 GitHub Actions 部署到 GitHub Pages。生产构建时需要在仓库 Secrets 中配置：
 
 - `VITE_SUPABASE_URL`
-- `VITE_SUPABASE_PUBLISHABLE_KEY`
+- `VITE_SUPABASE_ANON_KEY`
