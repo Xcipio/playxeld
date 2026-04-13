@@ -1,5 +1,6 @@
 import { Link, useParams } from "react-router-dom";
 import { lazy, Suspense, useEffect, useState } from "react";
+import CommentsSection from "./components/CommentsSection";
 import ThemeToggle from "./components/ThemeToggle";
 import { useTheme } from "./hooks/useTheme";
 import { fetchPublishedPostBySlug } from "./lib/posts";
@@ -93,6 +94,8 @@ function PostPage() {
       <Suspense fallback={<p style={{ marginTop: "32px" }}>Loading content...</p>}>
         <PostContent content={post.content} />
       </Suspense>
+
+      <CommentsSection postSlug={post.slug} />
     </div>
   );
 }
