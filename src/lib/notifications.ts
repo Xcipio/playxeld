@@ -11,7 +11,7 @@ type ReplyNotificationPayload = {
 };
 
 export async function notifyReplyByEmail(payload: ReplyNotificationPayload) {
-  return supabase.functions.invoke("send-reply-email", {
+  return supabase.functions.invoke("smooth-processor", {
     body: {
       to: "playxeld@gmail.com",
       ...payload,
