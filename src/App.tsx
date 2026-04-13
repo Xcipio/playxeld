@@ -191,18 +191,22 @@ function HomePage() {
             </h1>
 
             <p className="hero-subtitle">
-              A space for writing about systems, cities, stories, language, and
-              the strange pleasure of treating life as something to be explored
-              rather than merely endured.
+              这里是一个关于系统、游戏、故事与语言的思考空间
+            </p>
+
+            <p className="hero-subtitle">
+              相比将生活视作一场不得不忍受的消亡，我更愿意将其视为一种充满奇特愉悦的、无止境的探索
             </p>
           </div>
 
           <aside className="hero-side">
             <p className="hero-side-label">Now</p>
-            <h2 className="hero-side-title">What this site is becoming</h2>
+            <h2 className="hero-side-title">个人博客 👉 微型发布系统</h2>
             <p className="hero-side-text">
-              Not just a blog, but a small publishing system for essays, notes,
-              experiments, and playable ways of thinking.
+              📚 🎬 🎷 🎴 🏙️ 💡 → 🤹 🎮
+            </p>
+            <p className="hero-side-text">
+              让思考不再只是静态的阅读，而是变成像玩游戏一样可以交互的思维练习
             </p>
           </aside>
         </div>
@@ -289,17 +293,13 @@ function HomePage() {
       {/* ABOUT */}
       <section id="about" className="section">
         <p className="section-label">ABOUT</p>
-        <h2 className="section-title">What this site is for</h2>
+        <h2 className="section-title">初衷</h2>
         <p className="section-text">
-          Playxeld is my personal publishing space. I use it to write essays,
-          notes, and fragments about design, games, books, films, cities, and
-          whatever else sharpens attention.
+          我在这里记录随笔、笔记与思想碎片。从设计的逻辑到博弈的本质，从光影的隐喻到城市的肌理——凡是能启发思考、磨练感知的事物，皆是我的坐标
         </p>
 
         <p className="section-text">
-          The point is not just to archive thoughts. It is to test them in
-          public, shape them into something readable, and gradually build a body
-          of work.
+          建立这个站点的目的并非为了单纯的存档。对我而言，写作是一场公开测试，去校验那些尚不成熟的直觉，试图将零散的思考锻造成系统的表达，并最终构建起一套完整的创作谱系
         </p>
       </section>
     </div>
