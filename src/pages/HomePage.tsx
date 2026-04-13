@@ -159,6 +159,9 @@ function HomePage() {
             <h2 className="hero-side-title">个人博客 👉 微型发布系统</h2>
             <p className="hero-side-text">📚 🎬 🎷 🎴 🏙️ 💡 → 🤹 🎮</p>
             <p className="hero-side-text">
+              我正在尝试把深度随笔、实验笔记与“可游玩”的思维模型结合
+            </p>
+            <p className="hero-side-text">
               让思考不再只是静态的阅读，而是变成像玩游戏一样可以交互的思维练习
             </p>
           </aside>
