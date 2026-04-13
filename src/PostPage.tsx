@@ -95,7 +95,7 @@ function PostPage() {
         <PostContent content={post.content} />
       </Suspense>
 
-      <CommentsSection postSlug={post.slug} />
+      <CommentsSection postSlug={post.slug} postTitle={post.title} />
     </div>
   );
 }

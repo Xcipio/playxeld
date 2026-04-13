@@ -1,9 +1,11 @@
 import { FormEvent, useEffect, useState } from "react";
 import { createComment, fetchApprovedComments } from "../lib/comments";
+import { notifyReplyByEmail } from "../lib/notifications";
 import { Comment } from "../types/comment";
 
 type CommentsSectionProps = {
   postSlug: string;
+  postTitle: string;
 };
 
 type CommentNode = Comment & {
@@ -23,16 +25,39 @@ function buildCommentTree(comments: Comment[], parentId: number | null = null): 
     }));
 }
 
+function findCommentById(comments: CommentNode[], commentId: number | null): CommentNode | null {
+  if (commentId === null) {
+    return null;
+  }
+
+  for (const comment of comments) {
+    if (comment.id === commentId) {
+      return comment;
+    }
+
+    const nestedMatch = findCommentById(comment.replies, commentId);
+
+    if (nestedMatch) {
+      return nestedMatch;
+    }
+  }
+
+  return null;
+}
+
 function CommentItem({
   comment,
   depth,
+  rootComments,
   onReply,
 }: {
   comment: CommentNode;
   depth: number;
+  rootComments: CommentNode[];
   onReply: (comment: Comment) => void;
 }) {
   const nestingLevel = depth > 1 ? "comment-replies-nested" : "comment-replies-root";
+  const replyTarget = findCommentById(rootComments, comment.parent_id);
 
   return (
     <article className={depth === 0 ? "comment-card" : "comment-reply-card"}>
@@ -42,6 +67,12 @@ function CommentItem({
           {new Date(comment.created_at).toLocaleDateString()}
         </span>
       </div>
+
+      {replyTarget && (
+        <p className="comment-reply-context">
+          {comment.author_name} 回复 {replyTarget.author_name}
+        </p>
+      )}
 
       <p className="comment-content">{comment.content}</p>
 
@@ -57,11 +88,13 @@ function CommentItem({
 
       {comment.replies.length > 0 && (
         <div className={`comment-replies ${nestingLevel}`}>
+          <p className="comment-replies-label">Replies</p>
           {comment.replies.map((reply) => (
             <CommentItem
               key={reply.id}
               comment={reply}
               depth={Math.min(depth + 1, 2)}
+              rootComments={rootComments}
               onReply={onReply}
             />
           ))}
@@ -71,7 +104,7 @@ function CommentItem({
   );
 }
 
-function CommentsSection({ postSlug }: CommentsSectionProps) {
+function CommentsSection({ postSlug, postTitle }: CommentsSectionProps) {
   const [comments, setComments] = useState<CommentNode[]>([]);
   const [authorName, setAuthorName] = useState("");
   const [content, setContent] = useState("");
@@ -157,6 +190,24 @@ function CommentsSection({ postSlug }: CommentsSectionProps) {
     setFeedback(replyTarget ? "回复已发布。" : "留言已发布。");
     setSubmitting(false);
 
+    if (replyTarget) {
+      const postUrl = `${window.location.origin}/post/${postSlug}`;
+
+      const { error: notifyError } = await notifyReplyByEmail({
+        postSlug,
+        postTitle,
+        replyAuthorName: authorName.trim(),
+        replyContent: content.trim(),
+        parentCommentId: replyTarget.id,
+        parentAuthorName: replyTarget.author_name,
+        postUrl,
+      });
+
+      if (notifyError) {
+        console.error("Failed to send reply notification:", notifyError);
+      }
+    }
+
     const { data, error: refreshError } = await fetchApprovedComments(postSlug);
 
     if (refreshError) {
@@ -193,6 +244,7 @@ function CommentsSection({ postSlug }: CommentsSectionProps) {
                 key={comment.id}
                 comment={comment}
                 depth={0}
+                rootComments={comments}
                 onReply={(targetComment) => {
                   setReplyTarget(targetComment);
                   setFeedback(null);

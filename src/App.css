@@ -590,6 +590,15 @@ a {
   white-space: pre-wrap;
 }
 
+.comment-reply-context,
+.comment-replies-label {
+  margin: 0 0 10px;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(245, 247, 251, 0.46);
+}
+
 .comment-actions {
   margin-top: 14px;
 }
@@ -1113,6 +1122,11 @@ body[data-theme="light"] .comment-date {
 
 body[data-theme="light"] .comment-content {
   color: rgba(5, 7, 13, 0.82);
+}
+
+body[data-theme="light"] .comment-reply-context,
+body[data-theme="light"] .comment-replies-label {
+  color: rgba(5, 7, 13, 0.44);
 }
 
 body[data-theme="light"] .comment-reply-button,
