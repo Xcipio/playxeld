@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://playxeld.com/sitemap.xml
