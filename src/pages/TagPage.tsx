@@ -9,10 +9,10 @@ import { Post } from "../types/post";
 const tagDescriptions: Record<string, string> = {
   随笔: "这个标签下是相对自由的写作，内容不限定主题，主要记录当下的想法和观察。",
   思维模型: "这个标签下的文章会集中讨论方法、框架和可复用的思考结构。",
-  文心雕侬: "这个标签主要整理历史上著名的文学家和他们的作品，试图从他们的创作和人生中提炼出一些对我们有启发的东西。",
+  文心雕侬: "这个标签主要整理历史上著名的文学家和他们的作品，试图从他们的创作和人生中提炼出一些对我们有启发的东西。每篇文章末段都附有几个可执行的小游戏，帮助你理解人物及其思想。",
   卡片: "这个标签下是关于我设计的各种互动卡片的。",
-  哲学透镜: "这个标签主是关于哲学家和哲学概念的系列文章，试图通过他们的思想来解读世界和人生。",
-  永恒之城: "这个标签是关于罗马传奇的将领和英雄的系列文章，试图从历史和文学的角度来解读他们的故事和精神。",
+  哲学透镜: "这个标签主要是关于哲学家和哲学概念的系列文章，试图通过介绍他们的思想来解读世界和人生。每篇文章末段都附有几个可执行的小游戏，帮助你理解人物及其思想。",
+  永恒之城: "这个标签是关于罗马传奇的将领和英雄的系列文章，试图从历史和文学的角度来解读他们的故事和精神。每篇文章末段都附有几个可执行的小游戏，帮助你理解人物及其思想",
 };
 
 const tagHeroToneMap: Record<string, string> = {
@@ -73,14 +73,14 @@ function TagPage() {
   return (
     <div className="page tag-page">
       <section className="section tag-page-section">
-        <div className="tag-page-topbar">
-          <p className="tag-page-back">
-            <Link to="/">← Back to home</Link>
-          </p>
-          <ThemeToggle theme={theme} onToggle={toggleTheme} />
-        </div>
-
         <div className={`tag-page-hero ${heroToneClass}`}>
+          <div className="tag-page-topbar">
+            <p className="tag-page-back">
+              <Link to="/">← Back to home</Link>
+            </p>
+            <ThemeToggle theme={theme} onToggle={toggleTheme} />
+          </div>
+
           <p className="section-label">TAG PAGE</p>
           <h1 className="tag-page-title">{decodedTag}</h1>
           <p className="tag-page-description">{tagDescription}</p>

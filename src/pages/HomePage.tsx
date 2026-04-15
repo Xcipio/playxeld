@@ -88,14 +88,19 @@ function HomePage() {
                     {character === " " ? "\u00A0" : character}
                   </span>
                 ))}
-              </span>{" "}
-              <span className="play-word" aria-label="PLAY">
-                <span className="p play-letter">P</span>
-                <span className="l play-letter">L</span>
-                <span className="a play-letter">A</span>
-                <span className="y play-letter">Y</span>
-              </span>{" "}
-              <span className="hero-exclamation play-letter play-letter-exclamation">!</span>
+              </span>
+              <span className="hero-play-group" aria-label="PLAY !">
+                <span className="hero-play-gap" aria-hidden="true">
+                  {" "}
+                </span>
+                <span className="play-word" aria-label="PLAY">
+                  <span className="p play-letter">P</span>
+                  <span className="l play-letter">L</span>
+                  <span className="a play-letter">A</span>
+                  <span className="y play-letter">Y</span>
+                </span>{" "}
+                <span className="hero-exclamation play-letter play-letter-exclamation">!</span>
+              </span>
             </h1>
 
             <p className="hero-subtitle">
