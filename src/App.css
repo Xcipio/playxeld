@@ -768,23 +768,56 @@ a {
 
 .tag-page-grid {
   margin-top: 20px;
+  gap: 12px;
 }
 
 .tag-page-grid .post-card {
+  display: flex;
+  flex-direction: column;
+  height: 360px;
+  padding-bottom: 32px;
+  overflow: hidden;
+  position: relative;
   transition:
     transform 0.2s ease,
     box-shadow 0.2s ease,
     border-color 0.2s ease,
     background 0.2s ease,
-    margin-top 0.2s ease;
+    top 0.2s ease;
 }
 
 .tag-page-grid .post-card:nth-child(2n) {
-  margin-top: 34px;
+  top: 88px;
 }
 
-.tag-page-grid .post-card:nth-child(4n + 3) {
-  margin-top: 14px;
+.tag-page-grid .post-card .post-title {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  min-height: 69px;
+  max-height: 69px;
+}
+
+.tag-page-grid .post-card .post-excerpt {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  overflow: hidden;
+  min-height: 136px;
+  max-height: 136px;
+}
+
+.tag-page-grid .post-card .post-link {
+  margin-top: auto;
+}
+
+.tag-page-grid .post-card:nth-child(2n - 1) {
+  margin-top: 0;
+}
+
+.tag-page-grid .post-card:nth-child(2n) {
+  margin-top: 10px;
 }
 
 .tag-page-grid .post-card:nth-child(4n + 1) .post-title,
@@ -1433,9 +1466,32 @@ a {
     grid-column: span 12;
   }
 
+  .latest-release-card,
+  .tag-page-featured-card {
+    grid-template-columns: 1fr;
+  }
+
+  .latest-release-tags,
+  .tag-page-featured-meta,
+  .tag-page-featured-tags {
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+
   .tag-page-grid .post-card:nth-child(2n),
-  .tag-page-grid .post-card:nth-child(4n + 3) {
-    margin-top: 0;
+  .tag-page-grid .post-card:nth-child(2n - 1) {
+    top: 0;
+  }
+
+  .tag-page-grid .post-card {
+    height: auto;
+    padding-bottom: 88px;
+  }
+
+  .tag-page-grid .post-card .post-title,
+  .tag-page-grid .post-card .post-excerpt {
+    min-height: auto;
+    max-height: none;
   }
 
   .comments-shell {
@@ -1487,6 +1543,30 @@ a {
   .hero-title {
     font-size: 46px;
     line-height: 0.98;
+  }
+
+  .latest-release-section .section-header {
+    flex-wrap: wrap;
+    align-items: flex-end;
+  }
+
+  .latest-release-card,
+  .tag-page-featured-card {
+    padding: 24px 22px;
+    gap: 18px;
+  }
+
+  .latest-release-title,
+  .tag-page-featured-title {
+    font-size: clamp(28px, 8vw, 38px);
+    line-height: 1.02;
+  }
+
+  .latest-release-excerpt,
+  .tag-page-featured-excerpt {
+    max-width: none;
+    font-size: 16px;
+    line-height: 1.75;
   }
 
   .hero-play-group {
