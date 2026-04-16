@@ -22,8 +22,10 @@ function HomePage() {
 
   useEffect(() => {
     const loadHomeData = async () => {
-      const [{ data: postData, error: postError }, { data: artworkData, error: artworkError }] =
-        await Promise.all([fetchPublishedPosts(), fetchPublishedArtworks()]);
+      const [
+        { data: postData, error: postError },
+        { data: artworkData, error: artworkError },
+      ] = await Promise.all([fetchPublishedPosts(), fetchPublishedArtworks()]);
 
       if (postError) {
         console.error(postError);
@@ -112,16 +114,18 @@ function HomePage() {
                   <span className="a play-letter">A</span>
                   <span className="y play-letter">Y</span>
                 </span>{" "}
-                <span className="hero-exclamation play-letter play-letter-exclamation">!</span>
+                <span className="hero-exclamation play-letter play-letter-exclamation">
+                  !
+                </span>
               </span>
             </h1>
 
             <p className="hero-subtitle">
-              这里是一个关于游戏、故事与语言的思考空间
+              这里是一个关于游戏、故事与语言的思考 & 游玩空间
             </p>
 
             <p className="hero-subtitle">
-              相比将生活视作一场不得不忍受的消亡，我更愿意将其视为一种充满奇特愉悦的无尽探索
+              相比将生活视作一场不得不忍受的消亡，我更愿意将其视为一种充满奇特愉悦的无尽探索，用玩家的心态去发掘其间蕴藏的乐趣
             </p>
           </div>
 
@@ -145,7 +149,9 @@ function HomePage() {
             </p>
 
             <div className="hero-side-card">
-              <p className="hero-side-card-label hero-side-card-title">任意门</p>
+              <p className="hero-side-card-label hero-side-card-title">
+                任意门
+              </p>
               <p className="hero-side-card-text">
                 点击标签，查看该专题所有文章👇
               </p>
@@ -192,7 +198,9 @@ function HomePage() {
       <section className="section latest-release-section">
         <div className="section-header">
           <div className="latest-release-heading">
-            <h2 className="section-title latest-release-section-title">最新文章</h2>
+            <h2 className="section-title latest-release-section-title">
+              最新文章
+            </h2>
             {latestPost && (
               <div className="section-meta latest-release-date-badge">
                 {new Date(latestPost.published_at).toLocaleDateString()}
@@ -261,7 +269,10 @@ function HomePage() {
           <div className="art-grid">
             {pinnedArtworks.map((artwork) => (
               <article key={artwork.id} className="art-card">
-                <Link to={`/art/${artwork.slug}`} className="art-card-image-link">
+                <Link
+                  to={`/art/${artwork.slug}`}
+                  className="art-card-image-link"
+                >
                   <img
                     className="art-card-image"
                     src={artwork.cover_image_url}
@@ -285,7 +296,10 @@ function HomePage() {
                     <p className="art-card-subtitle">{artwork.subtitle}</p>
                   )}
 
-                  <Link to={`/art/${artwork.slug}`} className="post-link art-card-link">
+                  <Link
+                    to={`/art/${artwork.slug}`}
+                    className="post-link art-card-link"
+                  >
                     查看作品 →
                   </Link>
                 </div>
@@ -311,10 +325,7 @@ function HomePage() {
           <>
             <div className="posts-grid">
               {currentPosts.map((post) => (
-                <article
-                  key={post.id}
-                  className="post-card"
-                >
+                <article key={post.id} className="post-card">
                   <div className="post-meta">
                     {new Date(post.published_at).toLocaleDateString()}
                   </div>
@@ -380,7 +391,7 @@ function HomePage() {
         <p className="section-label">ABOUT</p>
         <h2 className="section-title about-section-title">初衷</h2>
         <p className="section-text">
-          我在这里记录随笔、笔记与思想碎片。从设计的逻辑到博弈的本质，从光影的隐喻到城市的肌理——凡是能启发思考、磨练感知的事物，皆是我的坐标
+          我在这里记录随笔、笔记，涂鸦与思想碎片。从设计的逻辑到博弈的本质，从光影的隐喻到城市的肌理——凡是能启发思考、磨练感知的事物，都是我游戏的操场
         </p>
 
         <p className="section-text">
@@ -392,9 +403,11 @@ function HomePage() {
         <div className="contact-panel">
           <div className="contact-copy">
             <p className="section-label">CONTACT</p>
-            <h2 className="section-title contact-title contact-section-title">欢迎来信</h2>
+            <h2 className="section-title contact-title contact-section-title">
+              欢迎来信
+            </h2>
             <p className="section-text contact-text">
-              如果你想交流游戏、写作、创作故事，或者只是想分享一个有趣的想法，都欢迎通过评论或者邮件来进行交流
+              如果你想交流游戏、写作、创作故事，或者只是想分享一个有趣的想法，都欢迎通过评论或者邮件来进行交流！
             </p>
           </div>
 
