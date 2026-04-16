@@ -389,7 +389,10 @@ a {
 }
 
 .hero-side-card-title {
+  display: inline-flex;
+  align-items: center;
   margin-bottom: 10px;
+  padding: 7px 14px 8px;
   font-size: 24px;
   line-height: 1.08;
   letter-spacing: 0.06em;
@@ -399,7 +402,15 @@ a {
   font-weight: 700;
   opacity: 1;
   color: #ffd166;
-  text-shadow: 0 4px 18px rgba(255, 209, 102, 0.22);
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 24% 28%, rgba(255, 255, 255, 0.2), transparent 34%),
+    linear-gradient(180deg, rgba(255, 209, 102, 0.18), rgba(255, 209, 102, 0.08));
+  border: 1px solid rgba(255, 209, 102, 0.24);
+  box-shadow:
+    0 10px 24px rgba(255, 209, 102, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  text-shadow: 0 4px 18px rgba(255, 209, 102, 0.18);
 }
 
 .hero-side-card-text {
@@ -523,6 +534,12 @@ a {
 
 .home-art-section .section-meta a {
   color: rgba(245, 247, 251, 0.62);
+}
+
+.home-art-section .art-card-pin-badge,
+.home-art-section .art-card-pin-head,
+.home-art-section .art-card-pin-needle {
+  display: none !important;
 }
 
 .latest-release-card {
@@ -2506,7 +2523,14 @@ body[data-theme="light"] .hero-title-gradient {
 
 body[data-theme="light"] .hero-side-card-title {
   color: #d97706;
-  text-shadow: 0 4px 18px rgba(217, 119, 6, 0.12);
+  background:
+    radial-gradient(circle at 24% 28%, rgba(255, 255, 255, 0.42), transparent 34%),
+    linear-gradient(180deg, rgba(245, 158, 11, 0.14), rgba(245, 158, 11, 0.06));
+  border: 1px solid rgba(217, 119, 6, 0.18);
+  box-shadow:
+    0 10px 22px rgba(217, 119, 6, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.42);
+  text-shadow: 0 4px 18px rgba(217, 119, 6, 0.08);
 }
 
 body[data-theme="light"] .hero-side-card .hero-side-card-text {
