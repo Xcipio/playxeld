@@ -43,7 +43,7 @@ function PostPage({ language = "zh" }: { language?: "zh" | "en" }) {
     readDone: isEnglish ? "Marked as read" : "已读完",
     readAction: isEnglish ? "Mark as read" : "读完了",
     likeAction: isEnglish ? "Like" : "喜欢",
-    likedAction: isEnglish ? "Liked" : "喜欢",
+    likedAction: isEnglish ? "Liked" : "已喜欢",
     shareArticle: isEnglish ? "Share article" : "分享文章",
   };
 
@@ -335,7 +335,7 @@ function PostPage({ language = "zh" }: { language?: "zh" | "en" }) {
                 disabled={likeUpdating}
               >
                 <span>{hasLikedPost ? uiText.likedAction : uiText.likeAction}</span>
-                <span aria-hidden="true">❤</span>
+                <span className="post-like-icon" aria-hidden="true">♥</span>
               </button>
 
               <button
