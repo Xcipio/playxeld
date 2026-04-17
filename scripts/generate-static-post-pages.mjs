@@ -157,13 +157,25 @@ async function writePostPage(templateHtml, post, fallbackDescription) {
 }
 
 async function main() {
-  const envContent = await fs.readFile(envPath, "utf8");
-  const env = parseEnvFile(envContent);
-  const supabaseUrl = env.VITE_SUPABASE_URL;
-  const supabaseAnonKey = env.VITE_SUPABASE_ANON_KEY;
+  let fileEnv = {};
+
+  try {
+    const envContent = await fs.readFile(envPath, "utf8");
+    fileEnv = parseEnvFile(envContent);
+  } catch (error) {
+    if (error && typeof error === "object" && "code" in error && error.code !== "ENOENT") {
+      throw error;
+    }
+  }
+
+  const supabaseUrl = process.env.VITE_SUPABASE_URL ?? fileEnv.VITE_SUPABASE_URL;
+  const supabaseAnonKey =
+    process.env.VITE_SUPABASE_ANON_KEY ?? fileEnv.VITE_SUPABASE_ANON_KEY;
 
   if (!supabaseUrl || !supabaseAnonKey) {
-    throw new Error("Missing VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY in .env");
+    throw new Error(
+      "Missing VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY in environment or .env",
+    );
   }
 
   const [templateHtml, posts] = await Promise.all([
