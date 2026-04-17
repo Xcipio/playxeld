@@ -3,6 +3,7 @@ import { lazy, Suspense, useEffect, useState } from "react";
 import CommentsSection from "./components/CommentsSection";
 import ThemeToggle from "./components/ThemeToggle";
 import { useTheme } from "./hooks/useTheme";
+import { sendLikeNotification } from "./lib/notifications";
 import {
   fetchPublishedPostBySlug,
   fetchPublishedPostTranslation,
@@ -134,7 +135,7 @@ function PostPage({ language = "zh" }: { language?: "zh" | "en" }) {
   };
 
   const handleToggleLike = () => {
-    if (!slug) {
+    if (!slug || !post) {
       return;
     }
 
@@ -145,6 +146,24 @@ function PostPage({ language = "zh" }: { language?: "zh" | "en" }) {
     likedMap[slug] = nextLikedState;
     window.localStorage.setItem(POST_LIKED_STORAGE_KEY, JSON.stringify(likedMap));
     setHasLikedPost(nextLikedState);
+
+    if (nextLikedState) {
+      const postUrl =
+        language === "en"
+          ? `${window.location.origin}/en/post/${post.slug}`
+          : `${window.location.origin}/post/${post.slug}`;
+
+      void sendLikeNotification({
+        postSlug: post.slug,
+        postTitle: post.title,
+        postUrl,
+        language,
+      }).then(({ error }) => {
+        if (error) {
+          console.error("Failed to send like notification:", error);
+        }
+      });
+    }
   };
 
   const handleShareArticle = async () => {
@@ -181,7 +200,7 @@ function PostPage({ language = "zh" }: { language?: "zh" | "en" }) {
   };
 
   return (
-    <div className="page post-page">
+    <div className={`page post-page ${isEnglish ? "post-page-en" : "post-page-zh"}`}>
       <section className="section post-page-section">
         <div className="tag-page-topbar">
           <p className="tag-page-back">

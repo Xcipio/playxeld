@@ -8,6 +8,13 @@ type ReplyNotificationPayload = {
   postUrl: string;
 };
 
+type LikeNotificationPayload = {
+  postSlug: string;
+  postTitle: string;
+  postUrl: string;
+  language: "zh" | "en";
+};
+
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
@@ -53,6 +60,57 @@ export async function sendReplyNotification(payload: ReplyNotificationPayload) {
     return { data, error: null };
   } catch (error) {
     console.log("[sendReplyNotification] request.error", error);
+
+    return {
+      data: null,
+      error: error instanceof Error ? error : new Error("Unknown notification error"),
+    };
+  }
+}
+
+export async function sendLikeNotification(payload: LikeNotificationPayload) {
+  console.log("[sendLikeNotification] env", {
+    hasSupabaseUrl: Boolean(supabaseUrl),
+    hasAnonKey: Boolean(anonKey),
+  });
+
+  if (!supabaseUrl || !anonKey) {
+    return {
+      data: null,
+      error: new Error("Missing VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY"),
+    };
+  }
+
+  try {
+    const response = await fetch(`${supabaseUrl}/functions/v1/smooth-processor`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${anonKey}`,
+        apikey: anonKey,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        type: "like",
+        to: "playxeld@gmail.com",
+        ...payload,
+      }),
+    });
+
+    console.log("[sendLikeNotification] response.status", response.status);
+
+    const data = await response.json().catch(() => null);
+    console.log("[sendLikeNotification] response.data", data);
+
+    if (!response.ok) {
+      return {
+        data: null,
+        error: new Error(`smooth-processor returned ${response.status}`),
+      };
+    }
+
+    return { data, error: null };
+  } catch (error) {
+    console.log("[sendLikeNotification] request.error", error);
 
     return {
       data: null,
