@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import ThemeToggle from "../components/ThemeToggle";
 import { useTheme } from "../hooks/useTheme";
 import { fetchPublishedArtworks } from "../lib/artworks";
+import { pickDailyArtworks } from "../lib/dailyArtworkSelection";
 import { fetchPublishedPosts } from "../lib/posts";
 import { Artwork } from "../types/artwork";
 import { Post } from "../types/post";
@@ -43,7 +44,7 @@ function EnglishHomePage() {
 
   const latestPost = posts[0] ?? null;
   const remainingPosts = latestPost ? posts.slice(1, 7) : posts.slice(0, 6);
-  const featuredArtworks = artworks.slice(0, 3);
+  const featuredArtworks = pickDailyArtworks(artworks, 3);
   const heroLeadText = "All we need is";
 
   return (

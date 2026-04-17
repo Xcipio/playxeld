@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import ThemeToggle from "../components/ThemeToggle";
 import { useTheme } from "../hooks/useTheme";
 import { fetchPublishedArtworks } from "../lib/artworks";
+import { pickDailyArtworks } from "../lib/dailyArtworkSelection";
 import { fetchPublishedPosts } from "../lib/posts";
 import { getPostTags, getTagStyle, sortTags } from "../lib/tags";
 import { Artwork } from "../types/artwork";
@@ -46,7 +47,7 @@ function HomePage() {
   }, []);
 
   const latestPost = posts[0] ?? null;
-  const pinnedArtworks = artworks.slice(0, 3);
+  const pinnedArtworks = pickDailyArtworks(artworks, 3);
   const remainingPosts = latestPost ? posts.slice(1) : posts;
   const filteredPosts = selectedTag
     ? remainingPosts.filter((post) => getPostTags(post).includes(selectedTag))
