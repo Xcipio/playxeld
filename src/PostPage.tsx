@@ -299,7 +299,7 @@ function PostPage({ language = "zh" }: { language?: "zh" | "en" }) {
                     : `/post/${alternatePost.slug}`
                 }
               >
-                {alternatePost.language === "en" ? "English Version" : "中文版"}
+                {alternatePost.language === "en" ? "English Ver." : "中文版"}
               </Link>
             )}
             <ThemeToggle

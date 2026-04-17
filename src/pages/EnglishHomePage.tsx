@@ -59,7 +59,7 @@ function EnglishHomePage() {
           </div>
 
           <nav className="hero-nav">
-            <a href="#essays">Essays</a>
+            <a href="#essays">Posts</a>
             <Link to="/art">Arts</Link>
             <a href="#about">About</a>
             <a href="#contact">Contact</a>
