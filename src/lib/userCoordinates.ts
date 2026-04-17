@@ -4,6 +4,7 @@ export type StoredCoordinates = {
 };
 
 export const USER_COORDINATES_STORAGE_KEY = "user-coordinates";
+const USER_COORDINATES_REQUESTED_STORAGE_KEY = "user-coordinates-requested";
 const LEGACY_THEME_COORDINATES_STORAGE_KEY = "theme-coordinates";
 
 let pendingCoordinatesRequest: Promise<StoredCoordinates | null> | null = null;
@@ -66,6 +67,18 @@ export function persistCoordinates(coordinates: StoredCoordinates) {
     USER_COORDINATES_STORAGE_KEY,
     JSON.stringify(coordinates),
   );
+  window.localStorage.setItem(USER_COORDINATES_REQUESTED_STORAGE_KEY, "true");
+}
+
+function markCoordinatesRequestAttempted() {
+  window.localStorage.setItem(USER_COORDINATES_REQUESTED_STORAGE_KEY, "true");
+}
+
+function hasAttemptedCoordinatesRequest() {
+  return (
+    typeof window !== "undefined" &&
+    window.localStorage.getItem(USER_COORDINATES_REQUESTED_STORAGE_KEY) === "true"
+  );
 }
 
 export function requestUserCoordinates(): Promise<StoredCoordinates | null> {
@@ -78,11 +91,17 @@ export function requestUserCoordinates(): Promise<StoredCoordinates | null> {
     return Promise.resolve(existingCoordinates);
   }
 
+  if (hasAttemptedCoordinatesRequest()) {
+    return Promise.resolve(null);
+  }
+
   if (pendingCoordinatesRequest) {
     return pendingCoordinatesRequest;
   }
 
   pendingCoordinatesRequest = new Promise<StoredCoordinates | null>((resolve) => {
+    markCoordinatesRequestAttempted();
+
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const coordinates = {
