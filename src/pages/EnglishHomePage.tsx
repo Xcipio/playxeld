@@ -70,7 +70,7 @@ function EnglishHomePage() {
 
         <div className="hero-grid">
           <div className="hero-main">
-            <p className="hero-kicker">ESSAYS / SYSTEMS / PLAY</p>
+            <p className="hero-kicker">WRITER / GAME CREATOR / PLAYER</p>
             <h1 className="hero-title english-home-title">
               <span className="hero-title-wave english-home-wave" aria-label={heroLeadText}>
                 {heroLeadText.split("").map((character, index) => (
@@ -115,7 +115,7 @@ function EnglishHomePage() {
           <aside className="hero-side english-home-side">
             <p className="hero-side-label">Now</p>
             <h2 className="hero-side-title english-home-side-title">
-              <span className="hero-title-gradient">Literary Maze</span>
+              <span className="hero-title-gradient">Literature Labyrinth</span>
               <span className="hero-title-rest"> now updating </span>
               <span className="hero-title-dots" aria-hidden="true">
                 <span className="hero-title-dot hero-title-dot-one">.</span>

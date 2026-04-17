@@ -1806,6 +1806,7 @@ a {
 }
 
 .post-read-complete-button,
+.post-like-button,
 .post-share-button {
   display: inline-flex;
   align-items: center;
@@ -1829,11 +1830,37 @@ a {
 }
 
 .post-read-complete-button:hover:not(:disabled),
+.post-like-button:hover,
 .post-share-button:hover {
   transform: translateY(-1px);
   border-color: rgba(255, 255, 255, 0.18);
   background: rgba(255, 255, 255, 0.05);
   color: rgba(245, 247, 251, 0.9);
+}
+
+.post-like-button {
+  min-width: 52px;
+  padding: 10px 14px;
+  gap: 6px;
+  font-size: 14px;
+  line-height: 1;
+  color: rgba(245, 247, 251, 0.3);
+}
+
+.post-like-button span:last-child {
+  position: relative;
+  top: -0.08em;
+  font-size: 1.38em;
+  line-height: 1;
+}
+
+.post-like-button.is-liked {
+  border-color: rgba(255, 120, 138, 0.3);
+  background:
+    radial-gradient(circle at 28% 26%, rgba(255, 255, 255, 0.16), transparent 38%),
+    rgba(255, 120, 138, 0.1);
+  color: #ff6d85;
+  box-shadow: 0 10px 24px rgba(255, 109, 133, 0.12);
 }
 
 .post-read-complete-button.is-complete {
@@ -2448,10 +2475,21 @@ a {
   }
 
   .post-read-complete-button,
+  .post-like-button,
   .post-share-button {
     min-width: 112px;
     padding: 9px 14px;
     font-size: 13px;
+  }
+
+  .post-like-button {
+    min-width: 48px;
+    font-size: 13px;
+    padding: 9px 12px;
+  }
+
+  .post-like-button span:last-child {
+    font-size: 1.3em;
   }
 
   .post-content h1 {
@@ -3268,6 +3306,7 @@ body[data-theme="light"] .post-read-complete-button {
 }
 
 body[data-theme="light"] .post-read-complete-button:hover:not(:disabled),
+body[data-theme="light"] .post-like-button:hover,
 body[data-theme="light"] .post-share-button:hover {
   border-color: rgba(0, 0, 0, 0.14);
   background: rgba(0, 0, 0, 0.05);
@@ -3281,6 +3320,21 @@ body[data-theme="light"] .post-read-complete-button.is-complete {
     rgba(111, 135, 172, 0.08);
   color: #48648e;
   box-shadow: 0 10px 22px rgba(111, 135, 172, 0.08);
+}
+
+body[data-theme="light"] .post-like-button {
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(0, 0, 0, 0.03);
+  color: rgba(143, 62, 76, 0.34);
+}
+
+body[data-theme="light"] .post-like-button.is-liked {
+  border-color: rgba(212, 90, 112, 0.22);
+  background:
+    radial-gradient(circle at 28% 26%, rgba(255, 255, 255, 0.38), transparent 38%),
+    rgba(212, 90, 112, 0.08);
+  color: #d24b68;
+  box-shadow: 0 10px 22px rgba(212, 90, 112, 0.08);
 }
 
 body[data-theme="light"] .post-share-button {

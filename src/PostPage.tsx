@@ -12,6 +12,7 @@ import { Post } from "./types/post";
 
 const PostContent = lazy(() => import("./components/PostContent"));
 const READ_COMPLETE_STORAGE_KEY = "post-read-complete";
+const POST_LIKED_STORAGE_KEY = "post-liked";
 
 function PostPage({ language = "zh" }: { language?: "zh" | "en" }) {
   const { slug } = useParams();
@@ -19,6 +20,7 @@ function PostPage({ language = "zh" }: { language?: "zh" | "en" }) {
   const [alternatePost, setAlternatePost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
   const [hasCompletedReading, setHasCompletedReading] = useState(false);
+  const [hasLikedPost, setHasLikedPost] = useState(false);
   const [shareFeedback, setShareFeedback] = useState<string | null>(null);
   const { theme, toggleTheme } = useTheme();
   const isEnglish = language === "en";
@@ -32,6 +34,8 @@ function PostPage({ language = "zh" }: { language?: "zh" | "en" }) {
     loadingContent: isEnglish ? "Loading content..." : "内容加载中...",
     readDone: isEnglish ? "Marked as read" : "已读完",
     readAction: isEnglish ? "Mark as read" : "读完了",
+    likeAction: isEnglish ? "Like" : "喜欢",
+    likedAction: isEnglish ? "Liked" : "喜欢",
     shareArticle: isEnglish ? "Share article" : "分享文章",
   };
 
@@ -81,6 +85,10 @@ function PostPage({ language = "zh" }: { language?: "zh" | "en" }) {
     const stored = window.localStorage.getItem(READ_COMPLETE_STORAGE_KEY);
     const completedMap = stored ? (JSON.parse(stored) as Record<string, boolean>) : {};
     setHasCompletedReading(Boolean(completedMap[slug]));
+
+    const likedStored = window.localStorage.getItem(POST_LIKED_STORAGE_KEY);
+    const likedMap = likedStored ? (JSON.parse(likedStored) as Record<string, boolean>) : {};
+    setHasLikedPost(Boolean(likedMap[slug]));
   }, [slug]);
 
   if (loading) {
@@ -123,6 +131,20 @@ function PostPage({ language = "zh" }: { language?: "zh" | "en" }) {
     completedMap[slug] = true;
     window.localStorage.setItem(READ_COMPLETE_STORAGE_KEY, JSON.stringify(completedMap));
     setHasCompletedReading(true);
+  };
+
+  const handleToggleLike = () => {
+    if (!slug) {
+      return;
+    }
+
+    const likedStored = window.localStorage.getItem(POST_LIKED_STORAGE_KEY);
+    const likedMap = likedStored ? (JSON.parse(likedStored) as Record<string, boolean>) : {};
+    const nextLikedState = !likedMap[slug];
+
+    likedMap[slug] = nextLikedState;
+    window.localStorage.setItem(POST_LIKED_STORAGE_KEY, JSON.stringify(likedMap));
+    setHasLikedPost(nextLikedState);
   };
 
   const handleShareArticle = async () => {
@@ -230,6 +252,17 @@ function PostPage({ language = "zh" }: { language?: "zh" | "en" }) {
                 disabled={hasCompletedReading}
               >
                 {hasCompletedReading ? uiText.readDone : uiText.readAction}
+              </button>
+
+              <button
+                className={`post-like-button ${hasLikedPost ? "is-liked" : ""}`}
+                type="button"
+                onClick={handleToggleLike}
+                aria-label={hasLikedPost ? "Remove from favorites" : "Add to favorites"}
+                aria-pressed={hasLikedPost}
+              >
+                <span>{hasLikedPost ? uiText.likedAction : uiText.likeAction}</span>
+                <span aria-hidden="true">❤</span>
               </button>
 
               <button
