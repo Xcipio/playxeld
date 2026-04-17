@@ -1,18 +1,17 @@
 import { useEffect, useState } from "react";
 import { getAutoTheme, getNextThemeTransition } from "../lib/solarTheme";
+import {
+  readStoredCoordinates,
+  requestUserCoordinates,
+  StoredCoordinates,
+} from "../lib/userCoordinates";
 
 export type Theme = "dark" | "light";
 
 const THEME_STORAGE_KEY = "theme";
 const THEME_MODE_STORAGE_KEY = "theme-mode";
 const THEME_OVERRIDE_UNTIL_STORAGE_KEY = "theme-override-until";
-const THEME_COORDS_STORAGE_KEY = "theme-coordinates";
-
 type ThemeMode = "auto" | "manual";
-type StoredCoordinates = {
-  latitude: number;
-  longitude: number;
-};
 
 function resolveInitialTheme(): Theme {
   if (typeof window === "undefined") {
@@ -27,28 +26,6 @@ function resolveInitialTheme(): Theme {
   }
 
   return "dark";
-}
-
-function readStoredCoordinates(): StoredCoordinates | null {
-  const raw = window.localStorage.getItem(THEME_COORDS_STORAGE_KEY);
-  if (!raw) {
-    return null;
-  }
-
-  try {
-    const parsed = JSON.parse(raw) as StoredCoordinates;
-
-    if (
-      typeof parsed.latitude === "number" &&
-      typeof parsed.longitude === "number"
-    ) {
-      return parsed;
-    }
-  } catch {
-    return null;
-  }
-
-  return null;
 }
 
 export function useTheme() {
@@ -96,32 +73,22 @@ export function useTheme() {
   }, [coordinates]);
 
   useEffect(() => {
-    if (coordinates || !navigator.geolocation) {
+    if (coordinates) {
       return;
     }
 
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const nextCoordinates = {
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-        };
+    const syncCoordinates = async () => {
+      const nextCoordinates = await requestUserCoordinates();
 
-        window.localStorage.setItem(
-          THEME_COORDS_STORAGE_KEY,
-          JSON.stringify(nextCoordinates),
-        );
+      if (nextCoordinates) {
         setCoordinates(nextCoordinates);
-      },
-      () => {
-        setTheme(getAutoTheme(new Date(), null));
-      },
-      {
-        enableHighAccuracy: false,
-        maximumAge: 12 * 60 * 60 * 1000,
-        timeout: 8000,
-      },
-    );
+        return;
+      }
+
+      setTheme(getAutoTheme(new Date(), null));
+    };
+
+    void syncCoordinates();
   }, [coordinates]);
 
   const toggleTheme = () => {

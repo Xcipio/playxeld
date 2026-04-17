@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import ThemeToggle from "../components/ThemeToggle";
+import WeatherBadge from "../components/WeatherBadge";
 import { useTheme } from "../hooks/useTheme";
 import { fetchPublishedArtworks } from "../lib/artworks";
 import { pickDailyArtworks } from "../lib/dailyArtworkSelection";
@@ -51,12 +52,15 @@ function EnglishHomePage() {
     <div className="page">
       <header className="hero english-home">
         <div className="hero-top">
-          <div className="hero-brand" aria-label="Playxeld">
-            {"PLAYXELD".split("").map((letter, index) => (
-              <span key={`${letter}-${index}`} className="hero-brand-letter">
-                {letter}
-              </span>
-            ))}
+          <div className="hero-brand-group">
+            <div className="hero-brand" aria-label="Playxeld">
+              {"PLAYXELD".split("").map((letter, index) => (
+                <span key={`${letter}-${index}`} className="hero-brand-letter">
+                  {letter}
+                </span>
+              ))}
+            </div>
+            <WeatherBadge locale="en" />
           </div>
 
           <nav className="hero-nav">
