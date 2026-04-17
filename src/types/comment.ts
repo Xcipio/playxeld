@@ -11,6 +11,7 @@ export type Comment = {
 
 export type CommentInsert = {
   post_slug: string;
+  device_id?: string | null;
   author_name: string;
   author_email?: string | null;
   content: string;

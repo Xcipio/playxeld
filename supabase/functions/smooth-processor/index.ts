@@ -4,7 +4,7 @@ const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 
 type BasePayload = {
   to: string;
-  type?: "reply" | "like";
+  type?: "reply" | "like" | "comment";
 };
 
 type ReplyPayload = BasePayload & {
@@ -20,6 +20,16 @@ type LikePayload = BasePayload & {
   type: "like";
   postTitle: string;
   postSlug: string;
+  postUrl: string;
+  language?: "zh" | "en";
+};
+
+type CommentPayload = BasePayload & {
+  type: "comment";
+  postTitle: string;
+  postSlug: string;
+  commentAuthorName: string;
+  commentContent: string;
   postUrl: string;
   language?: "zh" | "en";
 };
@@ -50,7 +60,7 @@ Deno.serve(async (req: Request) => {
       return jsonResponse({ error: "Missing RESEND_API_KEY" }, 500);
     }
 
-    const payload = (await req.json()) as ReplyPayload | LikePayload;
+    const payload = (await req.json()) as ReplyPayload | LikePayload | CommentPayload;
 
     if (!payload?.to || !payload?.postTitle || !payload?.postSlug) {
       return jsonResponse({ error: "Missing required fields" }, 400);
@@ -72,6 +82,25 @@ Deno.serve(async (req: Request) => {
         `文章：${payload.postTitle}`,
         "",
         "有人点击了喜欢。",
+        "",
+        "查看页面：",
+        payload.postUrl,
+      ].join("\n");
+    } else if (payload.type === "comment") {
+      if (!payload.postUrl || !payload.commentAuthorName || !payload.commentContent) {
+        return jsonResponse({ error: "Missing comment notification fields" }, 400);
+      }
+
+      subject = payload.language === "en"
+        ? "[Playxeld] Someone commented on your article"
+        : "[Playxeld] 有人评论了你的文章";
+
+      text = [
+        `文章：${payload.postTitle}`,
+        `作者：${payload.commentAuthorName}`,
+        "",
+        "评论内容：",
+        payload.commentContent,
         "",
         "查看页面：",
         payload.postUrl,

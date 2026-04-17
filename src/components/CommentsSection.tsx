@@ -1,6 +1,14 @@
 import { FormEvent, useEffect, useState } from "react";
-import { createComment, fetchApprovedComments } from "../lib/comments";
-import { sendReplyNotification } from "../lib/notifications";
+import {
+  createComment,
+  deleteOwnComment,
+  fetchApprovedComments,
+} from "../lib/comments";
+import { getClientDeviceId } from "../lib/clientIdentity";
+import {
+  sendCommentNotification,
+  sendReplyNotification,
+} from "../lib/notifications";
 import { Comment } from "../types/comment";
 
 type CommentsSectionProps = {
@@ -16,6 +24,26 @@ type CommentNode = Comment & {
 const COMMENT_SUBMIT_COOLDOWN_MS = 30_000;
 const MIN_COMMENT_FILL_TIME_MS = 2_500;
 const COMMENT_COOLDOWN_KEY = "comment-submit-last-at";
+const OWNED_COMMENTS_STORAGE_KEY = "owned-comments";
+
+function readOwnedCommentsMap() {
+  const stored = window.localStorage.getItem(OWNED_COMMENTS_STORAGE_KEY);
+  return stored ? (JSON.parse(stored) as Record<string, number[]>) : {};
+}
+
+function saveOwnedCommentId(postSlug: string, commentId: number) {
+  const nextMap = readOwnedCommentsMap();
+  const existingIds = new Set(nextMap[postSlug] ?? []);
+  existingIds.add(commentId);
+  nextMap[postSlug] = Array.from(existingIds);
+  window.localStorage.setItem(OWNED_COMMENTS_STORAGE_KEY, JSON.stringify(nextMap));
+}
+
+function removeOwnedCommentId(postSlug: string, commentId: number) {
+  const nextMap = readOwnedCommentsMap();
+  nextMap[postSlug] = (nextMap[postSlug] ?? []).filter((id) => id !== commentId);
+  window.localStorage.setItem(OWNED_COMMENTS_STORAGE_KEY, JSON.stringify(nextMap));
+}
 
 function buildCommentTree(comments: Comment[], parentId: number | null = null): CommentNode[] {
   return comments
@@ -51,16 +79,23 @@ function CommentItem({
   depth,
   rootComments,
   onReply,
+  onDelete,
+  deletingCommentId,
+  ownedCommentIds,
   language,
 }: {
   comment: CommentNode;
   depth: number;
   rootComments: CommentNode[];
   onReply: (comment: Comment) => void;
+  onDelete: (comment: Comment) => void;
+  deletingCommentId: number | null;
+  ownedCommentIds: Set<number>;
   language: "zh" | "en";
 }) {
   const nestingLevel = depth > 1 ? "comment-replies-nested" : "comment-replies-root";
   const replyTarget = findCommentById(rootComments, comment.parent_id);
+  const isOwnComment = ownedCommentIds.has(comment.id);
 
   return (
     <article className={depth === 0 ? "comment-card" : "comment-reply-card"}>
@@ -89,6 +124,22 @@ function CommentItem({
         >
           {language === "en" ? "Reply" : "回复"}
         </button>
+        {isOwnComment && (
+          <button
+            className="comment-reply-cancel"
+            type="button"
+            onClick={() => onDelete(comment)}
+            disabled={deletingCommentId === comment.id}
+          >
+            {deletingCommentId === comment.id
+              ? language === "en"
+                ? "Deleting..."
+                : "删除中..."
+              : language === "en"
+                ? "Delete"
+                : "删除"}
+          </button>
+        )}
       </div>
 
       {comment.replies.length > 0 && (
@@ -103,6 +154,9 @@ function CommentItem({
               depth={Math.min(depth + 1, 2)}
               rootComments={rootComments}
               onReply={onReply}
+              onDelete={onDelete}
+              deletingCommentId={deletingCommentId}
+              ownedCommentIds={ownedCommentIds}
               language={language}
             />
           ))}
@@ -126,7 +180,10 @@ function CommentsSection({
   const [feedback, setFeedback] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [replyTarget, setReplyTarget] = useState<Comment | null>(null);
+  const [deletingCommentId, setDeletingCommentId] = useState<number | null>(null);
   const [formMountedAt] = useState(() => Date.now());
+  const [currentDeviceId] = useState(() => getClientDeviceId());
+  const [ownedCommentIds, setOwnedCommentIds] = useState<Set<number>>(() => new Set());
   const copy = {
     commentsTitle: language === "en" ? "Comments" : "评论区",
     intro:
@@ -170,23 +227,42 @@ function CommentsSection({
     sending: language === "en" ? "Sending..." : "发送中...",
     postReply: language === "en" ? "Post reply" : "发布回复",
     postComment: language === "en" ? "Post comment" : "写评论",
+    deleteConfirm:
+      language === "en"
+        ? "Delete this comment?"
+        : "确定删除这条评论吗？",
+    deleteFailed:
+      language === "en"
+        ? "Could not delete this comment right now."
+        : "暂时无法删除这条评论。",
+    deleteSuccess:
+      language === "en"
+        ? "Comment deleted."
+        : "评论已删除。",
+  };
+
+  const refreshComments = async () => {
+    const { data, error } = await fetchApprovedComments(postSlug);
+
+    if (error) {
+      console.error("Failed to fetch comments:", error);
+      setErrorMessage(copy.loadError);
+      return;
+    }
+
+    setComments(buildCommentTree(data ?? []));
+    setErrorMessage(null);
   };
 
   useEffect(() => {
     const loadComments = async () => {
-      const { data, error } = await fetchApprovedComments(postSlug);
-
-      if (error) {
-        console.error("Failed to fetch comments:", error);
-        setErrorMessage(copy.loadError);
-      } else {
-        setComments(buildCommentTree(data ?? []));
-      }
-
+      const ownedMap = readOwnedCommentsMap();
+      setOwnedCommentIds(new Set(ownedMap[postSlug] ?? []));
+      await refreshComments();
       setLoading(false);
     };
 
-    loadComments();
+    void loadComments();
   }, [postSlug]);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -224,8 +300,9 @@ function CommentsSection({
     setSubmitting(true);
     setFeedback(null);
 
-    const { error } = await createComment({
+    const { data, error } = await createComment({
       post_slug: postSlug,
+      device_id: currentDeviceId,
       author_name: authorName.trim(),
       content: content.trim(),
       parent_id: replyTarget?.id ?? null,
@@ -246,12 +323,17 @@ function CommentsSection({
     setFeedback(replyTarget ? copy.replyPosted : copy.commentPosted);
     setSubmitting(false);
 
-    if (replyTarget) {
-      const postUrl =
-        language === "en"
-          ? `${window.location.origin}/en/post/${postSlug}`
-          : `${window.location.origin}/post/${postSlug}`;
+    if (data?.id) {
+      saveOwnedCommentId(postSlug, data.id);
+      setOwnedCommentIds((currentIds) => new Set([...currentIds, data.id]));
+    }
 
+    const postUrl =
+      language === "en"
+        ? `${window.location.origin}/en/post/${postSlug}`
+        : `${window.location.origin}/post/${postSlug}`;
+
+    if (replyTarget) {
       const { error: notifyError } = await sendReplyNotification({
         postSlug,
         postTitle,
@@ -265,16 +347,54 @@ function CommentsSection({
       if (notifyError) {
         console.error("Failed to send reply notification:", notifyError);
       }
+    } else {
+      const { error: notifyError } = await sendCommentNotification({
+        postSlug,
+        postTitle,
+        commentAuthorName: authorName.trim(),
+        commentContent: content.trim(),
+        postUrl,
+        language,
+      });
+
+      if (notifyError) {
+        console.error("Failed to send comment notification:", notifyError);
+      }
     }
 
-    const { data, error: refreshError } = await fetchApprovedComments(postSlug);
+    await refreshComments();
+  };
 
-    if (refreshError) {
-      console.error("Failed to refresh comments:", refreshError);
+  const handleDelete = async (comment: Comment) => {
+    if (!window.confirm(copy.deleteConfirm)) {
       return;
     }
 
-    setComments(buildCommentTree(data ?? []));
+    setDeletingCommentId(comment.id);
+    setFeedback(null);
+
+    const { error } = await deleteOwnComment(comment.id);
+
+    if (error) {
+      console.error("Failed to delete comment:", error);
+      setFeedback(copy.deleteFailed);
+      setDeletingCommentId(null);
+      return;
+    }
+
+    if (replyTarget?.id === comment.id) {
+      setReplyTarget(null);
+    }
+
+    removeOwnedCommentId(postSlug, comment.id);
+    setOwnedCommentIds((currentIds) => {
+      const nextIds = new Set(currentIds);
+      nextIds.delete(comment.id);
+      return nextIds;
+    });
+    setFeedback(copy.deleteSuccess);
+    setDeletingCommentId(null);
+    await refreshComments();
   };
 
   return (
@@ -301,9 +421,14 @@ function CommentsSection({
                 depth={0}
                 rootComments={comments}
                 language={language}
+                ownedCommentIds={ownedCommentIds}
+                deletingCommentId={deletingCommentId}
                 onReply={(targetComment) => {
                   setReplyTarget(targetComment);
                   setFeedback(null);
+                }}
+                onDelete={(targetComment) => {
+                  void handleDelete(targetComment);
                 }}
               />
             ))

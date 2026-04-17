@@ -1839,8 +1839,8 @@ a {
 }
 
 .post-like-button {
-  min-width: 52px;
-  padding: 10px 14px;
+  min-width: 120px;
+  padding: 10px 16px;
   gap: 6px;
   font-size: 14px;
   line-height: 1;
@@ -1865,6 +1865,14 @@ a {
     rgba(255, 120, 138, 0.1);
   color: #ff6d85;
   box-shadow: 0 10px 24px rgba(255, 109, 133, 0.12);
+}
+
+.post-like-count {
+  min-width: 1.2em;
+  font-size: 12px;
+  line-height: 1;
+  color: inherit;
+  opacity: 0.74;
 }
 
 .post-read-complete-button.is-complete {
@@ -2139,6 +2147,10 @@ a {
 
 .comment-actions {
   margin-top: 14px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 18px;
 }
 
 .comment-reply-button,
@@ -2566,9 +2578,9 @@ a {
   }
 
   .post-like-button {
-    min-width: 48px;
+    min-width: 112px;
     font-size: 13px;
-    padding: 9px 12px;
+    padding: 9px 14px;
   }
 
   .post-like-button span:last-child {

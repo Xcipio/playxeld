@@ -5,6 +5,12 @@ import ThemeToggle from "./components/ThemeToggle";
 import { useTheme } from "./hooks/useTheme";
 import { sendLikeNotification } from "./lib/notifications";
 import {
+  activatePostLike,
+  deactivatePostLike,
+  fetchPostLikeCount,
+  fetchPostLikeState,
+} from "./lib/postLikes";
+import {
   fetchPublishedPostBySlug,
   fetchPublishedPostTranslation,
 } from "./lib/posts";
@@ -13,7 +19,6 @@ import { Post } from "./types/post";
 
 const PostContent = lazy(() => import("./components/PostContent"));
 const READ_COMPLETE_STORAGE_KEY = "post-read-complete";
-const POST_LIKED_STORAGE_KEY = "post-liked";
 
 function PostPage({ language = "zh" }: { language?: "zh" | "en" }) {
   const { slug } = useParams();
@@ -22,6 +27,8 @@ function PostPage({ language = "zh" }: { language?: "zh" | "en" }) {
   const [loading, setLoading] = useState(true);
   const [hasCompletedReading, setHasCompletedReading] = useState(false);
   const [hasLikedPost, setHasLikedPost] = useState(false);
+  const [likeCount, setLikeCount] = useState<number | null>(null);
+  const [likeUpdating, setLikeUpdating] = useState(false);
   const [shareFeedback, setShareFeedback] = useState<string | null>(null);
   const { theme, toggleTheme } = useTheme();
   const isEnglish = language === "en";
@@ -78,18 +85,40 @@ function PostPage({ language = "zh" }: { language?: "zh" | "en" }) {
   }, [slug, language]);
 
   useEffect(() => {
-    if (!slug) {
-      setHasCompletedReading(false);
-      return;
-    }
+    const syncInteractionState = async () => {
+      if (!slug) {
+        setHasCompletedReading(false);
+        setHasLikedPost(false);
+        setLikeCount(null);
+        return;
+      }
 
-    const stored = window.localStorage.getItem(READ_COMPLETE_STORAGE_KEY);
-    const completedMap = stored ? (JSON.parse(stored) as Record<string, boolean>) : {};
-    setHasCompletedReading(Boolean(completedMap[slug]));
+      const stored = window.localStorage.getItem(READ_COMPLETE_STORAGE_KEY);
+      const completedMap = stored ? (JSON.parse(stored) as Record<string, boolean>) : {};
+      setHasCompletedReading(Boolean(completedMap[slug]));
 
-    const likedStored = window.localStorage.getItem(POST_LIKED_STORAGE_KEY);
-    const likedMap = likedStored ? (JSON.parse(likedStored) as Record<string, boolean>) : {};
-    setHasLikedPost(Boolean(likedMap[slug]));
+      const [
+        { data: likeState, error: likeStateError },
+        { count, error: likeCountError },
+      ] = await Promise.all([
+        fetchPostLikeState(slug),
+        fetchPostLikeCount(slug),
+      ]);
+
+      if (likeStateError) {
+        console.error("Failed to fetch like state:", likeStateError);
+      } else {
+        setHasLikedPost(Boolean(likeState?.is_active));
+      }
+
+      if (likeCountError) {
+        console.error("Failed to fetch like count:", likeCountError);
+      } else {
+        setLikeCount(count ?? 0);
+      }
+    };
+
+    void syncInteractionState();
   }, [slug]);
 
   if (loading) {
@@ -134,18 +163,42 @@ function PostPage({ language = "zh" }: { language?: "zh" | "en" }) {
     setHasCompletedReading(true);
   };
 
-  const handleToggleLike = () => {
+  const handleToggleLike = async () => {
     if (!slug || !post) {
       return;
     }
 
-    const likedStored = window.localStorage.getItem(POST_LIKED_STORAGE_KEY);
-    const likedMap = likedStored ? (JSON.parse(likedStored) as Record<string, boolean>) : {};
-    const nextLikedState = !likedMap[slug];
+    const nextLikedState = !hasLikedPost;
+    const previousLikedState = hasLikedPost;
+    const previousLikeCount = likeCount ?? 0;
 
-    likedMap[slug] = nextLikedState;
-    window.localStorage.setItem(POST_LIKED_STORAGE_KEY, JSON.stringify(likedMap));
     setHasLikedPost(nextLikedState);
+    setLikeCount(Math.max(0, previousLikeCount + (nextLikedState ? 1 : -1)));
+    setLikeUpdating(true);
+
+    if (nextLikedState) {
+      const { error } = await activatePostLike(slug);
+
+      if (error) {
+        console.error("Failed to activate like:", error);
+        setHasLikedPost(previousLikedState);
+        setLikeCount(previousLikeCount);
+        setLikeUpdating(false);
+        return;
+      }
+    } else {
+      const { error } = await deactivatePostLike(slug);
+
+      if (error) {
+        console.error("Failed to deactivate like:", error);
+        setHasLikedPost(previousLikedState);
+        setLikeCount(previousLikeCount);
+        setLikeUpdating(false);
+        return;
+      }
+    }
+
+    setLikeUpdating(false);
 
     if (nextLikedState) {
       const postUrl =
@@ -276,12 +329,18 @@ function PostPage({ language = "zh" }: { language?: "zh" | "en" }) {
               <button
                 className={`post-like-button ${hasLikedPost ? "is-liked" : ""}`}
                 type="button"
-                onClick={handleToggleLike}
+                onClick={() => void handleToggleLike()}
                 aria-label={hasLikedPost ? "Remove from favorites" : "Add to favorites"}
                 aria-pressed={hasLikedPost}
+                disabled={likeUpdating}
               >
                 <span>{hasLikedPost ? uiText.likedAction : uiText.likeAction}</span>
                 <span aria-hidden="true">❤</span>
+                {likeCount !== null && (
+                  <span className="post-like-count" aria-hidden="true">
+                    {likeCount}
+                  </span>
+                )}
               </button>
 
               <button
