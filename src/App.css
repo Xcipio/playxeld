@@ -1893,6 +1893,44 @@ a {
   color: rgba(245, 247, 251, 0.56);
 }
 
+.post-mobile-back-to-top {
+  position: fixed;
+  right: 18px;
+  bottom: 22px;
+  z-index: 40;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  background: rgba(5, 7, 13, 0.34);
+  color: rgba(245, 247, 251, 0.82);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease,
+    background 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.post-mobile-back-to-top.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.post-mobile-back-to-top:hover {
+  background: rgba(5, 7, 13, 0.46);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
 .post-page-en .post-detail-title {
   font-family:
     "Baskerville", "Iowan Old Style", "Palatino Linotype", "Book Antiqua",
@@ -2595,6 +2633,10 @@ a {
 
   .post-like-button.is-liked .post-like-icon {
     font-size: 1.18em;
+  }
+
+  .post-mobile-back-to-top {
+    display: inline-flex;
   }
 
   .post-content h1 {
@@ -3459,6 +3501,18 @@ body[data-theme="light"] .post-share-button {
 
 body[data-theme="light"] .post-share-feedback {
   color: rgba(5, 7, 13, 0.48);
+}
+
+body[data-theme="light"] .post-mobile-back-to-top {
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.72);
+  color: rgba(5, 7, 13, 0.76);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+}
+
+body[data-theme="light"] .post-mobile-back-to-top:hover {
+  background: rgba(255, 255, 255, 0.88);
+  border-color: rgba(0, 0, 0, 0.12);
 }
 
 body[data-theme="light"] .comments-state,

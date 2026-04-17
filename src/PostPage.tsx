@@ -30,6 +30,7 @@ function PostPage({ language = "zh" }: { language?: "zh" | "en" }) {
   const [likeCount, setLikeCount] = useState<number | null>(null);
   const [likeUpdating, setLikeUpdating] = useState(false);
   const [shareFeedback, setShareFeedback] = useState<string | null>(null);
+  const [showMobileBackToTop, setShowMobileBackToTop] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const isEnglish = language === "en";
   const uiText = {
@@ -45,6 +46,7 @@ function PostPage({ language = "zh" }: { language?: "zh" | "en" }) {
     likeAction: isEnglish ? "Like" : "喜欢",
     likedAction: isEnglish ? "Liked" : "已喜欢",
     shareArticle: isEnglish ? "Share article" : "分享文章",
+    backToTop: isEnglish ? "Top" : "顶部",
   };
 
   useEffect(() => {
@@ -120,6 +122,31 @@ function PostPage({ language = "zh" }: { language?: "zh" | "en" }) {
 
     void syncInteractionState();
   }, [slug]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const isMobileViewport = window.innerWidth <= 768;
+      if (!isMobileViewport) {
+        setShowMobileBackToTop(false);
+        return;
+      }
+
+      const scrollPosition = window.scrollY + window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+      const isNearBottom = documentHeight - scrollPosition <= 140;
+
+      setShowMobileBackToTop(isNearBottom);
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+    };
+  }, []);
 
   if (loading) {
     return (
@@ -252,6 +279,13 @@ function PostPage({ language = "zh" }: { language?: "zh" | "en" }) {
     }
   };
 
+  const handleBackToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
   return (
     <div className={`page post-page ${isEnglish ? "post-page-en" : "post-page-zh"}`}>
       <section className="section post-page-section">
@@ -353,6 +387,15 @@ function PostPage({ language = "zh" }: { language?: "zh" | "en" }) {
 
         <CommentsSection postSlug={post.slug} postTitle={post.title} language={language} />
       </section>
+
+      <button
+        className={`post-mobile-back-to-top ${showMobileBackToTop ? "is-visible" : ""}`}
+        type="button"
+        onClick={handleBackToTop}
+        aria-label={uiText.backToTop}
+      >
+        <span aria-hidden="true">↑</span>
+      </button>
     </div>
   );
 }
