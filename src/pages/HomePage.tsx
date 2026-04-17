@@ -312,7 +312,7 @@ function HomePage() {
 
       <section id="posts" className="section posts-section">
         <div className="section-header">
-          <h2 className="section-title posts-section-title">Recent writing</h2>
+          <h2 className="section-title posts-section-title">近期发布</h2>
           <div className="section-meta">{filteredPosts.length} posts</div>
         </div>
 
