@@ -88,9 +88,7 @@ function ArtworkTagPage() {
           )}
         </div>
 
-        {loading ? (
-          <p>Loading...</p>
-        ) : filteredArtworks.length === 0 ? (
+        {loading ? null : filteredArtworks.length === 0 ? (
           <p className="tag-page-empty">这个标签下暂时还没有图片作品。</p>
         ) : (
           <div className="art-grid">

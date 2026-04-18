@@ -104,9 +104,7 @@ function TagPage() {
           )}
         </div>
 
-        {loading ? (
-          <p>Loading...</p>
-        ) : filteredPosts.length === 0 ? (
+        {loading ? null : filteredPosts.length === 0 ? (
           <p className="tag-page-empty">这个标签下暂时还没有文章。</p>
         ) : (
           <>
