@@ -6,6 +6,8 @@ type WeatherBadgeProps = {
   locale?: "zh" | "en";
 };
 
+const WEATHER_ANIMATION_STORAGE_KEY = "playxeld-weather-animation-enabled";
+
 const WEATHER_LABELS: Record<WeatherVisual, { zh: string; en: string }> = {
   "big-sun": { zh: "大晴天", en: "Bright sun" },
   sunny: { zh: "晴天", en: "Sunny" },
@@ -21,9 +23,21 @@ const WEATHER_LABELS: Record<WeatherVisual, { zh: string; en: string }> = {
   "heavy-snow": { zh: "大雪", en: "Heavy snow" },
 };
 
-function Cloud({ x = 16, y = 19, fill = "#d8e7ff", opacity = 1 }) {
+function Cloud({
+  x = 16,
+  y = 19,
+  fill = "#d8e7ff",
+  opacity = 1,
+  className = "",
+}: {
+  x?: number;
+  y?: number;
+  fill?: string;
+  opacity?: number;
+  className?: string;
+}) {
   return (
-    <g opacity={opacity}>
+    <g className={`weather-cloud ${className}`.trim()} opacity={opacity}>
       <circle cx={x} cy={y + 1} r="6" fill={fill} />
       <circle cx={x + 7} cy={y - 2} r="8" fill={fill} />
       <circle cx={x + 15} cy={y + 1} r="6.5" fill={fill} />
@@ -38,7 +52,7 @@ function Sun({ big = false }) {
   const rays = big ? 10 : 8;
 
   return (
-    <g>
+    <g className="weather-sun" style={{ transformOrigin: `${center}px ${center}px` }}>
       {Array.from({ length: rays }).map((_, index) => {
         const angle = (Math.PI * 2 * index) / rays;
         const inner = radius + 4;
@@ -72,10 +86,11 @@ function Rain({ heavy = false }) {
   const color = heavy ? "#55a7ff" : "#6ec0ff";
 
   return (
-    <g>
+    <g className="weather-rain">
       {drops.map((x, index) => (
         <line
           key={`rain-${x}`}
+          className="weather-rain-drop"
           x1={x}
           y1={30 + index}
           x2={x - 2.8}
@@ -83,6 +98,7 @@ function Rain({ heavy = false }) {
           stroke={color}
           strokeWidth="2.4"
           strokeLinecap="round"
+          style={{ animationDelay: `${index * 0.18}s` }}
         />
       ))}
     </g>
@@ -93,11 +109,15 @@ function Snow({ heavy = false }) {
   const flakes = heavy ? [13, 20, 27] : [16, 24];
 
   return (
-    <g stroke="#edf6ff" strokeWidth="1.8" strokeLinecap="round">
+    <g className="weather-snow" stroke="#edf6ff" strokeWidth="1.8" strokeLinecap="round">
       {flakes.map((x, index) => {
         const y = 31 + index;
         return (
-          <g key={`snow-${x}`}>
+          <g
+            key={`snow-${x}`}
+            className="weather-snowflake"
+            style={{ animationDelay: `${index * 0.22}s` }}
+          >
             <line x1={x - 2.8} y1={y} x2={x + 2.8} y2={y} />
             <line x1={x} y1={y - 2.8} x2={x} y2={y + 2.8} />
             <line x1={x - 2.1} y1={y - 2.1} x2={x + 2.1} y2={y + 2.1} />
@@ -111,10 +131,18 @@ function Snow({ heavy = false }) {
 
 function Wind() {
   return (
-    <g fill="none" stroke="#8ec5ff" strokeWidth="2.3" strokeLinecap="round">
-      <path d="M8 18h18c4.2 0 4.8-6 0.8-6 0 0-2.1 0-3 1.4" />
-      <path d="M8 24h24c4.5 0 5.6 6 0.6 6-1.9 0-3.2-0.9-4.2-2.2" />
-      <path d="M8 30h12c4.2 0 4.8 6 0.8 6 0 0-2.1 0-3-1.4" />
+    <g className="weather-wind" fill="none" stroke="#8ec5ff" strokeWidth="2.3" strokeLinecap="round">
+      <path className="weather-wind-stroke" d="M8 18h18c4.2 0 4.8-6 0.8-6 0 0-2.1 0-3 1.4" />
+      <path
+        className="weather-wind-stroke"
+        style={{ animationDelay: "0.18s" }}
+        d="M8 24h24c4.5 0 5.6 6 0.6 6-1.9 0-3.2-0.9-4.2-2.2"
+      />
+      <path
+        className="weather-wind-stroke"
+        style={{ animationDelay: "0.36s" }}
+        d="M8 30h12c4.2 0 4.8 6 0.8 6 0 0-2.1 0-3-1.4"
+      />
     </g>
   );
 }
@@ -122,6 +150,7 @@ function Wind() {
 function LightningBolt() {
   return (
     <path
+      className="weather-lightning"
       d="M22 23h6l-4.2 7.2h4.4L19 42l2.8-8h-4.3L22 23Z"
       fill="#ffd45c"
       stroke="#f2a900"
@@ -150,7 +179,13 @@ function WeatherIcon({ visual }: { visual: WeatherVisual }) {
       return (
         <>
           <Cloud fill="#ccdaef" />
-          <Cloud x={10} y={23} fill="#b8c9e3" opacity={0.92} />
+          <Cloud
+            x={10}
+            y={23}
+            fill="#b8c9e3"
+            opacity={0.92}
+            className="weather-cloud-secondary"
+          />
         </>
       );
     case "light-rain":
@@ -171,7 +206,13 @@ function WeatherIcon({ visual }: { visual: WeatherVisual }) {
       return (
         <>
           <Cloud fill="#c4d4ec" />
-          <Cloud x={12} y={21} fill="#9cb5d8" opacity={0.95} />
+          <Cloud
+            x={12}
+            y={21}
+            fill="#9cb5d8"
+            opacity={0.95}
+            className="weather-cloud-secondary"
+          />
           <Rain heavy />
         </>
       );
@@ -203,7 +244,13 @@ function WeatherIcon({ visual }: { visual: WeatherVisual }) {
       return (
         <>
           <Cloud fill="#dceaff" />
-          <Cloud x={11} y={22} fill="#c8def7" opacity={0.94} />
+          <Cloud
+            x={11}
+            y={22}
+            fill="#c8def7"
+            opacity={0.94}
+            className="weather-cloud-secondary"
+          />
           <Snow heavy />
         </>
       );
@@ -214,6 +261,7 @@ function WeatherIcon({ visual }: { visual: WeatherVisual }) {
 
 function WeatherBadge({ locale = "zh" }: WeatherBadgeProps) {
   const [visual, setVisual] = useState<WeatherVisual>("sunny");
+  const [animationEnabled, setAnimationEnabled] = useState(true);
 
   useEffect(() => {
     let isActive = true;
@@ -241,18 +289,52 @@ function WeatherBadge({ locale = "zh" }: WeatherBadgeProps) {
     };
   }, []);
 
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const stored = window.localStorage.getItem(WEATHER_ANIMATION_STORAGE_KEY);
+    if (stored === "false") {
+      setAnimationEnabled(false);
+    }
+  }, []);
+
   const label = WEATHER_LABELS[visual][locale];
+  const toggleLabel =
+    locale === "en"
+      ? animationEnabled
+        ? "Click to pause weather animation"
+        : "Click to resume weather animation"
+      : animationEnabled
+        ? "点击暂停天气动画"
+        : "点击恢复天气动画";
 
   return (
-    <div
-      className={`weather-badge weather-badge-${visual}`}
-      aria-label={locale === "en" ? `Local weather: ${label}` : `当地天气：${label}`}
-      title={label}
+    <button
+      type="button"
+      className={`weather-badge weather-badge-${visual} ${
+        animationEnabled ? "weather-badge-animated" : "weather-badge-paused"
+      }`}
+      aria-label={`${
+        locale === "en" ? `Local weather: ${label}` : `当地天气：${label}`
+      } ${toggleLabel}`}
+      title={`${label} · ${toggleLabel}`}
+      onClick={() => {
+        const next = !animationEnabled;
+        setAnimationEnabled(next);
+        if (typeof window !== "undefined") {
+          window.localStorage.setItem(
+            WEATHER_ANIMATION_STORAGE_KEY,
+            String(next),
+          );
+        }
+      }}
     >
       <svg viewBox="0 0 46 46" role="img" aria-hidden="true">
         <WeatherIcon visual={visual} />
       </svg>
-    </div>
+    </button>
   );
 }
 
