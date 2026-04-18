@@ -36,7 +36,9 @@ function ArtworkDetailPage() {
     return (
       <div className="page art-page">
         <section className="section art-detail-section">
-          <p>Loading...</p>
+          <div className="page-loading-placeholder" aria-hidden="true">
+            <span />
+          </div>
         </section>
       </div>
     );

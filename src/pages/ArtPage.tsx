@@ -45,7 +45,9 @@ function ArtPage() {
         </div>
 
         {loading ? (
-          <p>Loading...</p>
+          <div className="page-loading-placeholder" aria-hidden="true">
+            <span />
+          </div>
         ) : artworks.length === 0 ? (
           <p className="tag-page-empty">这里还没有已发布的图片作品。</p>
         ) : (

@@ -220,8 +220,9 @@ function PostPage({ language = "zh" }: { language?: "zh" | "en" }) {
     return (
       <div className="page post-page">
         <section className="section post-page-section">
-          <p>Loading...</p>
-          <p>{uiText.loading}</p>
+          <div className="page-loading-placeholder" aria-hidden="true">
+            <span />
+          </div>
         </section>
       </div>
     );

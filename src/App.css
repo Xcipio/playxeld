@@ -1822,6 +1822,60 @@ a {
   padding: 18px 0 0;
 }
 
+.route-loading {
+  min-height: 24px;
+}
+
+.page-loading-placeholder {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  width: 34px;
+  min-height: 24px;
+  padding: 4px 0;
+}
+
+.page-loading-placeholder::before,
+.page-loading-placeholder::after,
+.page-loading-placeholder span {
+  content: "";
+  display: block;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(120, 120, 120, 0.52);
+  opacity: 0.32;
+  animation: page-loading-pulse 1.2s ease-in-out infinite;
+}
+
+.dark .page-loading-placeholder::before,
+.dark .page-loading-placeholder::after,
+.dark .page-loading-placeholder span {
+  background: rgba(230, 230, 230, 0.48);
+}
+
+.page-loading-placeholder span {
+  animation-delay: 0.16s;
+}
+
+.page-loading-placeholder::after {
+  animation-delay: 0.32s;
+}
+
+@keyframes page-loading-pulse {
+  0%,
+  100% {
+    transform: translateY(0) scale(0.88);
+    opacity: 0.18;
+  }
+
+  50% {
+    transform: translateY(-1px) scale(1);
+    opacity: 0.5;
+  }
+}
+
 .post-read-complete {
   display: flex;
   justify-content: center;

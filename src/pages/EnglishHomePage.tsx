@@ -165,7 +165,9 @@ function EnglishHomePage() {
         </div>
 
         {loading ? (
-          <p>Loading...</p>
+          <div className="page-loading-placeholder" aria-hidden="true">
+            <span />
+          </div>
         ) : latestPost ? (
           <article className="latest-release-card">
             <div className="latest-release-copy">
@@ -249,7 +251,9 @@ function EnglishHomePage() {
         </div>
 
         {loading ? (
-          <p>Loading...</p>
+          <div className="page-loading-placeholder" aria-hidden="true">
+            <span />
+          </div>
         ) : remainingPosts.length > 0 ? (
           <div className="posts-grid">
             {remainingPosts.map((post) => (

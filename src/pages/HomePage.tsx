@@ -226,7 +226,9 @@ function HomePage() {
         </div>
 
         {loading ? (
-          <p>Loading...</p>
+          <div className="page-loading-placeholder" aria-hidden="true">
+            <span />
+          </div>
         ) : latestPost ? (
           <article className="latest-release-card">
             <div className="latest-release-copy">
@@ -336,7 +338,9 @@ function HomePage() {
         )}
 
         {loading ? (
-          <p>Loading...</p>
+          <div className="page-loading-placeholder" aria-hidden="true">
+            <span />
+          </div>
         ) : (
           <>
             <div className="posts-grid">
