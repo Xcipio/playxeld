@@ -165,9 +165,12 @@ function HomePage() {
             </p>
 
             <div className="hero-side-card">
-              <p className="hero-side-card-label hero-side-card-title">
-                任意门
-              </p>
+              <div className="hero-side-card-tooltip">
+                <p className="hero-side-card-label hero-side-card-title">
+                  どこでもドア
+                </p>
+                <span className="hero-side-card-tooltip-bubble">任意门</span>
+              </div>
               <p className="hero-side-card-text">
                 点击标签，查看该专题所有文章👇
               </p>

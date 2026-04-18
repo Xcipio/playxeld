@@ -829,8 +829,8 @@ body[data-weather-visual="heavy-snow"] {
   display: inline-flex;
   align-items: center;
   margin-bottom: 10px;
-  padding: 7px 14px 8px;
-  font-size: 24px;
+  padding: 0;
+  font-size: 20px;
   line-height: 1.08;
   letter-spacing: 0.06em;
   font-family:
@@ -838,16 +838,57 @@ body[data-weather-visual="heavy-snow"] {
     "PingFang SC", "Hiragino Sans GB", sans-serif;
   font-weight: 700;
   opacity: 1;
-  color: #ffd166;
+  color: #ff6b6b;
+  border: none;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  text-shadow: none;
+}
+
+.hero-side-card-tooltip {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.hero-side-card-tooltip-bubble {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 10px);
+  transform: translateX(-50%) translateY(6px);
+  padding: 4px 10px;
   border-radius: 999px;
-  background:
-    radial-gradient(circle at 24% 28%, rgba(255, 255, 255, 0.2), transparent 34%),
-    linear-gradient(180deg, rgba(255, 209, 102, 0.18), rgba(255, 209, 102, 0.08));
-  border: 1px solid rgba(255, 209, 102, 0.24);
-  box-shadow:
-    0 10px 24px rgba(255, 209, 102, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.18);
-  text-shadow: 0 4px 18px rgba(255, 209, 102, 0.18);
+  background: rgba(104, 126, 164, 0.52);
+  color: rgba(248, 251, 255, 0.94);
+  font-size: 12px;
+  line-height: 1.2;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease;
+  box-shadow: 0 8px 20px rgba(52, 72, 106, 0.12);
+  backdrop-filter: blur(14px);
+}
+
+.hero-side-card-tooltip-bubble::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  transform: translateX(-50%);
+  border-width: 5px 5px 0;
+  border-style: solid;
+  border-color: rgba(104, 126, 164, 0.52) transparent transparent;
+}
+
+.hero-side-card-tooltip:hover .hero-side-card-tooltip-bubble {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }
 
 .hero-side-card-text {
@@ -3792,9 +3833,7 @@ body[data-theme="light"] .latest-release-title a {
 
 body[data-time-accent="midnight"] .latest-release-date-badge,
 body[data-time-accent="midnight"] .hero-side-card-title {
-  box-shadow:
-    0 10px 24px rgba(82, 129, 230, 0.14),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  box-shadow: none;
   filter: saturate(1.04);
 }
 
@@ -3884,15 +3923,11 @@ body[data-theme="light"] .english-home-exclamation {
 }
 
 body[data-theme="light"] .hero-side-card-title {
-  color: #d97706;
-  background:
-    radial-gradient(circle at 24% 28%, rgba(255, 255, 255, 0.42), transparent 34%),
-    linear-gradient(180deg, rgba(245, 158, 11, 0.14), rgba(245, 158, 11, 0.06));
-  border: 1px solid rgba(217, 119, 6, 0.18);
-  box-shadow:
-    0 10px 22px rgba(217, 119, 6, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.42);
-  text-shadow: 0 4px 18px rgba(217, 119, 6, 0.08);
+  color: #dc2626;
+  background: none;
+  border: none;
+  box-shadow: none;
+  text-shadow: none;
 }
 
 body[data-theme="light"] .english-home-side .hero-side-card-title {
