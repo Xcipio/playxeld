@@ -3141,6 +3141,23 @@ body[data-weather-visual="heavy-snow"] {
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.02)),
     rgba(255, 255, 255, 0.01);
+  position: relative;
+  overflow: hidden;
+}
+
+.friends-page-hero-side::before {
+  content: "";
+  position: absolute;
+  left: 18px;
+  top: 22px;
+  bottom: 22px;
+  width: 1px;
+  background: linear-gradient(
+    180deg,
+    rgba(244, 181, 210, 0.55),
+    rgba(244, 181, 210, 0.16)
+  );
+  pointer-events: none;
 }
 
 .friends-page-hero-side-label,
@@ -3156,9 +3173,18 @@ body[data-weather-visual="heavy-snow"] {
 .friends-page-hero-side-text,
 .friend-article-author-bio {
   margin: 0;
-  font-size: 15px;
-  line-height: 1.9;
-  color: rgba(245, 247, 251, 0.76);
+  font-size: 16px;
+  line-height: 2.05;
+  letter-spacing: 0.01em;
+  color: rgba(245, 247, 251, 0.72);
+  font-family:
+    "Songti SC", "PingFang SC", "Hiragino Serif GB", "STSong", "Noto Serif SC",
+    "Source Han Serif SC", serif;
+}
+
+.friends-page-hero-side-text {
+  padding-left: 18px;
+  color: rgba(245, 247, 251, 0.68);
 }
 
 .friends-page-empty-card,

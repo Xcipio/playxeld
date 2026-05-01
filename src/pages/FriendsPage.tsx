@@ -45,7 +45,7 @@ function FriendsPage() {
             <p className="section-label">FRIENDS</p>
             <h1 className="tag-page-title">投稿</h1>
             <p className="tag-page-description">
-              这里收录朋友们投稿到 Playxeld 的文章。
+              这里收录朋友们投稿到 PlayxelD 的文章。
             </p>
             <p className="tag-page-subtitle">
               当前共公开 {articles.length}{" "}
