@@ -1,0 +1,29 @@
+insert into public.friend_articles (
+  slug,
+  title,
+  excerpt,
+  content,
+  author_name,
+  author_profile,
+  author_avatar_url,
+  author_homepage_url,
+  author_social_label,
+  author_social_url,
+  tags,
+  is_published,
+  published_at
+) values (
+  'your-first-friend-essay',
+  '你的朋友文章标题',
+  '这里写文章摘要，会展示在 Friends 列表页。',
+  E'# 正文标题\n\n这里写正文内容。\n\n你可以直接使用 Markdown。',
+  '作者名字',
+  '这里写作者简介。',
+  'https://example.com/avatar.jpg',
+  'https://example.com',
+  'Instagram',
+  'https://instagram.com/yourfriend',
+  array['朋友投稿', '客座文章'],
+  true,
+  now()
+);

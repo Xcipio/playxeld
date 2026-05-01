@@ -15,6 +15,7 @@ type CommentsSectionProps = {
   postSlug: string;
   postTitle: string;
   language?: "zh" | "en";
+  variant?: "default" | "friends";
 };
 
 type CommentNode = Comment & {
@@ -170,6 +171,7 @@ function CommentsSection({
   postSlug,
   postTitle,
   language = "zh",
+  variant = "default",
 }: CommentsSectionProps) {
   const [comments, setComments] = useState<CommentNode[]>([]);
   const [authorName, setAuthorName] = useState("");
@@ -188,8 +190,12 @@ function CommentsSection({
     commentsTitle: language === "en" ? "Comments" : "评论区",
     intro:
       language === "en"
-        ? "If this piece stirred a thought, leave a few words here."
-        : "如果这篇文章让你想起了什么，欢迎留下几句话。",
+        ? variant === "friends"
+          ? "If this contribution sparked a thought, leave a note for the author here."
+          : "If this piece stirred a thought, leave a few words here."
+        : variant === "friends"
+          ? "如果这篇投稿让你想起了什么，欢迎在这里给作者留几句话。"
+          : "如果这篇文章让你想起了什么，欢迎留下几句话。",
     loadError: language === "en" ? "Comments are unavailable right now." : "评论暂时无法加载。",
     submitError: language === "en" ? "Could not post right now. Try again in a moment." : "提交失败，请稍后再试。",
     tooFast:

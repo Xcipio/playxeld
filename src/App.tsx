@@ -5,10 +5,12 @@ import EnglishHomePage from "./pages/EnglishHomePage";
 import TagPage from "./pages/TagPage";
 import ArtworkTagPage from "./pages/ArtworkTagPage";
 import GamesPage from "./pages/GamesPage";
+import FriendsPage from "./pages/FriendsPage";
 
 const PostPage = lazy(() => import("./PostPage"));
 const ArtPage = lazy(() => import("./pages/ArtPage"));
 const ArtworkDetailPage = lazy(() => import("./pages/ArtworkDetailPage"));
+const FriendArticlePage = lazy(() => import("./pages/FriendArticlePage"));
 
 function App() {
   return (
@@ -18,6 +20,8 @@ function App() {
         <Route path="/en" element={<EnglishHomePage />} />
         <Route path="/games" element={<GamesPage />} />
         <Route path="/art" element={<ArtPage />} />
+        <Route path="/friends" element={<FriendsPage />} />
+        <Route path="/friends/:slug" element={<FriendArticlePage />} />
         <Route path="/art/tag/:tagName" element={<ArtworkTagPage />} />
         <Route path="/art/:slug" element={<ArtworkDetailPage />} />
         <Route path="/post/:slug" element={<PostPage language="zh" />} />

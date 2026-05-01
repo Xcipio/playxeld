@@ -66,6 +66,7 @@ function EnglishHomePage() {
           <nav className="hero-nav">
             <a href="#essays">Posts</a>
             <Link to="/art">Arts</Link>
+            <Link to="/friends">Friends</Link>
             <a href="#about">About</a>
             <a href="#contact">Contact</a>
             <Link to="/">中文</Link>

@@ -6,6 +6,7 @@ Playxeld 是一个基于 React 和 Supabase 构建的个人博客与数字艺术
 
 *   **多维内容展示**：
     *   **文章系统**：支持中英文双语展示，通过 `post_slug` 进行路由跳转。
+    *   **朋友投稿**：新增 `Friends` 模块，支持独立的投稿列表页、详情页、首页投稿入口与首页投稿精选板块。
     *   **艺术画廊**：专门的艺术作品展示页面，支持按标签（Tag）分类浏览。
 *   **互动系统**：
     *   **匿名评论**：无需注册，基于浏览器 `device_id` 识别所有权，支持嵌套回复。
@@ -66,8 +67,24 @@ Playxeld 是一个基于 React 和 Supabase 构建的个人博客与数字艺术
 ## 数据管理
 
 *   **文章与艺术品**：存储在 Supabase 的 `posts` 和 `artworks` 表中。文章通过 `is_published` 字段控制发布状态。
+*   **朋友投稿**：存储在 `friend_articles` 表中，支持 `author_name`、`author_profile`、`author_avatar_url`、`author_homepage_url`、`author_social_label`、`author_social_url` 等作者信息字段。
 *   **评论与点赞**：存储在 `comments` 和 `post_likes` 表中。
 *   **静态生成**：在执行 `npm run build` 时，系统会从 Supabase 提取所有已发布文章，并基于 `dist/index.html` 模板为每篇文章生成带有独立 SEO Meta 信息的 `index.html`。
+
+## 最近更新
+
+*   **Friends 投稿模块**：
+    *   新增 `/friends` 列表页与 `/friends/:slug` 详情页。
+    *   主页右上角导航新增 `Friends` 入口。
+    *   主页“最新文章”下方新增“投稿”板块，展示最新一篇朋友投稿。
+    *   `投稿` 已纳入主页统一标签体系，视觉和交互与其他标签一致。
+*   **Friends 作者信息**：
+    *   投稿详情页新增作者名片，展示头像、姓名、作者简介。
+    *   支持作者主页按钮与社交链接按钮。
+    *   正文后新增“更多投稿”入口，便于回到 Friends 列表页。
+*   **Friends 评论区**：
+    *   投稿详情页已接入与主文章页一致的评论区能力。
+    *   评论区文案针对投稿语境做了单独适配。
 
 ## 部署方式
 

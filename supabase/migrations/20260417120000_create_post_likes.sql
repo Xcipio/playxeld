@@ -18,18 +18,21 @@ create index if not exists post_likes_active_idx
 
 alter table public.post_likes enable row level security;
 
+drop policy if exists "Allow public read active likes" on public.post_likes;
 create policy "Allow public read active likes"
 on public.post_likes
 for select
 to anon
 using (true);
 
+drop policy if exists "Allow public insert likes" on public.post_likes;
 create policy "Allow public insert likes"
 on public.post_likes
 for insert
 to anon
 with check (true);
 
+drop policy if exists "Allow public update own device likes" on public.post_likes;
 create policy "Allow public update own device likes"
 on public.post_likes
 for update

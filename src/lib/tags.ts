@@ -68,6 +68,14 @@ export const tagColorMap: Record<
     lightBorder: "rgba(234, 179, 8, 0.28)",
     lightColor: "#b45309",
   },
+  投稿: {
+    background: "rgba(244, 114, 182, 0.16)",
+    border: "rgba(244, 114, 182, 0.34)",
+    color: "#f472b6",
+    lightBackground: "rgba(244, 114, 182, 0.1)",
+    lightBorder: "rgba(244, 114, 182, 0.24)",
+    lightColor: "#db2777",
+  },
 };
 
 export function getTagStyle(tag: string, theme: "dark" | "light") {

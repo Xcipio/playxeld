@@ -10,9 +10,11 @@ import {
   isGamePlayable,
   pickWeightedRandomGame,
 } from "../lib/games";
+import { fetchPublishedFriendArticles } from "../lib/friendArticles";
 import { fetchPublishedPosts } from "../lib/posts";
 import { getPostTags, getTagStyle, sortTags } from "../lib/tags";
 import { Artwork } from "../types/artwork";
+import { FriendArticle } from "../types/friendArticle";
 import { Game } from "../types/game";
 import { Post } from "../types/post";
 
@@ -67,6 +69,7 @@ const CONTACT_BUBBLE_LAYOUTS: Record<ContactBubbleKey, ContactBubbleLayout> = {
 
 function HomePage() {
   const [posts, setPosts] = useState<Post[]>([]);
+  const [friendArticles, setFriendArticles] = useState<FriendArticle[]>([]);
   const [artworks, setArtworks] = useState<Artwork[]>([]);
   const [games, setGames] = useState<Game[]>([]);
   const [featuredGame, setFeaturedGame] = useState<Game | null>(null);
@@ -168,10 +171,12 @@ function HomePage() {
     const loadHomeData = async () => {
       const [
         { data: postData, error: postError },
+        friendArticleData,
         { data: artworkData, error: artworkError },
         { data: gameData, error: gameError },
       ] = await Promise.all([
         fetchPublishedPosts(),
+        fetchPublishedFriendArticles(),
         fetchPublishedArtworks(),
         fetchPublishedGames(),
       ]);
@@ -186,6 +191,12 @@ function HomePage() {
         console.error(artworkError);
       } else {
         setArtworks(artworkData ?? []);
+      }
+
+      setFriendArticles(friendArticleData.data ?? []);
+
+      if (friendArticleData.error) {
+        console.error(friendArticleData.error);
       }
 
       if (gameError) {
@@ -209,6 +220,7 @@ function HomePage() {
   };
 
   const latestPost = posts[0] ?? null;
+  const latestFriendArticle = friendArticles[0] ?? null;
   const pinnedArtworks = pickDailyArtworks(artworks, 3);
   const remainingPosts = latestPost ? posts.slice(1) : posts;
   const filteredPosts = selectedTag
@@ -217,7 +229,7 @@ function HomePage() {
   const availableTags = sortTags([
     ...new Set(posts.flatMap((post) => getPostTags(post))),
   ]);
-  const portalTags = [...new Set([...availableTags, "涂鸦"])];
+  const portalTags = [...new Set([...availableTags, "涂鸦", "投稿"])];
   const publishedPostSlugs = useMemo(
     () => new Set(posts.map((post) => post.slug)),
     [posts],
@@ -532,6 +544,7 @@ function HomePage() {
             <a href="#posts">Posts</a>
             <Link to="/games">Games</Link>
             <Link to="/art">Arts</Link>
+            <Link to="/friends">Friends</Link>
             <a href="#about">About</a>
             <a href="#contact">Contact</a>
             <Link to="/en">EN</Link>
@@ -633,7 +646,9 @@ function HomePage() {
                       navigate(
                         tag === "涂鸦"
                           ? `/art/tag/${encodeURIComponent(tag)}`
-                          : `/tag/${encodeURIComponent(tag)}`,
+                          : tag === "投稿"
+                            ? "/friends"
+                            : `/tag/${encodeURIComponent(tag)}`,
                       );
                     }}
                     type="button"
@@ -745,6 +760,85 @@ function HomePage() {
           <p>还没有已发布文章。</p>
         )}
       </section>
+
+      {latestFriendArticle && (
+        <section className="section friends-home-section">
+          <div className="section-header">
+            <div>
+              <h2 className="section-title">
+                投稿
+              </h2>
+              <div className="section-meta">
+                来自朋友的最新来稿
+              </div>
+            </div>
+            <div className="section-meta">
+              <Link to="/friends">进入 Friends →</Link>
+            </div>
+          </div>
+
+          <article className="latest-release-card friends-home-card">
+            <div className="latest-release-copy">
+              <p className="latest-release-label">SHARE YOUR STORY</p>
+              <h3 className="latest-release-title friends-home-title">
+                <Link to={`/friends/${latestFriendArticle.slug}`}>
+                  {latestFriendArticle.title}
+                </Link>
+              </h3>
+              {latestFriendArticle.excerpt && (
+                <p className="latest-release-excerpt">
+                  {latestFriendArticle.excerpt}
+                </p>
+              )}
+
+              <div className="latest-release-actions">
+                <Link
+                  to={`/friends/${latestFriendArticle.slug}`}
+                  className="post-link latest-release-link"
+                >
+                  阅读全文 →
+                </Link>
+              </div>
+            </div>
+
+            <div className="friends-home-meta">
+              <div className="section-meta latest-release-date-badge">
+                {new Date(latestFriendArticle.published_at).toLocaleDateString()}
+              </div>
+              <div className="friends-author-summary">
+                {latestFriendArticle.author_avatar_url ? (
+                  <img
+                    className="friends-author-avatar"
+                    src={latestFriendArticle.author_avatar_url}
+                    alt={latestFriendArticle.author_name}
+                    loading="lazy"
+                  />
+                ) : (
+                  <span className="friends-author-avatar friends-author-avatar-fallback">
+                    友
+                  </span>
+                )}
+                <span className="friends-author-chip">
+                  作者：{latestFriendArticle.author_name}
+                </span>
+              </div>
+              {latestFriendArticle.tags.length > 0 && (
+                <div className="friends-tag-row">
+                  {sortTags(latestFriendArticle.tags).map((tag) => (
+                    <span
+                      key={`friend-home-${latestFriendArticle.id}-${tag}`}
+                      className="hero-tag-button friends-tag-chip"
+                      style={getTagStyle(tag, theme)}
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+          </article>
+        </section>
+      )}
 
       {pinnedArtworks.length > 0 && (
         <section className="section home-art-section">
