@@ -76,6 +76,22 @@ export const tagColorMap: Record<
     lightBorder: "rgba(244, 114, 182, 0.24)",
     lightColor: "#db2777",
   },
+  故事: {
+    background: "rgba(255, 196, 87, 0.16)",
+    border: "rgba(255, 196, 87, 0.34)",
+    color: "#ffc457",
+    lightBackground: "rgba(255, 196, 87, 0.12)",
+    lightBorder: "rgba(224, 153, 46, 0.24)",
+    lightColor: "#c97a0f",
+  },
+  专题: {
+    background: "rgba(78, 168, 255, 0.14)",
+    border: "rgba(78, 168, 255, 0.32)",
+    color: "#7ac4ff",
+    lightBackground: "rgba(78, 168, 255, 0.1)",
+    lightBorder: "rgba(48, 122, 222, 0.24)",
+    lightColor: "#1f73cf",
+  },
 };
 
 export function getTagStyle(tag: string, theme: "dark" | "light") {

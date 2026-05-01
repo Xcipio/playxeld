@@ -11,6 +11,7 @@ const PostPage = lazy(() => import("./PostPage"));
 const ArtPage = lazy(() => import("./pages/ArtPage"));
 const ArtworkDetailPage = lazy(() => import("./pages/ArtworkDetailPage"));
 const FriendArticlePage = lazy(() => import("./pages/FriendArticlePage"));
+const FriendCategoryPage = lazy(() => import("./pages/FriendCategoryPage"));
 
 function App() {
   return (
@@ -21,6 +22,10 @@ function App() {
         <Route path="/games" element={<GamesPage />} />
         <Route path="/art" element={<ArtPage />} />
         <Route path="/friends" element={<FriendsPage />} />
+        <Route
+          path="/friends/category/:categorySlug"
+          element={<FriendCategoryPage />}
+        />
         <Route path="/friends/:slug" element={<FriendArticlePage />} />
         <Route path="/art/tag/:tagName" element={<ArtworkTagPage />} />
         <Route path="/art/:slug" element={<ArtworkDetailPage />} />

@@ -9,7 +9,8 @@ insert into public.friend_articles (
   author_homepage_url,
   author_social_label,
   author_social_url,
-  tags,
+  category,
+  tags_text,
   is_published,
   published_at
 ) values (
@@ -23,7 +24,8 @@ insert into public.friend_articles (
   'https://example.com',
   'Instagram',
   'https://instagram.com/yourfriend',
-  array['朋友投稿', '客座文章'],
+  '故事',
+  '故事, 投稿, 客座文章',
   true,
   now()
 );

@@ -3,6 +3,11 @@ import { Link, useParams } from "react-router-dom";
 import CommentsSection from "../components/CommentsSection";
 import ThemeToggle from "../components/ThemeToggle";
 import { useTheme } from "../hooks/useTheme";
+import {
+  friendArticleCategoryMeta,
+  getFriendArticleCategoryPath,
+  inferFriendArticleCategory,
+} from "../lib/friendArticleCategories";
 import { fetchPublishedFriendArticleBySlug } from "../lib/friendArticles";
 import { getTagStyle, sortTags } from "../lib/tags";
 import { FriendArticle } from "../types/friendArticle";
@@ -65,6 +70,9 @@ function FriendArticlePage() {
     );
   }
 
+  const category = inferFriendArticleCategory(article);
+  const categoryMeta = friendArticleCategoryMeta[category];
+
   return (
     <div className="page post-page">
       <section className="section post-page-section">
@@ -77,7 +85,20 @@ function FriendArticlePage() {
 
         <article className="post-detail-shell">
           <header className="post-detail-hero post-detail-enter-hero">
-            <p className="section-label">STORY</p>
+            <div className="friend-article-category-row">
+              <p className="section-label">{categoryMeta.englishLabel}</p>
+              <span
+                className="hero-tag-button friends-tag-chip friend-article-category-chip"
+              >
+                <Link
+                  to={getFriendArticleCategoryPath(category)}
+                  className="friend-article-category-link"
+                  style={getTagStyle(category, theme)}
+                >
+                  {category}
+                </Link>
+              </span>
+            </div>
             <h1 className="post-detail-title">{article.title}</h1>
 
             <div className="post-detail-intro">
@@ -182,7 +203,7 @@ function FriendArticlePage() {
 
             <div className="friend-article-more">
               <Link className="friend-article-more-link" to="/friends">
-                更多投稿 →
+                返回 Friends 栏目页 →
               </Link>
             </div>
           </div>
