@@ -1009,6 +1009,12 @@
   margin: 0;
 }
 
+.art-page-topbar-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .article-topbar-nav {
   display: inline-flex;
   align-items: center;

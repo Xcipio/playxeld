@@ -110,7 +110,7 @@ function EnglishHomePage() {
 
           <nav className="hero-nav">
             <a href="#essays">Posts</a>
-            <Link to="/art">Arts</Link>
+            <Link to="/art?lang=en">Arts</Link>
             <Link to="/friends">Friends</Link>
             <a href="#about">About</a>
             <a href="#contact">Contact</a>
@@ -261,7 +261,7 @@ function EnglishHomePage() {
               Gallery
             </h2>
             <div className="section-meta">
-              <Link to="/art">Enter Arts →</Link>
+              <Link to="/art?lang=en">Enter Arts →</Link>
             </div>
           </div>
 

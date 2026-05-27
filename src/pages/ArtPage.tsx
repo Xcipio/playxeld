@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import ThemeToggle from "../components/ThemeToggle";
 import { useTheme } from "../hooks/useTheme";
 import { fetchPublishedArtworks } from "../lib/artworks";
@@ -7,8 +7,48 @@ import { Artwork } from "../types/artwork";
 
 function ArtPage() {
   const { theme, toggleTheme } = useTheme();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [artworks, setArtworks] = useState<Artwork[]>([]);
   const [loading, setLoading] = useState(true);
+  const isEnglish = searchParams.get("lang") === "en";
+
+  const setGalleryLanguage = (nextIsEnglish: boolean) => {
+    const nextParams = new URLSearchParams(searchParams);
+
+    if (nextIsEnglish) {
+      nextParams.set("lang", "en");
+    } else {
+      nextParams.delete("lang");
+    }
+
+    setSearchParams(nextParams, { replace: true });
+  };
+
+  const pageCopy = isEnglish
+    ? {
+        backHome: "← Back to home",
+        empty: "No published artworks yet.",
+        label: "ART",
+        backHomePath: "/en",
+        title: "Gallery",
+        subtitle:
+          "A collection of my publicly released visual works, including standalone pieces, image series, and experimental visual projects.",
+        viewArtwork: "View artwork →",
+        languageToggle: "中文",
+        languageLabel: "Switch gallery to Chinese",
+      }
+    : {
+        backHome: "← Back to home",
+        empty: "这里还没有已发布的图片作品。",
+        label: "ART",
+        backHomePath: "/",
+        title: "图片创作",
+        subtitle:
+          "这里收录我目前公开发布的图片作品，包括单幅创作、系列图像和实验性视觉项目。",
+        viewArtwork: "查看作品 →",
+        languageToggle: "EN",
+        languageLabel: "Switch gallery to English",
+      };
 
   useEffect(() => {
     const loadArtworks = async () => {
@@ -31,17 +71,29 @@ function ArtPage() {
       <section className="section art-page-section">
         <div className="tag-page-topbar">
           <p className="tag-page-back">
-            <Link to="/">← Back to home</Link>
+            <Link to={pageCopy.backHomePath}>{pageCopy.backHome}</Link>
           </p>
-          <ThemeToggle theme={theme} onToggle={toggleTheme} />
+          <div className="art-page-topbar-actions">
+            <button
+              className="theme-toggle art-language-toggle"
+              onClick={() => setGalleryLanguage(!isEnglish)}
+              type="button"
+              aria-label={pageCopy.languageLabel}
+            >
+              {pageCopy.languageToggle}
+            </button>
+            <ThemeToggle
+              theme={theme}
+              onToggle={toggleTheme}
+              locale={isEnglish ? "en" : "zh"}
+            />
+          </div>
         </div>
 
         <div className="art-page-hero">
-          <p className="section-label">ART</p>
-          <h1 className="art-page-title">图片创作</h1>
-          <p className="art-page-subtitle">
-            这里收录我目前公开发布的图片作品，包括单幅创作、系列图像和实验性视觉项目。
-          </p>
+          <p className="section-label">{pageCopy.label}</p>
+          <h1 className="art-page-title">{pageCopy.title}</h1>
+          <p className="art-page-subtitle">{pageCopy.subtitle}</p>
         </div>
 
         {loading ? (
@@ -49,7 +101,7 @@ function ArtPage() {
             <span />
           </div>
         ) : artworks.length === 0 ? (
-          <p className="tag-page-empty">这里还没有已发布的图片作品。</p>
+          <p className="tag-page-empty">{pageCopy.empty}</p>
         ) : (
           <div className="art-grid">
             {artworks.map((artwork, index) => (
@@ -88,7 +140,7 @@ function ArtPage() {
                   )}
 
                   <Link to={`/art/${artwork.slug}`} className="post-link art-card-link">
-                    查看作品 →
+                    {pageCopy.viewArtwork}
                   </Link>
                 </div>
               </article>
