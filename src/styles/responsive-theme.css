@@ -720,6 +720,20 @@ body[data-theme="light"] .daily-quote-label {
   border-color: rgba(0, 0, 0, 0.08);
 }
 
+@media (hover: hover) and (pointer: fine) {
+  body[data-theme="light"] .daily-quote-trigger:hover:not(:disabled) {
+    color: rgba(5, 7, 13, 0.54);
+    background: rgba(0, 0, 0, 0.04);
+    border-color: rgba(0, 0, 0, 0.12);
+  }
+}
+
+body[data-theme="light"] .daily-quote-trigger:active:not(:disabled) {
+  color: rgba(5, 7, 13, 0.54);
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
 body[data-theme="light"] .daily-quote-text {
   color: rgba(5, 7, 13, 0.48);
 }

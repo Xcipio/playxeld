@@ -1584,7 +1584,15 @@ body[data-weather-visual="heavy-snow"] {
     opacity 0.18s ease;
 }
 
-.daily-quote-trigger:hover:not(:disabled) {
+@media (hover: hover) and (pointer: fine) {
+  .daily-quote-trigger:hover:not(:disabled) {
+    color: rgba(245, 247, 251, 0.56);
+    border-color: rgba(245, 247, 251, 0.13);
+    background: rgba(255, 255, 255, 0.04);
+  }
+}
+
+.daily-quote-trigger:active:not(:disabled) {
   color: rgba(245, 247, 251, 0.56);
   border-color: rgba(245, 247, 251, 0.13);
   background: rgba(255, 255, 255, 0.04);

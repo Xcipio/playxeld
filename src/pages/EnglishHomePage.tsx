@@ -5,13 +5,22 @@ import WeatherBadge from "../components/WeatherBadge";
 import { useTheme } from "../hooks/useTheme";
 import { fetchPublishedArtworks } from "../lib/artworks";
 import { pickDailyArtworks } from "../lib/dailyArtworkSelection";
+import {
+  fetchPublishedDailyQuotes,
+  pickDailyQuote,
+} from "../lib/dailyQuotes";
 import { fetchPublishedPosts } from "../lib/posts";
 import { Artwork } from "../types/artwork";
+import type { DailyQuote } from "../types/dailyQuote";
 import { Post } from "../types/post";
 
 function EnglishHomePage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [artworks, setArtworks] = useState<Artwork[]>([]);
+  const [dailyQuote, setDailyQuote] = useState<DailyQuote | null>(null);
+  const [dailyQuotes, setDailyQuotes] = useState<DailyQuote[]>([]);
+  const [selectedDailyQuote, setSelectedDailyQuote] =
+    useState<DailyQuote | null>(null);
   const [loading, setLoading] = useState(true);
   const { theme, toggleTheme } = useTheme();
 
@@ -20,9 +29,11 @@ function EnglishHomePage() {
       const [
         { data: postData, error: postError },
         { data: artworkData, error: artworkError },
+        { data: dailyQuoteData, error: dailyQuoteError },
       ] = await Promise.all([
         fetchPublishedPosts("en"),
         fetchPublishedArtworks(),
+        fetchPublishedDailyQuotes(),
       ]);
 
       if (postError) {
@@ -37,6 +48,14 @@ function EnglishHomePage() {
         setArtworks(artworkData ?? []);
       }
 
+      if (dailyQuoteError) {
+        console.error(dailyQuoteError);
+      } else {
+        const publishedDailyQuotes = dailyQuoteData ?? [];
+        setDailyQuotes(publishedDailyQuotes);
+        setDailyQuote(pickDailyQuote(publishedDailyQuotes));
+      }
+
       setLoading(false);
     };
 
@@ -47,6 +66,32 @@ function EnglishHomePage() {
   const remainingPosts = latestPost ? posts.slice(1, 7) : posts.slice(0, 6);
   const featuredArtworks = pickDailyArtworks(artworks, 3);
   const heroLeadText = "All we need is";
+  const displayedDailyQuote = selectedDailyQuote ?? dailyQuote ?? {
+    quote: "All we need is PLAY",
+    author: "Playxeld",
+    source: null,
+  };
+  const dailyQuoteCredit = [
+    displayedDailyQuote.author,
+    displayedDailyQuote.source,
+  ]
+    .filter(Boolean)
+    .join(", ");
+
+  const shuffleDailyQuote = () => {
+    if (dailyQuotes.length === 0) {
+      return;
+    }
+
+    const currentDailyQuoteId = selectedDailyQuote?.id ?? dailyQuote?.id;
+    const nextQuotes = dailyQuotes.filter(
+      (quote) => quote.id !== currentDailyQuoteId,
+    );
+    const quotePool = nextQuotes.length > 0 ? nextQuotes : dailyQuotes;
+    const nextIndex = Math.floor(Math.random() * quotePool.length);
+
+    setSelectedDailyQuote(quotePool[nextIndex]);
+  };
 
   return (
     <div className="page">
@@ -116,6 +161,23 @@ function EnglishHomePage() {
               I am interested in writing that stays alive after reading:
               reflective, structured, and open enough to be mentally played with.
             </p>
+
+            <div className="daily-quote-strip hero-daily-quote" aria-label="Daily quote">
+              <button
+                className="daily-quote-label daily-quote-trigger"
+                onClick={shuffleDailyQuote}
+                type="button"
+                disabled={dailyQuotes.length === 0}
+              >
+                Today’s Quote
+              </button>
+              <blockquote className="daily-quote-text">
+                {displayedDailyQuote.quote}
+              </blockquote>
+              {dailyQuoteCredit && (
+                <p className="daily-quote-credit">{dailyQuoteCredit}</p>
+              )}
+            </div>
           </div>
 
           <aside className="hero-side english-home-side">
