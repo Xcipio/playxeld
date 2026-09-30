@@ -296,7 +296,7 @@ function MemoReStoryPage({ locale = "zh" }: MemoReStoryPageProps) {
           {previousStory ? (
             <Link
               to={`${storyPathPrefix}/${previousStory.slug}`}
-              onClick={scrollToPageTop}
+              reloadDocument
             >
               <span>{copy.previous}</span>
               <strong>{previousStory.title}</strong>
@@ -311,7 +311,7 @@ function MemoReStoryPage({ locale = "zh" }: MemoReStoryPageProps) {
           {nextStory ? (
             <Link
               to={`${storyPathPrefix}/${nextStory.slug}`}
-              onClick={scrollToPageTop}
+              reloadDocument
             >
               <span>{copy.next}</span>
               <strong>{nextStory.title}</strong>
