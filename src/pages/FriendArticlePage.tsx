@@ -240,8 +240,6 @@ function FriendArticlePage() {
             <h1 className="post-detail-title">{article.title}</h1>
 
             <div className="post-detail-intro">
-              <p className="post-detail-excerpt">{article.excerpt}</p>
-
               <div className="post-detail-meta-row friend-article-meta-row">
                 <div className="friend-article-meta-primary">
                   <div className="post-detail-date-badge">
@@ -278,6 +276,8 @@ function FriendArticlePage() {
                   </div>
                 )}
               </div>
+
+              <p className="post-detail-excerpt">{article.excerpt}</p>
 
               {article.author_profile && (
                 <aside className="friend-article-author-spotlight">

@@ -12,6 +12,9 @@ const ArtPage = lazy(() => import("./pages/ArtPage"));
 const ArtworkDetailPage = lazy(() => import("./pages/ArtworkDetailPage"));
 const FriendArticlePage = lazy(() => import("./pages/FriendArticlePage"));
 const FriendCategoryPage = lazy(() => import("./pages/FriendCategoryPage"));
+const WhatsNewPage = lazy(() => import("./pages/WhatsNewPage"));
+const MemoRePage = lazy(() => import("./pages/MemoRePage"));
+const MemoReStoryPage = lazy(() => import("./pages/MemoReStoryPage"));
 
 function App() {
   return (
@@ -22,6 +25,10 @@ function App() {
         <Route path="/games" element={<GamesPage />} />
         <Route path="/art" element={<ArtPage />} />
         <Route path="/friends" element={<FriendsPage />} />
+        <Route path="/whats-new" element={<WhatsNewPage />} />
+        <Route path="/memore" element={<MemoRePage />} />
+        <Route path="/en/memore" element={<MemoRePage locale="en" />} />
+        <Route path="/memore/stories/:slug" element={<MemoReStoryPage />} />
         <Route
           path="/friends/category/:categorySlug"
           element={<FriendCategoryPage />}

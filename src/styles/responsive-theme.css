@@ -1163,7 +1163,7 @@ body[data-theme="light"] .friend-article-page .post-detail-hero {
 }
 
 body[data-theme="light"] .friend-article-page .post-detail-meta-row {
-  border-top-color: rgba(15, 23, 42, 0.055);
+  border-top: 0;
 }
 
 body[data-theme="light"] .friend-article-page .post-detail-date-badge,

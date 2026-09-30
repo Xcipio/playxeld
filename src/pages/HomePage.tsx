@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import ThemeToggle from "../components/ThemeToggle";
-import WeatherBadge from "../components/WeatherBadge";
+import MemoReShowcase from "../components/MemoReShowcase";
+import SiteTopbar from "../components/SiteTopbar";
 import useContactBubbles from "../features/home/useContactBubbles";
 import useHomeData from "../features/home/useHomeData";
 import { useTheme } from "../hooks/useTheme";
@@ -116,29 +116,7 @@ function HomePage() {
   return (
     <div className="page">
       <header className="hero">
-        <div className="hero-top">
-          <div className="hero-brand-group">
-            <div className="hero-brand" aria-label="Playxeld">
-              {"PLAYXELD".split("").map((letter, index) => (
-                <span key={`${letter}-${index}`} className="hero-brand-letter">
-                  {letter}
-                </span>
-              ))}
-            </div>
-            <WeatherBadge locale="zh" />
-          </div>
-
-          <nav className="hero-nav">
-            <a href="#posts">Posts</a>
-            <Link to="/games">Games</Link>
-            <Link to="/art">Arts</Link>
-            <Link to="/friends">Friends</Link>
-            <a href="#about">About</a>
-            <a href="#contact">Contact</a>
-            <Link to="/en">EN</Link>
-            <ThemeToggle theme={theme} onToggle={toggleTheme} />
-          </nav>
-        </div>
+        <SiteTopbar locale="zh" theme={theme} onThemeToggle={toggleTheme} />
 
         <div className="hero-grid">
           <div className="hero-main">
@@ -369,6 +347,8 @@ function HomePage() {
           <p>还没有已发布文章。</p>
         )}
       </section>
+
+      <MemoReShowcase />
 
       {latestFriendArticle && (
         <section className="section friends-home-section">

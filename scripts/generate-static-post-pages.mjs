@@ -5,6 +5,32 @@ const projectRoot = process.cwd();
 const distRoot = path.join(projectRoot, "dist");
 const envPath = path.join(projectRoot, ".env");
 const templatePath = path.join(distRoot, "index.html");
+const memoReStories = [
+  {
+    slug: "memory-colors",
+    title: "用颜色点缀记忆",
+    excerpt: "当记忆的细节慢慢消散，颜色仍能把当时的感受带回来。",
+    image: "/memore/stories/memory-colors/01-cover.jpg",
+  },
+  {
+    slug: "echoes",
+    title: "用回声唤回记忆",
+    excerpt: "有些人已经不在身边，但他们说过的话，仍然可以带来温暖和力量。",
+    image: "/memore/stories/echoes/01-cover.jpg",
+  },
+  {
+    slug: "color-capture",
+    title: "采摘记忆的颜色",
+    excerpt: "不必征服时间，只需要在颜色消失之前，把它轻轻摘下来。",
+    image: "/memore/stories/color-capture/01-cover.jpg",
+  },
+  {
+    slug: "fruit-moods",
+    title: "用水果表达心情",
+    excerpt: "今天的感受就是明天的记忆；有时一个水果，比几个情绪词更接近心情本身。",
+    image: "/memore/stories/fruit-moods/01-cover.jpg",
+  },
+];
 
 function parseEnvFile(content) {
   return content
@@ -63,6 +89,8 @@ function injectMeta(html, entry, fallbackDescription, options = {}) {
     locale = "zh_CN",
     url = buildPostUrl(entry),
     image = "https://playxeld.com/site-icon.png?v=1",
+    ogType = "article",
+    twitterCard = "summary_large_image",
   } = options;
   const title = escapeHtml(buildPageTitle(entry));
   const description = escapeHtml(buildDescription(entry, fallbackDescription));
@@ -80,7 +108,7 @@ function injectMeta(html, entry, fallbackDescription, options = {}) {
   );
   nextHtml = nextHtml.replace(
     /<meta\s+property="og:type"\s+content="[\s\S]*?"\s*\/>/,
-    '<meta property="og:type" content="article" />',
+    `<meta property="og:type" content="${ogType}" />`,
   );
   nextHtml = nextHtml.replace(
     /<meta\s+property="og:site_name"\s+content="[\s\S]*?"\s*\/>/,
@@ -104,7 +132,7 @@ function injectMeta(html, entry, fallbackDescription, options = {}) {
   );
   nextHtml = nextHtml.replace(
     /<meta\s+name="twitter:card"\s+content="[\s\S]*?"\s*\/>/,
-    '<meta name="twitter:card" content="summary_large_image" />',
+    `<meta name="twitter:card" content="${twitterCard}" />`,
   );
   nextHtml = nextHtml.replace(
     /<meta\s+name="twitter:title"\s+content="[\s\S]*?"\s*\/>/,
@@ -213,6 +241,97 @@ async function writeFriendArticlePage(templateHtml, article, fallbackDescription
   );
 }
 
+async function writeWhatsNewPage(templateHtml) {
+  const entry = {
+    title: "What's New",
+    excerpt: "Playxeld 最近开发、发布和推进中的 App、游戏与创作项目。",
+  };
+  const targetDir = path.join(distRoot, "whats-new");
+
+  await fs.mkdir(targetDir, { recursive: true });
+  await fs.writeFile(
+    path.join(targetDir, "index.html"),
+    injectMeta(templateHtml, entry, entry.excerpt, {
+      lang: "zh-CN",
+      locale: "zh_CN",
+      url: "https://playxeld.com/whats-new",
+      image: "https://playxeld.com/whats-new/memore/app-icon.png",
+      ogType: "website",
+      twitterCard: "summary",
+    }),
+    "utf8",
+  );
+}
+
+async function writeMemoRePage(templateHtml) {
+  const entry = {
+    title: "MemoRe",
+    excerpt:
+      "MemoRe（物语）是一个采摘、连通、珍藏记忆的 iOS App，让照片、人物、地点、声音与情感重新相遇。",
+  };
+  const targetDir = path.join(distRoot, "memore");
+
+  await fs.mkdir(targetDir, { recursive: true });
+  await fs.writeFile(
+    path.join(targetDir, "index.html"),
+    injectMeta(templateHtml, entry, entry.excerpt, {
+      lang: "zh-CN",
+      locale: "zh_CN",
+      url: "https://playxeld.com/memore",
+      image: "https://playxeld.com/memore/app-icon.png",
+      ogType: "website",
+      twitterCard: "summary",
+    }),
+    "utf8",
+  );
+}
+
+async function writeEnglishMemoRePage(templateHtml) {
+  const entry = {
+    title: "MemoRe",
+    excerpt:
+      "MemoRe is an iOS app for gathering, connecting, and cherishing memories—bringing photos, people, places, sounds, and feelings together again.",
+  };
+  const targetDir = path.join(distRoot, "en", "memore");
+
+  await fs.mkdir(targetDir, { recursive: true });
+  await fs.writeFile(
+    path.join(targetDir, "index.html"),
+    injectMeta(templateHtml, entry, entry.excerpt, {
+      lang: "en",
+      locale: "en_US",
+      url: "https://playxeld.com/en/memore",
+      image: "https://playxeld.com/memore/app-icon.png",
+      ogType: "website",
+      twitterCard: "summary",
+    }),
+    "utf8",
+  );
+}
+
+async function writeMemoReStoryPages(templateHtml) {
+  await Promise.all(
+    memoReStories.map(async (story) => {
+      const targetDir = path.join(distRoot, "memore", "stories", story.slug);
+      const url = `https://playxeld.com/memore/stories/${story.slug}`;
+
+      await fs.mkdir(targetDir, { recursive: true });
+      await fs.writeFile(
+        path.join(targetDir, "index.html"),
+        injectMeta(templateHtml, story, story.excerpt, {
+          lang: "zh-CN",
+          locale: "zh_CN",
+          url,
+          image: `https://playxeld.com${story.image}`,
+          ogType: "article",
+          twitterCard: "summary_large_image",
+        }),
+        "utf8",
+      );
+    }),
+  );
+}
+
 async function main() {
   let fileEnv = {};
 
@@ -255,6 +374,11 @@ async function main() {
       writeFriendArticlePage(templateHtml, article, friendArticlesDescription),
     ),
   );
+
+  await writeWhatsNewPage(templateHtml);
+  await writeMemoRePage(templateHtml);
+  await writeEnglishMemoRePage(templateHtml);
+  await writeMemoReStoryPages(templateHtml);
 }
 
 main().catch((error) => {

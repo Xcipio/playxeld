@@ -1714,7 +1714,10 @@
 }
 
 .friend-article-page .post-detail-meta-row {
-  border-top-color: rgba(255, 255, 255, 0.045);
+  margin-top: 0;
+  margin-bottom: 26px;
+  padding-top: 0;
+  border-top: 0;
 }
 
 .friend-article-page .post-detail-date-badge,
