@@ -1,4 +1,10 @@
-export type MemoReStoryCategory = "采摘" | "连通" | "珍藏";
+export type MemoReStoryCategory =
+  | "采摘"
+  | "连通"
+  | "珍藏"
+  | "Gather"
+  | "Connect"
+  | "Cherish";
 
 export type MemoReStoryImage = {
   src: string;
@@ -34,7 +40,7 @@ export type MemoReStory = {
   feature: string;
   title: string;
   category: MemoReStoryCategory;
-  kind: "功能故事" | "设计实验";
+  kind: "功能故事" | "设计实验" | "Feature Story" | "Design Experiment";
   summary: string;
   accent: string;
   cover: MemoReStoryImage;

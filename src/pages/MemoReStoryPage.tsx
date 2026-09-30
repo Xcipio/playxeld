@@ -3,22 +3,69 @@ import type { CSSProperties } from "react";
 import { Link, useParams } from "react-router-dom";
 import SiteTopbar from "../components/SiteTopbar";
 import {
-  getMemoReStory,
   memoreStories,
   MemoReStoryImage,
 } from "../data/memoreStories";
+import { memoreStoriesEnglish } from "../data/memoreStories.en";
 import { useTheme } from "../hooks/useTheme";
 
 const siteUrl = "https://playxeld.com";
 
-function StoryImage({ image, eager = false }: { image: MemoReStoryImage; eager?: boolean }) {
+type MemoReStoryLocale = "zh" | "en";
+
+type MemoReStoryPageProps = {
+  locale?: MemoReStoryLocale;
+};
+
+const pageCopy = {
+  zh: {
+    openOriginal: (caption: string) => `打开原图：${caption}`,
+    notFound: "没有找到这篇故事",
+    backToStories: "返回功能与故事",
+    breadcrumb: "面包屑导航",
+    featuresAndStories: "功能与故事",
+    emojiLabel:
+      "苹果、橘子、香蕉、西瓜、葡萄、蓝莓、草莓、菠萝、猕猴桃、甜瓜、梨、芒果、桃、樱桃、柠檬、青苹果、椰子和青柠",
+    storyNavigation: "MemoRe 故事导航",
+    previous: "上一篇",
+    next: "下一篇",
+    back: "返回",
+    overview: "MemoRe 产品总览",
+  },
+  en: {
+    openOriginal: (caption: string) => `Open full-size image: ${caption}`,
+    notFound: "This story could not be found",
+    backToStories: "Back to features and stories",
+    breadcrumb: "Breadcrumb navigation",
+    featuresAndStories: "Features & Stories",
+    emojiLabel:
+      "apple, mandarin, banana, watermelon, grapes, blueberries, strawberry, pineapple, kiwi, melon, pear, mango, peach, cherries, lemon, green apple, coconut, and lime",
+    storyNavigation: "MemoRe story navigation",
+    previous: "Previous story",
+    next: "Next story",
+    back: "Back",
+    overview: "MemoRe overview",
+  },
+} as const;
+
+function StoryImage({
+  image,
+  locale,
+  eager = false,
+}: {
+  image: MemoReStoryImage;
+  locale: MemoReStoryLocale;
+  eager?: boolean;
+}) {
+  const copy = pageCopy[locale];
+
   return (
     <figure className="memore-story-figure">
       <a
         href={image.src}
         target="_blank"
         rel="noreferrer"
-        aria-label={`打开原图：${image.caption}`}
+        aria-label={copy.openOriginal(image.caption)}
       >
         <img src={image.src} alt={image.alt} loading={eager ? "eager" : "lazy"} />
       </a>
@@ -27,10 +74,15 @@ function StoryImage({ image, eager = false }: { image: MemoReStoryImage; eager?:
   );
 }
 
-function MemoReStoryPage() {
+function MemoReStoryPage({ locale = "zh" }: MemoReStoryPageProps) {
   const { slug } = useParams<{ slug: string }>();
-  const story = getMemoReStory(slug);
+  const isEnglish = locale === "en";
+  const copy = pageCopy[locale];
+  const stories = isEnglish ? memoreStoriesEnglish : memoreStories;
+  const story = stories.find((entry) => entry.slug === slug) ?? null;
   const { theme, toggleTheme } = useTheme();
+  const memorePath = isEnglish ? "/en/memore" : "/memore";
+  const storyPathPrefix = `${memorePath}/stories`;
 
   useEffect(() => {
     if (!story) {
@@ -39,7 +91,7 @@ function MemoReStoryPage() {
 
     const previousTitle = document.title;
     const previousLanguage = document.documentElement.lang;
-    const canonicalUrl = `${siteUrl}/memore/stories/${story.slug}`;
+    const canonicalUrl = `${siteUrl}${storyPathPrefix}/${story.slug}`;
     const socialImageUrl = `${siteUrl}${story.cover.src}`;
     const metadataUpdates = [
       ["meta[name='description']", "content", story.summary],
@@ -66,7 +118,7 @@ function MemoReStoryPage() {
     const createdCanonical = !canonical;
 
     document.title = `${story.title}｜MemoRe`;
-    document.documentElement.lang = "zh-CN";
+    document.documentElement.lang = isEnglish ? "en" : "zh-CN";
     metadataUpdates.forEach(([selector, attribute, value]) => {
       document.querySelector<HTMLMetaElement>(selector)?.setAttribute(attribute, value);
     });
@@ -97,44 +149,44 @@ function MemoReStoryPage() {
         canonical.href = previousCanonical;
       }
     };
-  }, [story]);
+  }, [isEnglish, story, storyPathPrefix]);
 
   if (!story) {
     return (
       <div className="page memore-page memore-story-page">
         <header className="hero memore-site-hero">
-          <SiteTopbar locale="zh" theme={theme} onThemeToggle={toggleTheme} />
+          <SiteTopbar locale={locale} theme={theme} onThemeToggle={toggleTheme} />
         </header>
         <main className="section memore-story-not-found">
           <p className="section-label">MEMORE</p>
-          <h1>没有找到这篇故事</h1>
-          <Link className="memore-primary-link" to="/memore#stories">
-            返回功能与故事
+          <h1>{copy.notFound}</h1>
+          <Link className="memore-primary-link" to={`${memorePath}#stories`}>
+            {copy.backToStories}
           </Link>
         </main>
       </div>
     );
   }
 
-  const storyIndex = memoreStories.findIndex((entry) => entry.slug === story.slug);
-  const previousStory = storyIndex > 0 ? memoreStories[storyIndex - 1] : null;
+  const storyIndex = stories.findIndex((entry) => entry.slug === story.slug);
+  const previousStory = storyIndex > 0 ? stories[storyIndex - 1] : null;
   const nextStory =
-    storyIndex < memoreStories.length - 1 ? memoreStories[storyIndex + 1] : null;
+    storyIndex < stories.length - 1 ? stories[storyIndex + 1] : null;
   const accentStyle = { "--story-accent": story.accent } as CSSProperties;
 
   return (
     <div className="page memore-page memore-story-page" style={accentStyle}>
       <header className="hero memore-site-hero">
-        <SiteTopbar locale="zh" theme={theme} onThemeToggle={toggleTheme} />
+        <SiteTopbar locale={locale} theme={theme} onThemeToggle={toggleTheme} />
       </header>
 
       <main>
         <section className="section memore-story-hero">
           <div className="memore-story-hero-copy">
-            <nav className="memore-story-breadcrumb" aria-label="面包屑导航">
-              <Link to="/memore">MemoRe</Link>
+            <nav className="memore-story-breadcrumb" aria-label={copy.breadcrumb}>
+              <Link to={memorePath}>MemoRe</Link>
               <span aria-hidden="true">/</span>
-              <Link to="/memore#stories">功能与故事</Link>
+              <Link to={`${memorePath}#stories`}>{copy.featuresAndStories}</Link>
             </nav>
             <div className="memore-story-meta">
               <span>{story.category}</span>
@@ -145,7 +197,7 @@ function MemoReStoryPage() {
             <p>{story.summary}</p>
           </div>
 
-          <StoryImage image={story.cover} eager />
+          <StoryImage image={story.cover} locale={locale} eager />
         </section>
 
         <article className="section memore-story-article">
@@ -170,7 +222,7 @@ function MemoReStoryPage() {
               {section.emojiLine && (
                 <p
                   className="memore-story-emoji-line"
-                  aria-label="苹果、橘子、香蕉、西瓜、葡萄、蓝莓、草莓、菠萝、猕猴桃、甜瓜、梨、芒果、桃、樱桃、柠檬、青苹果、椰子和青柠"
+                  aria-label={copy.emojiLabel}
                 >
                   {section.emojiLine}
                 </p>
@@ -212,7 +264,7 @@ function MemoReStoryPage() {
                   className={`memore-story-images memore-story-images-${section.imageLayout ?? "single"}`}
                 >
                   {section.images.map((image) => (
-                    <StoryImage image={image} key={image.src} />
+                    <StoryImage image={image} locale={locale} key={image.src} />
                   ))}
                 </div>
               )}
@@ -225,28 +277,28 @@ function MemoReStoryPage() {
           </footer>
         </article>
 
-        <nav className="section memore-story-pagination" aria-label="MemoRe 故事导航">
+        <nav className="section memore-story-pagination" aria-label={copy.storyNavigation}>
           {previousStory ? (
-            <Link to={`/memore/stories/${previousStory.slug}`}>
-              <span>上一篇</span>
+            <Link to={`${storyPathPrefix}/${previousStory.slug}`}>
+              <span>{copy.previous}</span>
               <strong>{previousStory.title}</strong>
             </Link>
           ) : (
-            <Link to="/memore#stories">
-              <span>返回</span>
-              <strong>功能与故事</strong>
+            <Link to={`${memorePath}#stories`}>
+              <span>{copy.back}</span>
+              <strong>{copy.featuresAndStories}</strong>
             </Link>
           )}
 
           {nextStory ? (
-            <Link to={`/memore/stories/${nextStory.slug}`}>
-              <span>下一篇</span>
+            <Link to={`${storyPathPrefix}/${nextStory.slug}`}>
+              <span>{copy.next}</span>
               <strong>{nextStory.title}</strong>
             </Link>
           ) : (
-            <Link to="/memore">
-              <span>返回</span>
-              <strong>MemoRe 产品总览</strong>
+            <Link to={memorePath}>
+              <span>{copy.back}</span>
+              <strong>{copy.overview}</strong>
             </Link>
           )}
         </nav>

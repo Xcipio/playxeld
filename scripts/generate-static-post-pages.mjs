@@ -31,6 +31,36 @@ const memoReStories = [
     image: "/memore/stories/fruit-moods/01-cover.jpg",
   },
 ];
+const memoReStoriesEnglish = [
+  {
+    slug: "memory-colors",
+    title: "Color Your Memories",
+    excerpt:
+      "Even as the details of a memory fade, color can bring its feeling back.",
+    image: "/memore/stories/memory-colors/01-cover.jpg",
+  },
+  {
+    slug: "echoes",
+    title: "Let Their Words Echo",
+    excerpt:
+      "Some people are no longer beside us, but their words can still give us warmth and strength.",
+    image: "/memore/stories/echoes/01-cover.jpg",
+  },
+  {
+    slug: "color-capture",
+    title: "Gather the Colors of Memory",
+    excerpt:
+      "You do not need to conquer time—only gather a color gently before it disappears.",
+    image: "/memore/stories/color-capture/01-cover.jpg",
+  },
+  {
+    slug: "fruit-moods",
+    title: "Express Your Mood with Fruit",
+    excerpt:
+      "Today’s feelings become tomorrow’s memories. Sometimes a fruit comes closer than a list of emotion words.",
+    image: "/memore/stories/fruit-moods/01-cover.jpg",
+  },
+];
 
 function parseEnvFile(content) {
   return content
@@ -332,6 +362,35 @@ async function writeMemoReStoryPages(templateHtml) {
   );
 }
 
+async function writeEnglishMemoReStoryPages(templateHtml) {
+  await Promise.all(
+    memoReStoriesEnglish.map(async (story) => {
+      const targetDir = path.join(
+        distRoot,
+        "en",
+        "memore",
+        "stories",
+        story.slug,
+      );
+      const url = `https://playxeld.com/en/memore/stories/${story.slug}`;
+
+      await fs.mkdir(targetDir, { recursive: true });
+      await fs.writeFile(
+        path.join(targetDir, "index.html"),
+        injectMeta(templateHtml, story, story.excerpt, {
+          lang: "en",
+          locale: "en_US",
+          url,
+          image: `https://playxeld.com${story.image}`,
+          ogType: "article",
+          twitterCard: "summary_large_image",
+        }),
+        "utf8",
+      );
+    }),
+  );
+}
+
 async function main() {
   let fileEnv = {};
 
@@ -379,6 +438,7 @@ async function main() {
   await writeMemoRePage(templateHtml);
   await writeEnglishMemoRePage(templateHtml);
   await writeMemoReStoryPages(templateHtml);
+  await writeEnglishMemoReStoryPages(templateHtml);
 }
 
 main().catch((error) => {

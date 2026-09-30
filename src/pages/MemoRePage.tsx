@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import SiteTopbar from "../components/SiteTopbar";
 import { memore, memoreEnglish } from "../data/memore";
 import { memoreStories } from "../data/memoreStories";
+import { memoreStoriesEnglish } from "../data/memoreStories.en";
 import { useTheme } from "../hooks/useTheme";
 
 const socialImageUrl = "https://playxeld.com/memore/app-icon.png";
@@ -81,45 +82,13 @@ const pageCopy = {
   },
 } as const;
 
-const storyCopy: Record<
-  string,
-  { feature: string; title: string; category: string; kind: string; summary: string }
-> = {
-  "memory-colors": {
-    feature: "Color Gallery",
-    title: "Color Your Memories",
-    category: "Gather",
-    kind: "Feature Story",
-    summary: "Even as the details of a memory fade, color can bring its feeling back.",
-  },
-  echoes: {
-    feature: "Echoes",
-    title: "Let Their Words Echo",
-    category: "Connect",
-    kind: "Feature Story",
-    summary: "Some people are no longer beside us, but their words can still give us warmth and strength.",
-  },
-  "color-capture": {
-    feature: "Color Capture",
-    title: "Gather the Colors of Memory",
-    category: "Gather",
-    kind: "Feature Story",
-    summary: "You do not need to conquer time—only gather a color gently before it disappears.",
-  },
-  "fruit-moods": {
-    feature: "Fruit Moods",
-    title: "Express Your Mood with Fruit",
-    category: "Gather",
-    kind: "Design Experiment",
-    summary: "Today’s feelings become tomorrow’s memories. Sometimes a fruit comes closer than a list of emotion words.",
-  },
-};
-
 function MemoRePage({ locale = "zh" }: MemoRePageProps) {
   const { theme, toggleTheme } = useTheme();
   const isEnglish = locale === "en";
   const copy = pageCopy[locale];
   const content = isEnglish ? memoreEnglish : memore;
+  const stories = isEnglish ? memoreStoriesEnglish : memoreStories;
+  const storyPathPrefix = isEnglish ? "/en/memore/stories" : "/memore/stories";
   const canonicalUrl = `https://playxeld.com${isEnglish ? "/en" : ""}/memore`;
 
   useEffect(() => {
@@ -291,7 +260,7 @@ function MemoRePage({ locale = "zh" }: MemoRePageProps) {
               <p className="section-label">FEATURES & STORIES</p>
               <h2 className="section-title">{copy.storiesTitle}</h2>
             </div>
-            <p className="section-meta">{copy.storyCount(memoreStories.length)}</p>
+            <p className="section-meta">{copy.storyCount(stories.length)}</p>
           </div>
 
           <p className="memore-stories-intro">
@@ -299,12 +268,7 @@ function MemoRePage({ locale = "zh" }: MemoRePageProps) {
           </p>
 
           <div className="memore-stories-grid">
-            {memoreStories.map((story) => {
-              const localizedStory = isEnglish
-                ? (storyCopy[story.slug] ?? story)
-                : story;
-
-              return (
+            {stories.map((story) => (
                 <article
                   className="memore-story-card"
                   key={story.slug}
@@ -312,36 +276,35 @@ function MemoRePage({ locale = "zh" }: MemoRePageProps) {
                 >
                   <Link
                     className="memore-story-card-image"
-                    to={`/memore/stories/${story.slug}`}
-                    aria-label={copy.readAria(localizedStory.title)}
+                    to={`${storyPathPrefix}/${story.slug}`}
+                    aria-label={copy.readAria(story.title)}
                   >
                     <img
                       src={story.cover.src}
-                      alt={isEnglish ? `${localizedStory.title} feature cover` : story.cover.alt}
+                      alt={story.cover.alt}
                       loading="lazy"
                     />
                   </Link>
                   <div className="memore-story-card-copy">
                     <p>
-                      <span>{localizedStory.category}</span>
-                      {localizedStory.kind} · {localizedStory.feature}
+                      <span>{story.category}</span>
+                      {story.kind} · {story.feature}
                     </p>
                     <h3>
-                      <Link to={`/memore/stories/${story.slug}`}>
-                        {localizedStory.title}
+                      <Link to={`${storyPathPrefix}/${story.slug}`}>
+                        {story.title}
                       </Link>
                     </h3>
-                    <p>{localizedStory.summary}</p>
+                    <p>{story.summary}</p>
                     <Link
                       className="memore-story-card-link"
-                      to={`/memore/stories/${story.slug}`}
+                      to={`${storyPathPrefix}/${story.slug}`}
                     >
                       {copy.readStory} <span aria-hidden="true">→</span>
                     </Link>
                   </div>
                 </article>
-              );
-            })}
+            ))}
           </div>
         </section>
 

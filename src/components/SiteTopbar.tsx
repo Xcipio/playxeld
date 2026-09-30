@@ -18,8 +18,14 @@ function SiteTopbar({ locale, theme, onThemeToggle }: SiteTopbarProps) {
   const memorePath = isEnglish ? "/en/memore" : "/memore";
   const sectionHref = (section: string) =>
     isHome ? `#${section}` : `${homePath}#${section}`;
+  const englishStoryPrefix = "/en/memore/stories/";
+  const chineseStoryPrefix = "/memore/stories/";
   const languagePath =
-    pathname === "/memore" || pathname === "/en/memore"
+    pathname.startsWith(englishStoryPrefix)
+      ? `${chineseStoryPrefix}${pathname.slice(englishStoryPrefix.length)}`
+      : pathname.startsWith(chineseStoryPrefix)
+        ? `${englishStoryPrefix}${pathname.slice(chineseStoryPrefix.length)}`
+      : pathname === "/memore" || pathname === "/en/memore"
       ? isEnglish
         ? "/memore"
         : "/en/memore"

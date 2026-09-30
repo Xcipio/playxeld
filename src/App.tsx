@@ -30,6 +30,10 @@ function App() {
         <Route path="/en/memore" element={<MemoRePage locale="en" />} />
         <Route path="/memore/stories/:slug" element={<MemoReStoryPage />} />
         <Route
+          path="/en/memore/stories/:slug"
+          element={<MemoReStoryPage locale="en" />}
+        />
+        <Route
           path="/friends/category/:categorySlug"
           element={<FriendCategoryPage />}
         />
