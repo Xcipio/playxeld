@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useLayoutEffect } from "react";
 import type { CSSProperties } from "react";
 import { Link, useParams } from "react-router-dom";
 import SiteTopbar from "../components/SiteTopbar";
@@ -10,6 +10,8 @@ import { memoreStoriesEnglish } from "../data/memoreStories.en";
 import { useTheme } from "../hooks/useTheme";
 
 const siteUrl = "https://playxeld.com";
+const useClientLayoutEffect =
+  typeof window === "undefined" ? useEffect : useLayoutEffect;
 
 type MemoReStoryLocale = "zh" | "en";
 
@@ -48,6 +50,15 @@ const pageCopy = {
   },
 } as const;
 
+function scrollToPageTop() {
+  const root = document.documentElement;
+  const previousScrollBehavior = root.style.scrollBehavior;
+
+  root.style.scrollBehavior = "auto";
+  window.scrollTo({ top: 0, left: 0 });
+  root.style.scrollBehavior = previousScrollBehavior;
+}
+
 function StoryImage({
   image,
   locale,
@@ -83,6 +94,10 @@ function MemoReStoryPage({ locale = "zh" }: MemoReStoryPageProps) {
   const { theme, toggleTheme } = useTheme();
   const memorePath = isEnglish ? "/en/memore" : "/memore";
   const storyPathPrefix = `${memorePath}/stories`;
+
+  useClientLayoutEffect(() => {
+    scrollToPageTop();
+  }, [locale, slug]);
 
   useEffect(() => {
     if (!story) {
@@ -279,7 +294,10 @@ function MemoReStoryPage({ locale = "zh" }: MemoReStoryPageProps) {
 
         <nav className="section memore-story-pagination" aria-label={copy.storyNavigation}>
           {previousStory ? (
-            <Link to={`${storyPathPrefix}/${previousStory.slug}`}>
+            <Link
+              to={`${storyPathPrefix}/${previousStory.slug}`}
+              onClick={scrollToPageTop}
+            >
               <span>{copy.previous}</span>
               <strong>{previousStory.title}</strong>
             </Link>
@@ -291,7 +309,10 @@ function MemoReStoryPage({ locale = "zh" }: MemoReStoryPageProps) {
           )}
 
           {nextStory ? (
-            <Link to={`${storyPathPrefix}/${nextStory.slug}`}>
+            <Link
+              to={`${storyPathPrefix}/${nextStory.slug}`}
+              onClick={scrollToPageTop}
+            >
               <span>{copy.next}</span>
               <strong>{nextStory.title}</strong>
             </Link>
