@@ -99,7 +99,7 @@ export const memoreEnglish = {
   question:
     "What if an app could preserve not just photos, but memories themselves?",
   introduction:
-    "That question led me to build an app for finding your way back to your memories. I named it MemoRe—物语 in Chinese.",
+    "That question led me to build an app for finding your way back to your memories. I named it MemoRe.",
   memoryIngredients:
     "Here, a memory can hold photos and videos, but also words, people, places, time, colors, sounds, music, or even the smallest clue.",
   playfulFeatures: [
