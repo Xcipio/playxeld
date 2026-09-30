@@ -20,7 +20,6 @@ const pageCopy = {
     metadataDescription:
       "MemoRe（物语）是一个采摘、连通、珍藏记忆的 iOS App，让照片、人物、地点、声音与情感重新相遇。",
     iconAlt: "MemoRe App 图标",
-    status: "iOS App · 开发中",
     visualLabel: "MemoRe 界面预览",
     readOrigin: "阅读它的故事",
     viewFeatures: "看功能与故事",
@@ -46,13 +45,12 @@ const pageCopy = {
     closingLead: "记忆从来不只是过去。",
     closingTitle:
       "它们默默影响着现在，也可以带着温暖和慰藉，陪我们走向下一步。",
-    closingMeta: "MemoRe · 物语 · iOS App · 开发中",
+    closingMeta: "MemoRe · 物语",
   },
   en: {
     metadataDescription:
       "MemoRe is an iOS app for gathering, connecting, and cherishing memories—bringing photos, people, places, sounds, and feelings together again.",
     iconAlt: "MemoRe app icon",
-    status: "iOS App · In Development",
     visualLabel: "Preview of the MemoRe interface",
     readOrigin: "Read its story",
     viewFeatures: "Explore features and stories",
@@ -78,7 +76,7 @@ const pageCopy = {
     closingLead: "Memories are never only about the past.",
     closingTitle:
       "They quietly shape the present, and their warmth and comfort can stay with us as we take our next step.",
-    closingMeta: "MemoRe · 物语 · iOS App · In Development",
+    closingMeta: "MemoRe · Memory Stories",
   },
 } as const;
 
@@ -175,7 +173,6 @@ function MemoRePage({ locale = "zh" }: MemoRePageProps) {
                 height="1024"
               />
               <div>
-                <p className="memore-hero-kind">{copy.status}</p>
                 <h1>{content.title}</h1>
               </div>
             </div>

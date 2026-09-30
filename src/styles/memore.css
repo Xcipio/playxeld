@@ -342,7 +342,7 @@
   position: absolute;
   margin: 0;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  border: 2px solid rgba(231, 174, 137, 0.58);
   border-radius: 30px;
   background: #eaf5f7;
   box-shadow: 0 34px 72px rgba(0, 0, 0, 0.3);
@@ -518,6 +518,7 @@
 }
 
 .memore-gallery-item {
+  --memore-gallery-frame: rgba(231, 174, 137, 0.58);
   min-width: 0;
   margin: 0;
 }
@@ -525,7 +526,7 @@
 .memore-gallery-item a {
   display: block;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 2px solid var(--memore-gallery-frame);
   border-radius: 26px;
   background: #eaf5f7;
   box-shadow: 0 22px 52px rgba(0, 0, 0, 0.2);
@@ -678,7 +679,7 @@
 
   .memore-gallery-item a:hover {
     transform: translateY(-5px);
-    border-color: rgba(255, 255, 255, 0.18);
+    border-color: rgba(241, 190, 156, 0.88);
     box-shadow: 0 30px 62px rgba(0, 0, 0, 0.27);
   }
 }
@@ -703,6 +704,10 @@ body[data-theme="light"] .memore-home-card {
   box-shadow:
     0 24px 62px rgba(55, 65, 86, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.72);
+}
+
+body[data-theme="light"] .memore-hero-screen {
+  border-color: rgba(156, 102, 73, 0.38);
 }
 
 body[data-theme="light"] .memore-home-status,
@@ -792,6 +797,10 @@ body[data-theme="light"] .memore-story-section {
 body[data-theme="light"] .memore-possibilities-list > p,
 body[data-theme="light"] .memore-gallery-item figcaption {
   color: rgba(5, 7, 13, 0.52);
+}
+
+body[data-theme="light"] .memore-gallery-item {
+  --memore-gallery-frame: rgba(156, 102, 73, 0.38);
 }
 
 body[data-theme="light"] .memore-story-body p:nth-child(2) {
@@ -1727,6 +1736,10 @@ body[data-theme="light"] .memore-story-quote p {
 
   .memore-verbs {
     margin-top: 24px;
+  }
+
+  body[data-theme="light"] .memore-verbs {
+    background: transparent;
   }
 
   .memore-possibilities-section {

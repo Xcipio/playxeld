@@ -235,7 +235,7 @@ export const memoreStoriesEnglish: readonly MemoReStory[] = [
           "The phrase comes from the Roman poet Horace’s Odes (1.11). It is often translated as “live for today” or “make every moment count,” which can sound like motivational business advice. Yet the Latin carpe comes from carpere, a verb that can also mean to pluck, gather, or harvest.",
         ],
         quote:
-          "carpe diem, quam minimum credula postero.\nGather today, trusting as little as possible in tomorrow.",
+          "Carpe diem, quam minimum credula postero.\nGather today, trusting as little as possible in tomorrow.",
         quoteSource: "Horace, Odes 1.11",
         sourceLink: {
           href: "https://www.perseus.tufts.edu/hopper/text?doc=Perseus%3Atext%3A1999.02.0024%3Abook%3D1%3Apoem%3D11",

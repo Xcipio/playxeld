@@ -277,7 +277,7 @@ export const memoreStories: readonly MemoReStory[] = [
           "Carpe diem——也许大家更熟悉它的英文版本“Seize the day”，即活在当下。看过电影《死亡诗社》的人，大概都会对基廷老师和学生们对这一人生态度的诠释留下印象。",
           "这句话来自古罗马诗人贺拉斯的《颂歌》（Odes 1.11）。很多人把它翻译成“活在当下”或“争分夺秒”，听起来像是在搞励志创业。但拉丁语 carpe 源自动词 carpere，也有采摘、收获的意思。",
         ],
-        quote: "carpe diem, quam minimum credula postero.\n采撷今日，尽可能少地信赖明日。",
+        quote: "Carpe diem, quam minimum credula postero.\n采撷今日，尽可能少地信赖明日。",
         quoteSource: "贺拉斯《颂歌》1.11",
         sourceLink: {
           href: "https://www.perseus.tufts.edu/hopper/text?doc=Perseus%3Atext%3A1999.02.0024%3Abook%3D1%3Apoem%3D11",
