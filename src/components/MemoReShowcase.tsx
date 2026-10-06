@@ -6,7 +6,7 @@ function MemoReShowcase() {
     <section id="memore" className="section memore-home-section">
       <div className="section-header memore-home-heading">
         <div>
-          <p className="section-label">CURRENT PROJECT · IOS APP</p>
+          <p className="section-label">Current project · iOS app</p>
           <h2 className="section-title memore-home-section-title">MemoRe</h2>
         </div>
         <div className="section-meta">
@@ -45,21 +45,27 @@ function MemoReShowcase() {
         </div>
 
         <div className="memore-home-visual" aria-label="MemoRe 界面预览">
-          <figure className="memore-home-screen memore-home-screen-primary">
+          <figure
+            className="memore-home-screen memore-home-screen-primary"
+            style={{ aspectRatio: `${memore.screenshots[0].width} / ${memore.screenshots[0].height}` }}
+          >
             <img
               src={memore.screenshots[0].src}
               alt={memore.screenshots[0].alt}
-              width="1172"
-              height="1564"
+              width={memore.screenshots[0].width}
+              height={memore.screenshots[0].height}
               loading="lazy"
             />
           </figure>
-          <figure className="memore-home-screen memore-home-screen-secondary">
+          <figure
+            className="memore-home-screen memore-home-screen-secondary"
+            style={{ aspectRatio: `${memore.screenshots[10].width} / ${memore.screenshots[10].height}` }}
+          >
             <img
-              src={memore.screenshots[3].src}
-              alt={memore.screenshots[3].alt}
-              width="1172"
-              height="1564"
+              src={memore.screenshots[10].src}
+              alt={memore.screenshots[10].alt}
+              width={memore.screenshots[10].width}
+              height={memore.screenshots[10].height}
               loading="lazy"
             />
           </figure>

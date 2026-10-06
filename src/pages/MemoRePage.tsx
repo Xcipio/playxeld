@@ -3,6 +3,7 @@ import type { CSSProperties } from "react";
 import { Link } from "react-router-dom";
 import SiteTopbar from "../components/SiteTopbar";
 import { memore, memoreEnglish } from "../data/memore";
+import type { MemoReScreenshot } from "../data/memore";
 import { memoreStories } from "../data/memoreStories";
 import { memoreStoriesEnglish } from "../data/memoreStories.en";
 import { useTheme } from "../hooks/useTheme";
@@ -85,6 +86,10 @@ function MemoRePage({ locale = "zh" }: MemoRePageProps) {
   const isEnglish = locale === "en";
   const copy = pageCopy[locale];
   const content = isEnglish ? memoreEnglish : memore;
+  const screenshots: readonly MemoReScreenshot[] = content.screenshots;
+  const heroScreenshots = [0, 3, 10].map(
+    (index) => screenshots[index],
+  );
   const stories = isEnglish ? memoreStoriesEnglish : memoreStories;
   const storyPathPrefix = isEnglish ? "/en/memore/stories" : "/memore/stories";
   const canonicalUrl = `https://playxeld.com${isEnglish ? "/en" : ""}/memore`;
@@ -155,7 +160,7 @@ function MemoRePage({ locale = "zh" }: MemoRePageProps) {
   }, [canonicalUrl, content.tagline, content.title, copy.metadataDescription, isEnglish]);
 
   return (
-    <div className="page memore-page">
+    <div className={`page memore-page${isEnglish ? " memore-page-english" : ""}`}>
       <header className="hero memore-site-hero">
         <SiteTopbar locale={locale} theme={theme} onThemeToggle={toggleTheme} />
       </header>
@@ -163,7 +168,7 @@ function MemoRePage({ locale = "zh" }: MemoRePageProps) {
       <main>
         <section className="section memore-hero-section">
           <div className="memore-hero-copy">
-            <p className="section-label">A MEMORY APP BY PLAYXELD</p>
+            <p className="section-label">A memory app by Playxeld</p>
             <div className="memore-hero-identity">
               <img
                 className="memore-hero-icon"
@@ -192,32 +197,21 @@ function MemoRePage({ locale = "zh" }: MemoRePageProps) {
           </div>
 
           <div className="memore-hero-visual" aria-label={copy.visualLabel}>
-            <figure className="memore-hero-screen memore-hero-screen-one">
-              <img
-                src={content.screenshots[0].src}
-                alt={content.screenshots[0].alt}
-                width="1172"
-                height="1564"
-              />
-            </figure>
-            <figure className="memore-hero-screen memore-hero-screen-two">
-              <img
-                src={content.screenshots[1].src}
-                alt={content.screenshots[1].alt}
-                width="1172"
-                height="1564"
-                loading="lazy"
-              />
-            </figure>
-            <figure className="memore-hero-screen memore-hero-screen-three">
-              <img
-                src={content.screenshots[3].src}
-                alt={content.screenshots[3].alt}
-                width="1172"
-                height="1564"
-                loading="lazy"
-              />
-            </figure>
+            {heroScreenshots.map((screenshot, index) => (
+              <figure
+                key={screenshot.src}
+                className={`memore-hero-screen memore-hero-screen-${["one", "two", "three"][index]}`}
+                style={{ aspectRatio: `${screenshot.width} / ${screenshot.height}` }}
+              >
+                <img
+                  src={screenshot.src}
+                  alt={screenshot.alt}
+                  width={screenshot.width ?? 1172}
+                  height={screenshot.height ?? 1564}
+                  loading={index === 0 ? "eager" : "lazy"}
+                />
+              </figure>
+            ))}
           </div>
         </section>
 
@@ -233,7 +227,7 @@ function MemoRePage({ locale = "zh" }: MemoRePageProps) {
 
         <section className="section memore-possibilities-section">
           <div className="memore-possibilities-copy">
-            <p className="section-label">A MEMORY CAN BE</p>
+            <p className="section-label">A memory can be</p>
             <h2 className="section-title">{copy.memoryTitle}</h2>
             <p>{content.memoryIngredients}</p>
           </div>
@@ -254,7 +248,7 @@ function MemoRePage({ locale = "zh" }: MemoRePageProps) {
         <section id="stories" className="section memore-stories-section">
           <div className="section-header">
             <div>
-              <p className="section-label">FEATURES & STORIES</p>
+              <p className="section-label">Features &amp; stories</p>
               <h2 className="section-title">{copy.storiesTitle}</h2>
             </div>
             <p className="section-meta">{copy.storyCount(stories.length)}</p>
@@ -308,14 +302,14 @@ function MemoRePage({ locale = "zh" }: MemoRePageProps) {
         <section id="inside-memore" className="section memore-gallery-section">
           <div className="section-header">
             <div>
-              <p className="section-label">INSIDE MEMORE</p>
+              <p className="section-label">Inside MemoRe</p>
               <h2 className="section-title">{copy.galleryTitle}</h2>
             </div>
-            <p className="section-meta">{copy.screenshotCount(content.screenshots.length)}</p>
+            <p className="section-meta">{copy.screenshotCount(screenshots.length)}</p>
           </div>
 
           <div className="memore-gallery-grid">
-            {content.screenshots.map((screenshot, index) => (
+            {screenshots.map((screenshot, index) => (
               <figure
                 key={screenshot.src}
                 className={`memore-gallery-item memore-gallery-item-${index + 1}`}
@@ -329,8 +323,8 @@ function MemoRePage({ locale = "zh" }: MemoRePageProps) {
                   <img
                     src={screenshot.src}
                     alt={screenshot.alt}
-                    width="1172"
-                    height="1564"
+                    width={screenshot.width ?? 1172}
+                    height={screenshot.height ?? 1564}
                     loading="lazy"
                   />
                 </a>
@@ -345,7 +339,7 @@ function MemoRePage({ locale = "zh" }: MemoRePageProps) {
 
         <section id="story" className="section memore-story-section">
           <aside className="memore-story-heading">
-            <p className="section-label">WHY MEMORE</p>
+            <p className="section-label">Why MemoRe</p>
             <h2 className="section-title">{copy.originTitle}</h2>
             <p className="memore-story-note">{copy.originNote}</p>
           </aside>

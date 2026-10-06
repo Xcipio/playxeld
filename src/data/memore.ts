@@ -2,7 +2,175 @@ export type MemoReScreenshot = {
   src: string;
   alt: string;
   label: string;
+  width?: number;
+  height?: number;
 };
+
+const memoreScreenshots = [
+    {
+      src: "/memore/en/recall-home.jpg",
+      alt: "English Recall home showing the Mother memory and today's inspiration",
+      label: "Meet a memory again",
+      width: 1206,
+      height: 2490,
+    },
+    {
+      src: "/memore/en/recall.jpg",
+      alt: "English Recall screen with connected memories, unfinished memories, and recent records",
+      label: "Follow a clue or return to a recent memory",
+      width: 1206,
+      height: 2480,
+    },
+    {
+      src: "/memore/en/memories-circles.jpg",
+      alt: "English Memories screen showing saved memories in a circular photo view",
+      label: "Explore memories in circles",
+      width: 1206,
+      height: 2476,
+    },
+    {
+      src: "/memore/en/memories-grid.jpg",
+      alt: "English Memories screen showing saved memories in a photo grid",
+      label: "Look for clues among your photos",
+      width: 1206,
+      height: 2485,
+    },
+    {
+      src: "/memore/en/browse-type.jpg",
+      alt: "English memory browser organizing memories by item, food, and experience",
+      label: "Browse memories by type",
+      width: 1206,
+      height: 2481,
+    },
+    {
+      src: "/memore/en/browse-themes.jpg",
+      alt: "English memory browser organizing memories by personal themes",
+      label: "Find connections through themes",
+      width: 1206,
+      height: 2479,
+    },
+    {
+      src: "/memore/en/browse-time.jpg",
+      alt: "English memory browser grouping memories by year",
+      label: "Revisit memories through time",
+      width: 1206,
+      height: 2474,
+    },
+    {
+      src: "/memore/en/browse-color.png",
+      alt: "English memory browser grouping memories by their colors",
+      label: "Find a memory through its color",
+      width: 1206,
+      height: 2622,
+    },
+    {
+      src: "/memore/en/new-memory.png",
+      alt: "English New Memory form with a name, memory type, and photos or videos",
+      label: "Begin gathering a memory with a name",
+      width: 1206,
+      height: 2622,
+    },
+    {
+      src: "/memore/en/record.png",
+      alt: "English Record menu with a new memory and quick capture for text, photos, and audio",
+      label: "Record in the way that fits the moment",
+      width: 1206,
+      height: 2622,
+    },
+    {
+      src: "/memore/en/storybook-overview.png",
+      alt: "English Storybook overview showing a spider lily memory and its photos",
+      label: "Let memories become your own story",
+      width: 1206,
+      height: 2622,
+    },
+    {
+      src: "/memore/en/storybook-timeline.png",
+      alt: "English Storybook timeline organizing memories by year and month",
+      label: "Follow your story through time",
+      width: 1206,
+      height: 2622,
+    },
+    {
+      src: "/memore/en/immersive-memory.png",
+      alt: "English immersive memory view with a full-screen spider lily photo and its story",
+      label: "Step back into a moment",
+      width: 1206,
+      height: 2622,
+    },
+    {
+      src: "/memore/en/memory-story.png",
+      alt: "English Pork Soup memory with its photo, color, and written story",
+      label: "Keep a photo and the story behind it",
+      width: 1206,
+      height: 2622,
+    },
+    {
+      src: "/memore/en/memory-details.png",
+      alt: "English memory details showing people, place, dining notes, and later visits",
+      label: "Keep the details and follow what happens later",
+      width: 1206,
+      height: 2622,
+    },
+    {
+      src: "/memore/en/memory-space.png",
+      alt: "English Memory Space menu for echoes, sensory clues, collections, rediscovery, and colors",
+      label: "Meet memories again in different spaces",
+      width: 1206,
+      height: 2622,
+    },
+    {
+      src: "/memore/en/collection.png",
+      alt: "English Collection screen with music, books, and art connected to memories",
+      label: "Gather the works that stay with you",
+      width: 1206,
+      height: 2622,
+    },
+    {
+      src: "/memore/en/color-palette.png",
+      alt: "English Color Gallery showing color families as a palette",
+      label: "Explore the colors of memory",
+      width: 1206,
+      height: 2622,
+    },
+    {
+      src: "/memore/en/color-list.png",
+      alt: "English Color Gallery list with color names, hex values, and linked memory counts",
+      label: "Find a color by its name and details",
+      width: 1206,
+      height: 2622,
+    },
+    {
+      src: "/memore/en/sound-museum.png",
+      alt: "English Sound Museum with curated sounds from nature, seasons, and daily life",
+      label: "Preserve the atmosphere of a moment through sound",
+      width: 1206,
+      height: 2622,
+    },
+  ] satisfies MemoReScreenshot[];
+
+const memoreScreenshotChineseCopy = [
+  { label: "重新遇见一段记忆", alt: "MemoRe 回忆主页，展示 Mother 记忆和今日灵感" },
+  { label: "沿着线索回到一段记忆", alt: "MemoRe 回忆主页，展示相关记忆、未完成记忆和最近记录" },
+  { label: "在圆形照片之间浏览记忆", alt: "MemoRe 以圆形照片浏览保存的记忆" },
+  { label: "在照片之间寻找线索", alt: "MemoRe 以照片网格浏览保存的记忆" },
+  { label: "按类型整理记忆", alt: "MemoRe 按物品、食事和经历分类浏览记忆" },
+  { label: "从主题找到记忆的联系", alt: "MemoRe 按个人主题分类浏览记忆" },
+  { label: "沿着时间重温记忆", alt: "MemoRe 按年份浏览记忆" },
+  { label: "从颜色找到一段记忆", alt: "MemoRe 按颜色分类浏览记忆" },
+  { label: "从一个名称开始采摘记忆", alt: "MemoRe 新建记忆页面，填写名称、类型和照片或视频" },
+  { label: "用适合当下的方式记录", alt: "MemoRe 记录菜单，支持新建记忆和文字、照片、声音的快速记录" },
+  { label: "让记忆写成自己的物语", alt: "MemoRe 物语主页，展示彼岸花记忆和多张照片" },
+  { label: "沿着时间读自己的物语", alt: "MemoRe 物语时间线，按年份和月份展示记忆" },
+  { label: "再次走进当时的片刻", alt: "MemoRe 沉浸式记忆视图，展示全屏照片和故事" },
+  { label: "留住照片背后的故事", alt: "MemoRe 猪肉汤记忆详情，展示照片、颜色和文字故事" },
+  { label: "留住细节，续写后来的故事", alt: "MemoRe 记忆详情，展示人物、地点、餐厅笔记和后续经历" },
+  { label: "在不同空间里重新遇见记忆", alt: "MemoRe 记忆空间，汇集回声、感官线索、作品、拾遗和颜色" },
+  { label: "收藏那些留在心里的作品", alt: "MemoRe 作品收藏，展示与记忆有关的音乐、书籍和艺术" },
+  { label: "探索记忆里的颜色", alt: "MemoRe 颜色画廊，以色块展示不同色系" },
+  { label: "从名称和细节认识一种颜色", alt: "MemoRe 颜色画廊列表，展示颜色名称、色值和关联记忆数量" },
+  { label: "用声音保存一段氛围", alt: "MemoRe 声音博物馆，收藏自然、季节和生活环境的声音" },
+] as const;
 
 export const memore = {
   title: "MemoRe",
@@ -28,68 +196,10 @@ export const memore = {
     "这个 App 是我对记录记忆的探索和尝试。不仅是物品，我也用它记录对我来说有趣的片段、难忘的体验和值得留念的经历，透过它们让我重温当时的感受，连系在生活中留下印记的人。",
   ],
   iconSrc: "/memore/app-icon.png",
-  screenshots: [
-    {
-      src: "/memore/recall.jpg",
-      alt: "MemoRe 回忆主页，展示记忆内容与相关线索",
-      label: "重新遇见一段记忆",
-    },
-    {
-      src: "/memore/memory-grid.jpg",
-      alt: "MemoRe 记忆主页，以照片网格浏览保存的记忆",
-      label: "在照片之间寻找线索",
-    },
-    {
-      src: "/memore/memory-browser.jpg",
-      alt: "MemoRe 浏览页面，按照类型、主题、人物和地点整理记忆",
-      label: "按不同线索连通记忆",
-    },
-    {
-      src: "/memore/storybook.jpg",
-      alt: "MemoRe 物语页面，将多段记忆慢慢组成一本书",
-      label: "让记忆写成自己的物语",
-    },
-    {
-      src: "/memore/capture.jpg",
-      alt: "MemoRe 记录菜单，支持新记忆、随想和快速记录",
-      label: "用适合当下的方式记录",
-    },
-    {
-      src: "/memore/new-memory.jpg",
-      alt: "MemoRe 新建记忆页面，依次填写名称、故事和细节",
-      label: "从一个名称开始采摘记忆",
-    },
-    {
-      src: "/memore/custom-types.jpg",
-      alt: "MemoRe 新建记忆类型页面，支持自定义板块与显示顺序",
-      label: "用自己的方式定义记忆",
-    },
-    {
-      src: "/memore/recipe-details.jpg",
-      alt: "MemoRe 食谱记忆详情页，记录菜品标签、食材与做法",
-      label: "把食谱和生活细节留在一起",
-    },
-    {
-      src: "/memore/share-memory.jpg",
-      alt: "MemoRe 记忆分享页面，将一道菜的照片、故事和食谱整理成卡片",
-      label: "把一段记忆分享出去",
-    },
-    {
-      src: "/memore/memory-spaces.jpg",
-      alt: "MemoRe 记忆空间页面，汇集回声、感官线索、作品、拾遗和颜色画廊",
-      label: "在不同空间里重新遇见记忆",
-    },
-    {
-      src: "/memore/sound-museum.jpg",
-      alt: "MemoRe 声音博物馆页面，收藏自然、季节和生活环境的声音",
-      label: "用声音保存一段氛围",
-    },
-    {
-      src: "/memore/color-gallery.jpg",
-      alt: "MemoRe 颜色画廊页面，以色块探索照片中的专属记忆色",
-      label: "从颜色找回当时的感受",
-    },
-  ] satisfies MemoReScreenshot[],
+  screenshots: memoreScreenshots.map((screenshot, index) => ({
+    ...screenshot,
+    ...memoreScreenshotChineseCopy[index],
+  })),
 } as const;
 
 export const memoreEnglish = {
@@ -116,66 +226,5 @@ export const memoreEnglish = {
     "This app is my exploration of how memories can be recorded. Beyond objects, I use it to keep interesting fragments, unforgettable experiences, and moments worth holding on to. Through them, I can revisit how those moments felt and reconnect with the people who left their mark on my life.",
   ],
   iconSrc: "/memore/app-icon.png",
-  screenshots: [
-    {
-      src: "/memore/recall.jpg",
-      alt: "MemoRe memory home showing a memory and its connected clues",
-      label: "Meet a memory again",
-    },
-    {
-      src: "/memore/memory-grid.jpg",
-      alt: "MemoRe memory home showing saved memories in a photo grid",
-      label: "Look for clues among your photos",
-    },
-    {
-      src: "/memore/memory-browser.jpg",
-      alt: "MemoRe browser organizing memories by type, theme, person, and place",
-      label: "Connect memories through different clues",
-    },
-    {
-      src: "/memore/storybook.jpg",
-      alt: "MemoRe storybook turning several memories into a personal book",
-      label: "Let memories become your own story",
-    },
-    {
-      src: "/memore/capture.jpg",
-      alt: "MemoRe capture menu for new memories, passing thoughts, and quick notes",
-      label: "Record in the way that fits the moment",
-    },
-    {
-      src: "/memore/new-memory.jpg",
-      alt: "MemoRe new-memory screen for adding a name, story, and details",
-      label: "Begin gathering a memory with a name",
-    },
-    {
-      src: "/memore/custom-types.jpg",
-      alt: "MemoRe custom memory-type screen for defining sections and their order",
-      label: "Define a memory in your own way",
-    },
-    {
-      src: "/memore/recipe-details.jpg",
-      alt: "MemoRe recipe memory with dish tags, ingredients, and instructions",
-      label: "Keep recipes together with the life around them",
-    },
-    {
-      src: "/memore/share-memory.jpg",
-      alt: "MemoRe sharing screen arranging a photo, story, and recipe into a card",
-      label: "Share a memory with someone",
-    },
-    {
-      src: "/memore/memory-spaces.jpg",
-      alt: "MemoRe spaces for echoes, sensory clues, creations, fragments, and colors",
-      label: "Meet memories again in different spaces",
-    },
-    {
-      src: "/memore/sound-museum.jpg",
-      alt: "MemoRe sound museum preserving sounds from nature, seasons, and daily life",
-      label: "Preserve the atmosphere of a moment through sound",
-    },
-    {
-      src: "/memore/color-gallery.jpg",
-      alt: "MemoRe color gallery for exploring the distinctive colors inside photos",
-      label: "Return to a feeling through color",
-    },
-  ] satisfies MemoReScreenshot[],
+  screenshots: memoreScreenshots,
 } as const;

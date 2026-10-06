@@ -9,7 +9,28 @@
 .memore-home-heading .section-label {
   margin-bottom: 10px;
   color: rgba(240, 190, 156, 0.72);
+  font-family:
+    Baskerville, "Iowan Old Style", "Palatino Linotype", "Book Antiqua",
+    "Songti SC", "Noto Serif SC", Georgia, serif;
+  font-size: 14px;
+  font-variant-caps: small-caps;
+  font-weight: 400;
+  letter-spacing: 0.075em;
+  line-height: 1.35;
   opacity: 1;
+  text-transform: none;
+}
+
+.memore-page:not(.memore-story-page) .section-label {
+  font-family:
+    Baskerville, "Iowan Old Style", "Palatino Linotype", "Book Antiqua",
+    "Songti SC", "Noto Serif SC", Georgia, serif;
+  font-size: 14px;
+  font-variant-caps: small-caps;
+  font-weight: 400;
+  letter-spacing: 0.075em;
+  line-height: 1.35;
+  text-transform: none;
 }
 
 .memore-home-section-title {
@@ -540,7 +561,6 @@
   display: block;
   width: 100%;
   height: auto;
-  aspect-ratio: 1172 / 1564;
   object-fit: cover;
 }
 
@@ -652,9 +672,14 @@
 .memore-closing-section > span {
   margin-top: 30px;
   color: rgba(245, 247, 251, 0.32);
-  font-size: 11px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
+  font-family:
+    Baskerville, "Iowan Old Style", "Palatino Linotype", "Book Antiqua",
+    "Songti SC", "Noto Serif SC", Georgia, serif;
+  font-size: 13px;
+  font-variant-caps: small-caps;
+  font-weight: 400;
+  letter-spacing: 0.075em;
+  line-height: 1.35;
 }
 
 .memore-primary-link:focus-visible,
