@@ -2,7 +2,7 @@
 
 把问题告诉我们，一起找回顺畅记录的感觉。
 
-运营者：以 Playxeld 品牌运营的日本个人开发者。
+MemoRe 由独立开发者 Playxeld 开发和运营。
 
 ## 使用问题与 Bug 反馈
 
@@ -21,7 +21,7 @@
 
 [privacy@playxeld.com](mailto:privacy@playxeld.com)
 
-有关个人信息的查阅、更正、删除、邮件记录删除或本政策的疑问，请联系隐私邮箱。我们会按适用法律处理请求；如确需核实身份，仅要求与请求相称的信息。首版服务对象为已满 14 周岁的用户。涉及低龄用户误用的情况，用户或监护人仍可通过此邮箱咨询或提出请求。请先描述问题，不必主动发送儿童证件、完整记忆备份或其他不必要的敏感资料。
+有关个人信息的查阅、更正、删除、邮件记录删除或本政策的疑问，请联系隐私邮箱。我们会按适用法律处理请求；如确需核实身份，仅要求与请求相称的信息。首发地区为日本、美国和加拿大。未成年用户及其监护人也可通过此邮箱咨询或提出请求；儿童的支持请求请由监护人代为联系。请先描述问题，不必主动发送儿童证件、完整记忆备份或其他不必要的敏感资料。
 
 运营者真实姓名、地址及其他依法应提供的信息，可通过隐私邮箱请求，我们会依适用法律及时答复。
 
@@ -58,3 +58,5 @@ For app support and bug reports, email [support@playxeld.com](mailto:support@pla
 For privacy enquiries or requests concerning your personal information, email [privacy@playxeld.com](mailto:privacy@playxeld.com). We can guide you through managing local and private iCloud content; an email request does not give us remote access to your memories.
 
 Both addresses use Apple iCloud Mail. Support and privacy correspondence and attachments are retained for 12 months after resolution, then deleted. Earlier deletion requests are handled unless retention is legally required. Unresolved correspondence is kept only as needed to handle the issue. The mail provider's own backups, logs and deletion processes follow its applicable policies. Read the [English privacy policy](/en/memore/privacy/).
+
+涉及儿童信息且缺少依法必要的监护人同意时，按隐私政策中的未成年人规则处理，不适用一般的 12 个月保留期。

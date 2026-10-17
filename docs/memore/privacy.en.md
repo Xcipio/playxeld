@@ -1,8 +1,8 @@
 # MemoRe Privacy Policy
 
-Effective date: October 17, 2026. Release scope: Japan and the United States, users aged 14 and over.
+Effective date: October 18, 2026. Release scope: Japan, the United States and Canada.
 
-Operator: an individual developer based in Japan, operating under the Playxeld brand. Privacy: [privacy@playxeld.com](mailto:privacy@playxeld.com). Support: [support@playxeld.com](mailto:support@playxeld.com).
+MemoRe is developed and operated by independent developer Playxeld. Privacy: [privacy@playxeld.com](mailto:privacy@playxeld.com). Support: [support@playxeld.com](mailto:support@playxeld.com).
 
 This policy covers MemoRe, its widget and share extension. It does not cover other independent features of playxeld.com.
 
@@ -26,20 +26,20 @@ You can enter people manually or select system contacts. Selected names, photos 
 
 ## Permissions and external services
 
+The initial production release does not offer Google Books online book search, museum artwork search, or museum-link and image import. Books and artworks can be recorded manually. Previously saved artwork information, relationships and local images remain subject to this policy for storage, sync and deletion. Opening a saved source link is a visit to an external website.
+
 Optional permissions are requested when needed. Refusing or revoking one may prevent the dependent feature from working, while unrelated features remain available.
 
 - Apple WeatherKit receives the location used for weather. With location permission already granted, weather may refresh on launch or return to the foreground.
 - Apple Maps and location services receive place searches, selected places or photo coordinates needed to resolve a place.
 - Apple Music processes searches, song identifiers, relevant authorization and subscription availability, and storefront information for search and playback.
-- Google Books receives book searches such as a title, author or ISBN and book identifiers for information and covers.
-- Art Institute of Chicago (AIC) and The Metropolitan Museum of Art (The Met) receive artwork searches and identifiers for results and images.
 - Loading remote images or opening external links sends requests to the relevant website or image provider.
 
 Providers receive the request information and network information such as an IP address. MemoRe does not send your entire private library to these search services. Queries, photo coordinates needed for place resolution, and content you choose to share are transmitted for those features. Avoid including unnecessary private information in searches.
 
-External providers may keep request or technical logs under their own rules. The Met states that its API collects and retains IP addresses and usage information for service monitoring, analysis and improvement. Deleting a MemoRe record does not delete external logs. You can choose not to use the corresponding online searches and imports.
+External providers may keep request or technical logs under their own rules. Deleting a MemoRe record does not delete external logs. You can choose not to use the corresponding online searches and imports.
 
-Provider information: [Apple](https://www.apple.com/legal/privacy/en-ww/), [Google](https://policies.google.com/privacy) and [Google Books](https://books.google.com/googlebooks/privacy.html), [AIC privacy](https://www.artic.edu/terms#privacy) and [API documentation](https://api.artic.edu/docs/), [The Met privacy](https://www.metmuseum.org/policies/privacy-policy) and [API terms](https://www.metmuseum.org/policies/terms-and-conditions).
+Provider information: [Apple](https://www.apple.com/legal/privacy/en-ww/). Other websites you choose to open have their own privacy rules.
 
 ## Notifications, widgets and sharing
 
@@ -71,7 +71,9 @@ Language, theme, privacy-lock settings and echo interaction state do not sync as
 
 MemoRe uses system storage, permissions and CloudKit, and offers encrypted backups. Privacy Lock protects the entrances identified by the app; it does not add encryption to the entire library, widgets or exported files. System authentication such as Face ID returns an authentication result, not your biometric template.
 
-The app can keep local diagnostic information such as sync stages and error categories. You may choose to provide diagnostics when seeking help; review them before sending. Apple may process or provide developer reports according to your system diagnostics settings and Apple's rules.
+The app can keep local diagnostic information such as sync stages and error categories. You may choose to provide diagnostics when seeking help; review them before sending. For App Store installations, Apple may process or provide developer reports according to your system diagnostics settings.
+
+For TestFlight testing, Apple automatically collects crash logs and usage information and shares them with the developer; system diagnostics settings do not let you opt out of this collection. Apple also collects and shares feedback you choose to submit through TestFlight. This information may include a device identifier and may be associated with your name and email depending on the invitation method or feedback. If you accept an invitation through a public link only, the developer cannot see the name and email in the invitation information. The developer may view this information in Apple's developer tools to investigate issues and improve MemoRe, without downloading reports or forwarding them to third parties. Apple's handling and retention follow TestFlight & Privacy (https://www.apple.com/legal/privacy/data/en/test-flight/).
 
 MemoRe currently has no embedded advertising or behavioral-tracking SDK and no feature that sends private memories to third-party AI. This does not mean external services do not process requests they receive.
 
@@ -85,13 +87,17 @@ When you email us, we receive your email address, displayed name, message and at
 
 Support and privacy correspondence and attachments are retained for 12 months after resolution, then deleted. Earlier deletion requests are handled unless retention is legally required. Unresolved correspondence is retained only as needed to handle the matter. The mail provider's backups, logs and deletion processes follow its rules. An email does not give us remote access to your device or private iCloud memories; we can provide instructions for managing them.
 
-## Age range and Japanese operator information
+## Service regions, minors and operator information
 
-The first release is offered in Japan and the United States to users aged 14 and over, and is not directed to younger children. Mainland China, the EU and the UK are outside this initial release. The service age limit is not a statement that every user aged 14 or over can independently authorize every type of processing. Where legally required, appropriate guardian consent is still necessary.
+MemoRe initially launches in Japan, the United States and Canada. It is a general-purpose private memory tool, not specifically directed to children, and does not impose a universal minimum age of 14. Mainland China, the EU and the UK are outside this initial release. The App Store age rating describes content suitability; it does not establish a user's ability to independently consent to every use of personal information.
 
-If you believe a user under 14 has provided us with personal information, contact privacy@playxeld.com. We will investigate, stop inappropriate processing and delete information we hold as required, or provide instructions for managing device and private iCloud content. Do not send a child's identity documents or full memory library for an initial enquiry.
+Minors should review this policy and the settings for iCloud, location, photos, contacts, music, external links and sharing with a parent or guardian. Apple Account and external-service age and family rules still apply. System permission prompts, store ratings and this policy do not replace parental consent required by law.
 
-For personal data held by the developer in Japan, use the privacy address to request information about purposes, access, correction, cessation of use or deletion as applicable. The operator's legal name, address and other information required by applicable law can be requested at privacy@playxeld.com and will be provided without undue delay as required by law.
+Parents or guardians may contact privacy@playxeld.com to request access, correction, deletion or cessation of processing of children's personal information held by us, or instructions for managing device and private iCloud content. A parent or guardian should contact support on a child's behalf. Do not send children's identity documents, full memory backups, passwords or unnecessary sensitive information.
+
+If we learn that we have received a child's personal information for which required parental consent has not been obtained, we will stop processing that should not continue and delete the information as required by applicable law, or obtain the necessary parental consent before continuing. Such information is not retained for 12 months merely because of the general correspondence retention rule. The app currently has no dedicated age-verification or verifiable parental-consent flow; continued use is not treated as such consent.
+
+For personal data held by the developer, use the privacy address to request information about purposes, access, correction, cessation of use or deletion as applicable. The operator's legal name, address and other information required by applicable law can be requested at privacy@playxeld.com and will be provided without undue delay as required by law.
 
 ## Changes
 

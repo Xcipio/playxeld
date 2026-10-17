@@ -1,6 +1,6 @@
 # MemoRe Support
 
-MemoRe is developed by an individual developer in Japan under the Playxeld brand. The first release is for users aged 14 and over in Japan and the United States.
+MemoRe is developed and operated by independent developer Playxeld. The first release is available in Japan, the United States and Canada.
 
 ## App support
 
@@ -8,7 +8,7 @@ Email [support@playxeld.com](mailto:support@playxeld.com) for help or bug report
 
 ## Privacy and operator information
 
-Email [privacy@playxeld.com](mailto:privacy@playxeld.com) for privacy questions, applicable data requests or legally required information about the operator, including the operator's name and address. We will respond without undue delay as required by applicable law. Information requests do not require you to send unnecessary identity documents. Users or guardians can also report use by someone under 14.
+Email [privacy@playxeld.com](mailto:privacy@playxeld.com) for privacy questions, applicable data requests or legally required information about the operator, including the operator's name and address. We will respond without undue delay as required by applicable law. Information requests do not require you to send unnecessary identity documents. Minors and guardians may also make privacy requests. A parent or guardian should contact support on a child's behalf.
 
 Read the [privacy policy](../privacy/). We cannot remotely access or delete memories on your device or in your private iCloud database merely because you email us; we can guide you through the relevant controls. Requests about correspondence held by us can be handled by us.
 
@@ -25,3 +25,5 @@ Deleting a memory first moves it to Deleted Records. Permanent deletion requires
 ## Correspondence
 
 Both contact addresses use Apple iCloud Mail. We use your email address, displayed name, message and voluntary attachments to respond and handle the matter. Correspondence and attachments are retained for 12 months after resolution, then deleted; earlier deletion requests are handled unless legal retention is required. Unresolved matters are retained only as needed. Provider backups, logs and deletion processes follow its rules.
+
+Children's information lacking legally required parental consent is handled under the minors section of the privacy policy, rather than the general 12-month retention period.
