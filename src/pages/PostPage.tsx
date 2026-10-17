@@ -1,4 +1,7 @@
-import { Link, useParams } from "react-router-dom";
+import { useI18n } from "../hooks/useI18n";
+import { useParams, useSearchParams } from "react-router-dom";
+import LanguageSwitcher from "../components/LanguageSwitcher";
+import Link from "../components/LocalizedLink";
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import CommentsSection from "../components/CommentsSection";
 import ThemeToggle from "../components/ThemeToggle";
@@ -21,7 +24,10 @@ import { Post } from "../types/post";
 const PostContent = lazy(() => import("../components/PostContent"));
 const READ_COMPLETE_STORAGE_KEY = "post-read-complete";
 
-function PostPage({ language = "zh" }: { language?: "zh" | "en" }) {
+function PostPage({ language: sourceLanguage = "zh" }: { language?: "zh" | "en" }) {
+  const { t, dateLocale, locale } = useI18n();
+  const [searchParams] = useSearchParams();
+  const language = locale === "ja" && searchParams.get("content") === "en" ? "en" : sourceLanguage;
   const { slug } = useParams();
   const [post, setPost] = useState<Post | null>(null);
   const [alternatePost, setAlternatePost] = useState<Post | null>(null);
@@ -42,28 +48,35 @@ function PostPage({ language = "zh" }: { language?: "zh" | "en" }) {
   const { theme, toggleTheme } = useTheme();
   const isEnglish = language === "en";
   const uiText = {
-    loading: isEnglish ? "Loading..." : "Loading...",
-    notFound: isEnglish ? "Post not found." : "文章不存在。",
-    backHome: isEnglish ? "← Back to home" : "← 返回首页",
-    shareOpened: isEnglish ? "Share sheet opened" : "已调起分享",
-    copied: isEnglish ? "Link copied" : "链接已复制",
-    shareFailed: isEnglish ? "Unable to share right now" : "暂时无法分享",
-    loadingContent: isEnglish ? "Loading content..." : "内容加载中...",
-    readDone: isEnglish ? "Marked as read" : "已读完",
-    readAction: isEnglish ? "Mark as read" : "读完了",
-    likeAction: isEnglish ? "Like" : "喜欢",
-    likedAction: isEnglish ? "Liked" : "已喜欢",
-    shareArticle: isEnglish ? "Share article" : "分享文章",
-    backToTop: isEnglish ? "Top" : "顶部",
-    continueLabel: isEnglish ? "NEXT" : "NEXT",
-    continueReading: isEnglish ? "Continue Reading" : "继续阅读",
-    previousPost: isEnglish ? "Previous Post" : "上一篇",
-    nextPost: isEnglish ? "Next Post" : "下一篇",
-    relatedPosts: isEnglish ? "Related Posts" : "相关文章",
+    loading: isEnglish ? t("Loading...") : t("Loading..."),
+    notFound: isEnglish ? t("Post not found.") : t("文章不存在。"),
+    backHome: isEnglish ? t("← Back to home") : t("← 返回首页"),
+    shareOpened: isEnglish ? t("Share sheet opened") : t("已调起分享"),
+    copied: isEnglish ? t("Link copied") : t("链接已复制"),
+    shareFailed: isEnglish ? t("Unable to share right now") : t("暂时无法分享"),
+    loadingContent: isEnglish ? t("Loading content...") : t("内容加载中..."),
+    readDone: isEnglish ? t("Marked as read") : t("已读完"),
+    readAction: isEnglish ? t("Mark as read") : t("读完了"),
+    likeAction: isEnglish ? t("Like") : t("喜欢"),
+    likedAction: isEnglish ? t("Liked") : t("已喜欢"),
+    shareArticle: isEnglish ? t("Share article") : t("分享文章"),
+    backToTop: isEnglish ? t("Top") : t("顶部"),
+    continueLabel: isEnglish ? t("NEXT") : t("NEXT"),
+    continueReading: isEnglish ? t("Continue Reading") : t("继续阅读"),
+    previousPost: isEnglish ? t("Previous Post") : t("上一篇"),
+    nextPost: isEnglish ? t("Next Post") : t("下一篇"),
+    relatedPosts: isEnglish ? t("Related Posts") : t("相关文章"),
   };
-  const currentPostUrl = `${window.location.origin}${window.location.pathname}`;
+  const currentPostUrl = `${window.location.origin}${window.location.pathname}${window.location.search}`;
 
   useEffect(() => {
+    if (locale === "ja" && post) document.title = `${post.title} | Playxeld`;
+  }, [locale, post]);
+
+  useEffect(() => {
+    let active = true;
+    setLoading(true);
+    setPost(null);
     const fetchPost = async () => {
       if (!slug) {
         setLoading(false);
@@ -73,6 +86,7 @@ function PostPage({ language = "zh" }: { language?: "zh" | "en" }) {
       setAlternatePost(null);
 
       const { data, error } = await fetchPublishedPostBySlug(slug, language);
+      if (!active) return;
 
       if (error) {
         console.error("Failed to fetch post:", error);
@@ -81,6 +95,7 @@ function PostPage({ language = "zh" }: { language?: "zh" | "en" }) {
 
         if (data) {
           const { data: allPosts, error: allPostsError } = await fetchPublishedPosts(language);
+          if (!active) return;
 
           if (allPostsError) {
             console.error("Failed to fetch surrounding posts:", allPostsError);
@@ -130,6 +145,7 @@ function PostPage({ language = "zh" }: { language?: "zh" | "en" }) {
             const targetLanguage = language === "zh" ? "en" : "zh";
             const { data: translationData, error: translationError } =
               await fetchPublishedPostTranslation(data.translation_group, targetLanguage);
+            if (!active) return;
 
             if (translationError) {
               console.error("Failed to fetch translated post:", translationError);
@@ -150,7 +166,8 @@ function PostPage({ language = "zh" }: { language?: "zh" | "en" }) {
       setLoading(false);
     };
 
-    fetchPost();
+    void fetchPost();
+    return () => { active = false; };
   }, [slug, language]);
 
   useEffect(() => {
@@ -441,7 +458,7 @@ function PostPage({ language = "zh" }: { language?: "zh" | "en" }) {
             <Link
               className="article-home-button"
               to={isEnglish ? "/en" : "/"}
-              aria-label={isEnglish ? "Back to home" : "返回主页"}
+              aria-label={isEnglish ? t("Back to home") : t("返回主页")}
             >
               <svg
                 aria-hidden="true"
@@ -457,29 +474,24 @@ function PostPage({ language = "zh" }: { language?: "zh" | "en" }) {
             </p>
           </div>
           <div className="post-detail-topbar-actions">
-            {alternatePost && (
-              <Link
-                className="post-detail-language-switch"
-                to={
-                  alternatePost.language === "en"
-                    ? `/en/post/${alternatePost.slug}`
-                    : `/post/${alternatePost.slug}`
-                }
-              >
-                {alternatePost.language === "en" ? "English Ver." : "中文版"}
-              </Link>
-            )}
+            <LanguageSwitcher alternates={{
+              zh: post.language === "zh" ? `/post/${post.slug}` : alternatePost ? `/post/${alternatePost.slug}` : "/",
+              en: post.language === "en" ? `/en/post/${post.slug}` : alternatePost ? `/en/post/${alternatePost.slug}` : "/en",
+              ja: `/ja/post/${post.slug}${post.language === "en" ? "?content=en" : ""}`,
+            }} />
             <ThemeToggle
               theme={theme}
               onToggle={toggleTheme}
               locale={language === "en" ? "en" : "zh"}
+              showLanguages={false}
             />
           </div>
         </div>
 
         <article className="post-detail-shell">
+          {locale === "ja" && <p className="original-language-note">本文は{language === "en" ? "英語" : "中国語"}の原文で表示しています。</p>}
           <header className="post-detail-hero post-detail-enter-hero">
-            <p className="section-label">ESSAY</p>
+            <p className="section-label">{t("ESSAY")}</p>
             <h1 className="post-detail-title">{post.title}</h1>
 
             <div className="post-detail-intro">
@@ -487,7 +499,7 @@ function PostPage({ language = "zh" }: { language?: "zh" | "en" }) {
 
               <div className="post-detail-meta-row">
                 <div className="post-detail-date-badge">
-                  {new Date(post.published_at).toLocaleDateString()}
+                  {new Date(post.published_at).toLocaleDateString(dateLocale)}
                 </div>
 
                 {postTags.length > 0 && (
@@ -499,7 +511,7 @@ function PostPage({ language = "zh" }: { language?: "zh" | "en" }) {
                         style={getTagStyle(tag, theme)}
                         to={`/tag/${encodeURIComponent(tag)}`}
                       >
-                        {tag}
+                        {t(tag)}
                       </Link>
                     ))}
                   </div>
@@ -509,7 +521,7 @@ function PostPage({ language = "zh" }: { language?: "zh" | "en" }) {
           </header>
 
           <div className="post-detail-body post-detail-enter-body" ref={postBodyRef}>
-            <div ref={postContentRef}>
+            <div ref={postContentRef} lang={language === "en" ? "en" : "zh-CN"}>
               <Suspense fallback={<p className="post-detail-loading">{uiText.loadingContent}</p>}>
                 <PostContent content={post.content} />
               </Suspense>
@@ -529,7 +541,7 @@ function PostPage({ language = "zh" }: { language?: "zh" | "en" }) {
                 className={`post-like-button ${hasLikedPost ? "is-liked" : ""}`}
                 type="button"
                 onClick={() => void handleToggleLike()}
-                aria-label={hasLikedPost ? "Remove from favorites" : "Add to favorites"}
+                aria-label={locale === "ja" ? (hasLikedPost ? "いいねを取り消す" : "この記事にいいね") : hasLikedPost ? "Remove from favorites" : "Add to favorites"}
                 aria-pressed={hasLikedPost}
                 disabled={likeUpdating}
               >

@@ -1,3 +1,4 @@
+import { useI18n } from "../../hooks/useI18n";
 import { Comment } from "../../types/comment";
 import { CommentNode, findCommentById } from "./commentTree";
 
@@ -22,6 +23,7 @@ function CommentItem({
   ownedCommentIds,
   language,
 }: CommentItemProps) {
+  const { t, dateLocale, locale } = useI18n();
   const nestingLevel = depth > 1 ? "comment-replies-nested" : "comment-replies-root";
   const replyTarget = findCommentById(rootComments, comment.parent_id);
   const isOwnComment = ownedCommentIds.has(comment.id);
@@ -31,13 +33,13 @@ function CommentItem({
       <div className="comment-meta">
         <strong className="comment-author">{comment.author_name}</strong>
         <span className="comment-date">
-          {new Date(comment.created_at).toLocaleDateString()}
+          {new Date(comment.created_at).toLocaleDateString(dateLocale)}
         </span>
       </div>
 
       {replyTarget && (
         <p className="comment-reply-context">
-          {language === "en"
+          {locale === "ja" ? `${comment.author_name} → ${replyTarget.author_name} への返信` : language === "en"
             ? `${comment.author_name} replying to ${replyTarget.author_name}`
             : `${comment.author_name} 回复 ${replyTarget.author_name}`}
         </p>
@@ -51,7 +53,7 @@ function CommentItem({
           type="button"
           onClick={() => onReply(comment)}
         >
-          {language === "en" ? "Reply" : "回复"}
+          {language === "en" ? t("Reply") : t("回复")}
         </button>
         {isOwnComment && (
           <button
@@ -62,11 +64,11 @@ function CommentItem({
           >
             {deletingCommentId === comment.id
               ? language === "en"
-                ? "Deleting..."
-                : "删除中..."
+                ? t("Deleting...")
+                : t("删除中...")
               : language === "en"
-                ? "Delete"
-                : "删除"}
+                ? t("Delete")
+                : t("删除")}
           </button>
         )}
       </div>
@@ -74,7 +76,7 @@ function CommentItem({
       {comment.replies.length > 0 && (
         <div className={`comment-replies ${nestingLevel}`}>
           <p className="comment-replies-label">
-            {language === "en" ? "Replies" : "回复"}
+            {language === "en" ? t("Replies") : t("回复")}
           </p>
           {comment.replies.map((reply) => (
             <CommentItem

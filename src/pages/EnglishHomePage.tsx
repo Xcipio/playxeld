@@ -1,6 +1,8 @@
+import { useI18n } from "../hooks/useI18n";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import Link from "../components/LocalizedLink";
 import SiteTopbar from "../components/SiteTopbar";
+import MemoReShowcase from "../components/MemoReShowcase";
 import { useTheme } from "../hooks/useTheme";
 import { fetchPublishedArtworks } from "../lib/artworks";
 import { pickDailyArtworks } from "../lib/dailyArtworkSelection";
@@ -14,6 +16,7 @@ import type { DailyQuote } from "../types/dailyQuote";
 import { Post } from "../types/post";
 
 function EnglishHomePage() {
+  const { t, dateLocale, locale } = useI18n();
   const [posts, setPosts] = useState<Post[]>([]);
   const [artworks, setArtworks] = useState<Artwork[]>([]);
   const [dailyQuote, setDailyQuote] = useState<DailyQuote | null>(null);
@@ -24,16 +27,21 @@ function EnglishHomePage() {
   const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
+    let active = true;
+    setLoading(true);
+    setPosts([]);
     const loadHomeData = async () => {
       const [
         { data: postData, error: postError },
         { data: artworkData, error: artworkError },
         { data: dailyQuoteData, error: dailyQuoteError },
       ] = await Promise.all([
-        fetchPublishedPosts("en"),
+        fetchPublishedPosts(locale === "ja" ? "zh" : "en"),
         fetchPublishedArtworks(),
         fetchPublishedDailyQuotes(),
       ]);
+
+      if (!active) return;
 
       if (postError) {
         console.error(postError);
@@ -58,13 +66,20 @@ function EnglishHomePage() {
       setLoading(false);
     };
 
-    loadHomeData();
-  }, []);
+    void loadHomeData();
+    return () => { active = false; };
+  }, [locale]);
+
+  useEffect(() => {
+    const previousTitle = document.title;
+    document.title = locale === "ja" ? "Playxeld｜遊びながら、考える" : "Playxeld";
+    return () => { document.title = previousTitle; };
+  }, [locale]);
 
   const latestPost = posts[0] ?? null;
   const remainingPosts = latestPost ? posts.slice(1, 7) : posts.slice(0, 6);
   const featuredArtworks = pickDailyArtworks(artworks, 3);
-  const heroLeadText = "All we need is";
+  const heroLeadText = locale === "ja" ? "私たちに必要なのは" : "All we need is";
   const displayedDailyQuote = selectedDailyQuote ?? dailyQuote ?? {
     quote: "All we need is PLAY",
     author: "Playxeld",
@@ -95,11 +110,11 @@ function EnglishHomePage() {
   return (
     <div className="page">
       <header className="hero english-home">
-        <SiteTopbar locale="en" theme={theme} onThemeToggle={toggleTheme} />
+        <SiteTopbar locale={locale} theme={theme} onThemeToggle={toggleTheme} />
 
         <div className="hero-grid">
           <div className="hero-main">
-            <p className="hero-kicker">WRITER / GAME CREATOR / PLAYER</p>
+            <p className="hero-kicker">{t("WRITER / GAME CREATOR / PLAYER")}</p>
             <h1 className="hero-title english-home-title">
               <span className="hero-title-wave english-home-wave" aria-label={heroLeadText}>
                 {heroLeadText.split("").map((character, index) => (
@@ -132,23 +147,18 @@ function EnglishHomePage() {
               </span>
             </h1>
             <p className="hero-subtitle">
-              A reading space for essays on games, stories, language, and the
-              structures that shape how we think.
-            </p>
+              {t("A reading space for essays on games, stories, language, and the structures that shape how we think.")}</p>
             <p className="hero-subtitle">
-              I am interested in writing that stays alive after reading:
-              reflective, structured, and open enough to be mentally played with.
-            </p>
+              {t("I am interested in writing that stays alive after reading: reflective, structured, and open enough to be mentally played with.")}</p>
 
-            <div className="daily-quote-strip hero-daily-quote" aria-label="Daily quote">
+            <div className="daily-quote-strip hero-daily-quote" aria-label={t("Daily quote")}>
               <button
                 className="daily-quote-label daily-quote-trigger"
                 onClick={shuffleDailyQuote}
                 type="button"
                 disabled={dailyQuotes.length === 0}
               >
-                Today’s Quote
-              </button>
+                {t("Today’s Quote")}</button>
               <blockquote className="daily-quote-text">
                 {displayedDailyQuote.quote}
               </blockquote>
@@ -159,10 +169,10 @@ function EnglishHomePage() {
           </div>
 
           <aside className="hero-side english-home-side">
-            <p className="hero-side-label">Now</p>
+            <p className="hero-side-label">{t("Now")}</p>
             <h2 className="hero-side-title english-home-side-title">
-              <span className="hero-title-gradient">Literature Labyrinth</span>
-              <span className="hero-title-rest"> now updating </span>
+              <span className="hero-title-gradient">{t("Literature Labyrinth")}</span>
+              <span className="hero-title-rest"> {t("now updating")}</span>
               <span className="hero-title-dots" aria-hidden="true">
                 <span className="hero-title-dot hero-title-dot-one">.</span>
                 <span className="hero-title-dot hero-title-dot-two">.</span>
@@ -171,21 +181,14 @@ function EnglishHomePage() {
             </h2>
             <p className="hero-side-text">📚 🎬 🎷 🎴 🏙️ 💡 → 🤹 🎮</p>
             <p className="hero-side-text">
-              I am trying to bring together long-form essays, experimental
-              notes, and thought models that feel playable.
-            </p>
+              {t("I am trying to bring together long-form essays, experimental notes, and thought models that feel playable.")}</p>
             <p className="hero-side-text">
-              So thinking stops being only static reading, and becomes a more
-              interactive mental practice, closer to how a game is played.
-            </p>
+              {t("So thinking stops being only static reading, and becomes a more interactive mental practice, closer to how a game is played.")}</p>
             <div className="hero-side-card english-home-side-card">
               <p className="hero-side-card-label hero-side-card-title">
-                Language Switch
-              </p>
+                {t("Language Switch")}</p>
               <p className="hero-side-card-text">
-                If an article exists in both versions, you can switch languages
-                directly from the article page.
-              </p>
+                {t("If an article exists in both versions, you can switch languages directly from the article page.")}</p>
             </div>
           </aside>
         </div>
@@ -195,11 +198,10 @@ function EnglishHomePage() {
         <div className="section-header">
           <div className="latest-release-heading">
             <h2 className="section-title english-home-section-title english-home-section-title-primary">
-              Latest Essay
-            </h2>
+              {t("Latest Essay")}</h2>
             {latestPost && (
               <div className="section-meta latest-release-date-badge">
-                {new Date(latestPost.published_at).toLocaleDateString("en-US")}
+                {new Date(latestPost.published_at).toLocaleDateString(dateLocale)}
               </div>
             )}
           </div>
@@ -212,23 +214,22 @@ function EnglishHomePage() {
         ) : latestPost ? (
           <article className="latest-release-card">
             <div className="latest-release-copy">
-              <p className="latest-release-label">Latest Release</p>
+              <p className="latest-release-label">{t("Latest Release")}</p>
               <h3 className="latest-release-title">
-                <Link to={`/en/post/${latestPost.slug}`}>{latestPost.title}</Link>
+                <Link to={`${locale === "ja" ? "" : "/en"}/post/${latestPost.slug}`}>{latestPost.title}</Link>
               </h3>
               <p className="latest-release-excerpt">{latestPost.excerpt}</p>
               <div className="latest-release-actions">
                 <Link
-                  to={`/en/post/${latestPost.slug}`}
+                  to={`${locale === "ja" ? "" : "/en"}/post/${latestPost.slug}`}
                   className="post-link latest-release-link"
                 >
-                  Read the essay →
-                </Link>
+                  {t("Read the essay →")}</Link>
               </div>
             </div>
           </article>
         ) : (
-          <p>No published English essays yet.</p>
+          <p>{t("No published English essays yet.")}</p>
         )}
       </section>
 
@@ -236,10 +237,9 @@ function EnglishHomePage() {
         <section className="section home-art-section">
           <div className="section-header">
             <h2 className="section-title english-home-section-title english-home-section-title-secondary">
-              Gallery
-            </h2>
+              {t("Gallery")}</h2>
             <div className="section-meta">
-              <Link to="/art?lang=en">Enter Arts →</Link>
+              <Link to="/art?lang=en">{t("Enter Arts →")}</Link>
             </div>
           </div>
 
@@ -274,8 +274,7 @@ function EnglishHomePage() {
                     to={`/art/${artwork.slug}`}
                     className="post-link art-card-link"
                   >
-                    View artwork →
-                  </Link>
+                    {t("View artwork →")}</Link>
                 </div>
               </article>
             ))}
@@ -283,12 +282,13 @@ function EnglishHomePage() {
         </section>
       )}
 
+      {locale === "ja" && <MemoReShowcase />}
+
       <section id="essays" className="section posts-section">
         <div className="section-header">
           <h2 className="section-title english-home-section-title english-home-section-title-tertiary">
-            Recent Essays
-          </h2>
-          <div className="section-meta">{posts.length} essays</div>
+            {t("Recent Essays")}</h2>
+          <div className="section-meta">{posts.length} {t("essays")}</div>
         </div>
 
         {loading ? (
@@ -300,63 +300,51 @@ function EnglishHomePage() {
             {remainingPosts.map((post) => (
               <article key={post.id} className="post-card">
                 <div className="post-meta">
-                  {new Date(post.published_at).toLocaleDateString("en-US")}
+                  {new Date(post.published_at).toLocaleDateString(dateLocale)}
                 </div>
 
                 <h3 className="post-title">
-                  <Link to={`/en/post/${post.slug}`}>{post.title}</Link>
+                  <Link to={`${locale === "ja" ? "" : "/en"}/post/${post.slug}`}>{post.title}</Link>
                 </h3>
 
                 <p className="post-excerpt">{post.excerpt}</p>
 
-                <Link to={`/en/post/${post.slug}`} className="post-link">
-                  Read more →
-                </Link>
+                <Link to={`${locale === "ja" ? "" : "/en"}/post/${post.slug}`} className="post-link">
+                  {t("Read more →")}</Link>
               </article>
             ))}
           </div>
         ) : (
-          <p>No additional English essays yet.</p>
+          <p>{t("No additional English essays yet.")}</p>
         )}
       </section>
 
       <section id="about" className="section">
-        <p className="section-label">ABOUT</p>
+        <p className="section-label">{t("ABOUT")}</p>
         <h2 className="section-title english-home-section-title english-home-section-title-quaternary">
-          Intent
-        </h2>
+          {t("Intent")}</h2>
         <p className="section-text">
-          Playxeld is where I test ideas in public. I write about games, story
-          structures, literary figures, historical imagination, and the kinds of
-          systems that sharpen perception.
-        </p>
+          {t("Playxeld is where I test ideas in public. I write about games, story structures, literary figures, historical imagination, and the kinds of systems that sharpen perception.")}</p>
         <p className="section-text">
-          The goal is not only to archive thoughts, but to turn scattered
-          intuitions into forms that can be read, questioned, and played with.
-          The English side of the site will stay selective rather than exhaustive.
-        </p>
+          {t("The goal is not only to archive thoughts, but to turn scattered intuitions into forms that can be read, questioned, and played with. The English side of the site will stay selective rather than exhaustive.")}</p>
       </section>
 
       <section id="contact" className="section contact-section">
         <div className="contact-panel">
           <div className="contact-copy">
-            <p className="section-label">CONTACT</p>
+            <p className="section-label">{t("CONTACT")}</p>
             <h2 className="section-title contact-title english-home-section-title english-home-section-title-quinary">
-              Write to me
-            </h2>
+              {t("Write to me")}</h2>
             <p className="section-text contact-text">
-              If you want to talk about games, writing, image-making, or simply
-              share an interesting idea, feel free to leave a comment or send an
-              email.
-            </p>
+              {t("If you want to talk about games, writing, image-making, or simply share an interesting idea, feel free to leave a comment or send an email.")}</p>
           </div>
 
           <div className="contact-card">
-            <p className="contact-card-label">Email</p>
+            <p className="contact-card-label">{t("Email")}</p>
             <a
               className="contact-email"
               href="mailto:playxeld@gmail.com"
-              aria-label="Send email to playxeld@gmail.com"
+              aria-label={t("Send email to playxeld@gmail.com")}
             >
               playxeld@gmail.com
             </a>
@@ -364,10 +352,9 @@ function EnglishHomePage() {
             <a
               className="contact-action"
               href="mailto:playxeld@gmail.com"
-              aria-label="Write an email to playxeld@gmail.com"
+              aria-label={t("Write an email to playxeld@gmail.com")}
             >
-              ✏️ Write to me
-            </a>
+              {t("✏️ Write to me")}</a>
           </div>
         </div>
       </section>

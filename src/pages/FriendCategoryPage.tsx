@@ -1,5 +1,7 @@
+import { useI18n } from "../hooks/useI18n";
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import Link from "../components/LocalizedLink";
 import ThemeToggle from "../components/ThemeToggle";
 import { useTheme } from "../hooks/useTheme";
 import {
@@ -13,6 +15,7 @@ import { getTagStyle, sortTags } from "../lib/tags";
 import { FriendArticle } from "../types/friendArticle";
 
 function FriendCategoryPage() {
+  const { t, dateLocale } = useI18n();
   const { categorySlug } = useParams();
   const { theme, toggleTheme } = useTheme();
   const [articles, setArticles] = useState<FriendArticle[]>([]);
@@ -51,11 +54,11 @@ function FriendCategoryPage() {
         <section className="section friends-page-section">
           <div className="tag-page-topbar">
             <p className="tag-page-back">
-              <Link to="/friends">← 返回 Friends</Link>
+              <Link to="/friends">{t("← 返回 Friends")}</Link>
             </p>
             <ThemeToggle theme={theme} onToggle={toggleTheme} />
           </div>
-          <p>栏目不存在。</p>
+          <p>{t("栏目不存在。")}</p>
         </section>
       </div>
     );
@@ -70,23 +73,22 @@ function FriendCategoryPage() {
       <section className="section friends-page-section">
         <div className="tag-page-topbar">
           <p className="tag-page-back">
-            <Link to="/friends">← 返回 Friends</Link>
+            <Link to="/friends">{t("← 返回 Friends")}</Link>
           </p>
           <ThemeToggle theme={theme} onToggle={toggleTheme} />
         </div>
 
         <div className="friends-page-hero friends-category-hero">
           <div className="friends-page-hero-copy">
-            <p className="section-label">{meta.englishLabel}</p>
-            <h1 className="tag-page-title">{meta.title}</h1>
-            <p className="tag-page-description">{meta.description}</p>
+            <p className="section-label">{t(meta.englishLabel)}</p>
+            <h1 className="tag-page-title">{t(meta.title)}</h1>
+            <p className="tag-page-description">{t(meta.description)}</p>
             <p className="tag-page-subtitle">
-              当前这个栏目共有 {articles.length} 篇公开文章。
-            </p>
+              {t("当前这个栏目共有")}{articles.length} {t("篇公开文章。")}</p>
           </div>
 
           <div className="friends-category-nav-card">
-            <p className="friends-page-overview-label">Category Index</p>
+            <p className="friends-page-overview-label">{t("Category Index")}</p>
             <div className="friends-category-nav-list">
               {Object.entries(friendArticleCategoryMeta).map(
                 ([entryCategory, entryMeta]) => (
@@ -97,8 +99,8 @@ function FriendCategoryPage() {
                     }`}
                     to={getFriendArticleCategoryPath(entryCategory as typeof category)}
                   >
-                    <span>{entryMeta.title}</span>
-                    <span>{entryMeta.englishLabel}</span>
+                    <span>{t(entryMeta.title)}</span>
+                    <span>{t(entryMeta.englishLabel)}</span>
                   </Link>
                 ),
               )}
@@ -119,10 +121,10 @@ function FriendCategoryPage() {
                     className="friend-article-category-mark"
                     aria-hidden="true"
                   />
-                  {category}
+                  {t(category)}
                 </span>
                 <span className="friends-column-featured-date">
-                  {new Date(featuredArticle.published_at).toLocaleDateString()}
+                  {new Date(featuredArticle.published_at).toLocaleDateString(dateLocale)}
                 </span>
               </div>
 
@@ -149,11 +151,10 @@ function FriendCategoryPage() {
                     />
                   ) : (
                     <span className="friends-author-avatar friends-author-avatar-fallback">
-                      友
-                    </span>
+                      {t("友")}</span>
                   )}
                   <span className="friends-author-chip">
-                    作者：{featuredArticle.author_name}
+                    {t("作者：")}{featuredArticle.author_name}
                   </span>
                 </div>
                 {featuredArticle.tags.length > 0 && (
@@ -164,7 +165,7 @@ function FriendCategoryPage() {
                         className="hero-tag-button friends-tag-chip"
                         style={getTagStyle(tag, theme)}
                       >
-                        {tag}
+                        {t(tag)}
                       </span>
                     ))}
                   </div>
@@ -176,7 +177,7 @@ function FriendCategoryPage() {
               {remainingArticles.map((article) => (
                 <article key={article.id} className="friends-column-compact-card">
                   <div className="friends-column-compact-meta">
-                    <span>{new Date(article.published_at).toLocaleDateString()}</span>
+                    <span>{new Date(article.published_at).toLocaleDateString(dateLocale)}</span>
                     <span>{article.author_name}</span>
                   </div>
 
@@ -195,9 +196,9 @@ function FriendCategoryPage() {
           </div>
         ) : (
           <div className="friends-page-empty-card">
-            <p className="friends-page-empty-label">Empty Column</p>
-            <h2 className="friends-page-empty-title">{meta.emptyTitle}</h2>
-            <p className="friends-page-empty-text">{meta.emptyDescription}</p>
+            <p className="friends-page-empty-label">{t("Empty Column")}</p>
+            <h2 className="friends-page-empty-title">{t(meta.emptyTitle)}</h2>
+            <p className="friends-page-empty-text">{t(meta.emptyDescription)}</p>
           </div>
         )}
       </section>

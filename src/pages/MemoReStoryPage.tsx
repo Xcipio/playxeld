@@ -7,13 +7,14 @@ import {
   MemoReStoryImage,
 } from "../data/memoreStories";
 import { memoreStoriesEnglish } from "../data/memoreStories.en";
+import { memoreStoriesJapanese } from "../data/memore.ja";
 import { useTheme } from "../hooks/useTheme";
 
 const siteUrl = "https://playxeld.com";
 const useClientLayoutEffect =
   typeof window === "undefined" ? useEffect : useLayoutEffect;
 
-type MemoReStoryLocale = "zh" | "en";
+type MemoReStoryLocale = "zh" | "en" | "ja";
 
 type MemoReStoryPageProps = {
   locale?: MemoReStoryLocale;
@@ -47,6 +48,12 @@ const pageCopy = {
     next: "Next story",
     back: "Back",
     overview: "MemoRe overview",
+  },
+  ja: {
+    openOriginal: (caption: string) => `元の画像を開く：${caption}`, notFound: "ストーリーが見つかりません",
+    backToStories: "機能とストーリーに戻る", breadcrumb: "パンくずリスト", featuresAndStories: "機能とストーリー",
+    emojiLabel: "りんご、みかん、バナナ、すいか、ぶどう、ブルーベリー、いちご、パイナップル、キウイ、メロン、梨、マンゴー、桃、さくらんぼ、レモン、青りんご、ココナッツ、ライム",
+    storyNavigation: "MemoRe のストーリーナビゲーション", previous: "前のストーリー", next: "次のストーリー", back: "戻る", overview: "MemoRe の紹介",
   },
 } as const;
 
@@ -89,10 +96,10 @@ function MemoReStoryPage({ locale = "zh" }: MemoReStoryPageProps) {
   const { slug } = useParams<{ slug: string }>();
   const isEnglish = locale === "en";
   const copy = pageCopy[locale];
-  const stories = isEnglish ? memoreStoriesEnglish : memoreStories;
+  const stories = locale === "ja" ? memoreStoriesJapanese : isEnglish ? memoreStoriesEnglish : memoreStories;
   const story = stories.find((entry) => entry.slug === slug) ?? null;
   const { theme, toggleTheme } = useTheme();
-  const memorePath = isEnglish ? "/en/memore" : "/memore";
+  const memorePath = `${locale === "zh" ? "" : `/${locale}`}/memore`;
   const storyPathPrefix = `${memorePath}/stories`;
 
   useClientLayoutEffect(() => {
@@ -133,7 +140,7 @@ function MemoReStoryPage({ locale = "zh" }: MemoReStoryPageProps) {
     const createdCanonical = !canonical;
 
     document.title = `${story.title}｜MemoRe`;
-    document.documentElement.lang = isEnglish ? "en" : "zh-CN";
+    document.documentElement.lang = locale === "zh" ? "zh-CN" : locale;
     metadataUpdates.forEach(([selector, attribute, value]) => {
       document.querySelector<HTMLMetaElement>(selector)?.setAttribute(attribute, value);
     });
@@ -164,7 +171,7 @@ function MemoReStoryPage({ locale = "zh" }: MemoReStoryPageProps) {
         canonical.href = previousCanonical;
       }
     };
-  }, [isEnglish, story, storyPathPrefix]);
+  }, [locale, story, storyPathPrefix]);
 
   if (!story) {
     return (
@@ -215,7 +222,8 @@ function MemoReStoryPage({ locale = "zh" }: MemoReStoryPageProps) {
           <StoryImage image={story.cover} locale={locale} eager />
         </section>
 
-        <article className="section memore-story-article">
+        <article className="section memore-story-article" lang={locale === "ja" ? "en" : undefined}>
+          {locale === "ja" && <p className="original-language-note" lang="ja">このストーリーの本文は英語の原文です。</p>}
           {story.sections.map((section, sectionIndex) => (
             <section
               className="memore-story-content-section"

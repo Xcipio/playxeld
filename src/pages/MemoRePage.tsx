@@ -6,11 +6,13 @@ import { memore, memoreEnglish } from "../data/memore";
 import type { MemoReScreenshot } from "../data/memore";
 import { memoreStories } from "../data/memoreStories";
 import { memoreStoriesEnglish } from "../data/memoreStories.en";
+import { memoreJapanese, memoreStoriesJapanese } from "../data/memore.ja";
+import { useI18n } from "../hooks/useI18n";
 import { useTheme } from "../hooks/useTheme";
 
 const socialImageUrl = "https://playxeld.com/memore/app-icon.png";
 
-type MemoReLocale = "zh" | "en";
+type MemoReLocale = "zh" | "en" | "ja";
 
 type MemoRePageProps = {
   locale?: MemoReLocale;
@@ -79,20 +81,34 @@ const pageCopy = {
       "They quietly shape the present, and their warmth and comfort can stay with us as we take our next step.",
     closingMeta: "MemoRe · Memory Stories",
   },
+  ja: {
+    metadataDescription: "MemoRe は、記憶を集め、つなぎ、大切にする iOS アプリです。写真、人、場所、音、気持ちにもう一度出会うために。",
+    iconAlt: "MemoRe アプリアイコン", visualLabel: "MemoRe の画面プレビュー",
+    readOrigin: "生まれたきっかけを読む", viewFeatures: "機能とストーリーを見る", verbsLabel: "MemoRe の三つのアクション",
+    verbs: [["集める", "写真、音、色、小さな手がかりから、いまを残す。"], ["つなぐ", "物、人、場所、気持ちのつながりを見つける。"], ["大切にする", "散りばめられた経験を、自分だけの物語にする。"]],
+    memoryTitle: "記憶は、写真だけではありません", playfulLead: "こんな、少し遊び心のある機能も加えました。",
+    storiesTitle: "一つの経験から、機能が生まれる", storyCount: (count: number) => `${count} 件のストーリー`,
+    storiesIntro: "MemoRe の機能と、それが生まれた理由を綴っています。それぞれの入り口の向こうには、残したかった気持ちがあります。本文は英語の原文でお読みいただけます。",
+    readAria: (title: string) => `ストーリーを読む：${title}`, readStory: "ストーリーを読む",
+    galleryTitle: "記憶を、手の届くところへ", screenshotCount: (count: number) => `${count} 枚の画面`, openOriginal: (label: string) => `元の画像を開く：${label}`,
+    originTitle: "一組の花札から始まった記憶", originNote: "MemoRe の始まりは、祖母との思い出でした。",
+    closingLead: "記憶は、過去だけのものではありません。", closingTitle: "いまを静かにかたちづくり、ぬくもりや慰めとともに、次の一歩へつながっていきます。", closingMeta: "MemoRe · 記憶の物語",
+  },
 } as const;
 
 function MemoRePage({ locale = "zh" }: MemoRePageProps) {
+  const { t } = useI18n();
   const { theme, toggleTheme } = useTheme();
   const isEnglish = locale === "en";
   const copy = pageCopy[locale];
-  const content = isEnglish ? memoreEnglish : memore;
+  const content = locale === "ja" ? memoreJapanese : isEnglish ? memoreEnglish : memore;
   const screenshots: readonly MemoReScreenshot[] = content.screenshots;
   const heroScreenshots = [0, 3, 10].map(
     (index) => screenshots[index],
   );
-  const stories = isEnglish ? memoreStoriesEnglish : memoreStories;
-  const storyPathPrefix = isEnglish ? "/en/memore/stories" : "/memore/stories";
-  const canonicalUrl = `https://playxeld.com${isEnglish ? "/en" : ""}/memore`;
+  const stories = locale === "ja" ? memoreStoriesJapanese : isEnglish ? memoreStoriesEnglish : memoreStories;
+  const storyPathPrefix = `${locale === "zh" ? "" : `/${locale}`}/memore/stories`;
+  const canonicalUrl = `https://playxeld.com${locale === "zh" ? "" : `/${locale}`}/memore`;
 
   useEffect(() => {
     const previousTitle = document.title;
@@ -124,7 +140,7 @@ function MemoRePage({ locale = "zh" }: MemoRePageProps) {
     const createdCanonical = !canonical;
 
     document.title = `${content.title}｜${content.tagline}`;
-    document.documentElement.lang = isEnglish ? "en" : "zh-CN";
+    document.documentElement.lang = locale === "zh" ? "zh-CN" : locale;
     metadataUpdates.forEach(([selector, attribute, value]) => {
       document
         .querySelector<HTMLMetaElement>(selector)
@@ -157,7 +173,7 @@ function MemoRePage({ locale = "zh" }: MemoRePageProps) {
         canonical.href = previousCanonical;
       }
     };
-  }, [canonicalUrl, content.tagline, content.title, copy.metadataDescription, isEnglish]);
+  }, [canonicalUrl, content.tagline, content.title, copy.metadataDescription, locale]);
 
   return (
     <div className={`page memore-page${isEnglish ? " memore-page-english" : ""}`}>
@@ -168,7 +184,7 @@ function MemoRePage({ locale = "zh" }: MemoRePageProps) {
       <main>
         <section className="section memore-hero-section">
           <div className="memore-hero-copy">
-            <p className="section-label">A memory app by Playxeld</p>
+            <p className="section-label">{t("A memory app by Playxeld")}</p>
             <div className="memore-hero-identity">
               <img
                 className="memore-hero-icon"
@@ -227,7 +243,7 @@ function MemoRePage({ locale = "zh" }: MemoRePageProps) {
 
         <section className="section memore-possibilities-section">
           <div className="memore-possibilities-copy">
-            <p className="section-label">A memory can be</p>
+            <p className="section-label">{t("A memory can be")}</p>
             <h2 className="section-title">{copy.memoryTitle}</h2>
             <p>{content.memoryIngredients}</p>
           </div>
@@ -248,7 +264,7 @@ function MemoRePage({ locale = "zh" }: MemoRePageProps) {
         <section id="stories" className="section memore-stories-section">
           <div className="section-header">
             <div>
-              <p className="section-label">Features &amp; stories</p>
+              <p className="section-label">{t("Features & stories")}</p>
               <h2 className="section-title">{copy.storiesTitle}</h2>
             </div>
             <p className="section-meta">{copy.storyCount(stories.length)}</p>
@@ -302,7 +318,7 @@ function MemoRePage({ locale = "zh" }: MemoRePageProps) {
         <section id="inside-memore" className="section memore-gallery-section">
           <div className="section-header">
             <div>
-              <p className="section-label">Inside MemoRe</p>
+              <p className="section-label">{t("Inside MemoRe")}</p>
               <h2 className="section-title">{copy.galleryTitle}</h2>
             </div>
             <p className="section-meta">{copy.screenshotCount(screenshots.length)}</p>
@@ -339,7 +355,7 @@ function MemoRePage({ locale = "zh" }: MemoRePageProps) {
 
         <section id="story" className="section memore-story-section">
           <aside className="memore-story-heading">
-            <p className="section-label">Why MemoRe</p>
+            <p className="section-label">{t("Why MemoRe")}</p>
             <h2 className="section-title">{copy.originTitle}</h2>
             <p className="memore-story-note">{copy.originNote}</p>
           </aside>
@@ -362,9 +378,9 @@ function MemoRePage({ locale = "zh" }: MemoRePageProps) {
           <p>{copy.closingLead}</p>
           <h2>{copy.closingTitle}</h2>
           <span>{copy.closingMeta}</span>
-          <nav className="memore-help-links" aria-label={isEnglish ? "Support and privacy" : "支持与隐私"}>
-            <a href={`${isEnglish ? "/en" : ""}/memore/support/`}>{isEnglish ? "Support" : "使用支持"}</a>
-            <a href={`${isEnglish ? "/en" : ""}/memore/privacy/`}>{isEnglish ? "Privacy policy" : "隐私政策"}</a>
+          <nav className="memore-help-links" aria-label={t(isEnglish ? "Support and privacy" : "支持与隐私")}>
+            <a href={`${locale === "zh" ? "" : `/${locale}`}/memore/support/`}>{t(isEnglish ? "Support" : "使用支持")}</a>
+            <a href={`${locale === "zh" ? "" : `/${locale}`}/memore/privacy/`}>{locale === "ja" ? "プライバシーポリシー" : isEnglish ? "Privacy policy" : "隐私政策"}</a>
             <a href="mailto:support@playxeld.com">support@playxeld.com</a>
           </nav>
         </section>

@@ -1,11 +1,14 @@
+import { useI18n } from "../hooks/useI18n";
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import Link from "../components/LocalizedLink";
 import ThemeToggle from "../components/ThemeToggle";
 import { useTheme } from "../hooks/useTheme";
 import { fetchPublishedArtworkBySlug } from "../lib/artworks";
 import { Artwork } from "../types/artwork";
 
 function ArtworkDetailPage() {
+  const { t } = useI18n();
   const { slug } = useParams();
   const { theme, toggleTheme } = useTheme();
   const [artwork, setArtwork] = useState<Artwork | null>(null);
@@ -50,11 +53,11 @@ function ArtworkDetailPage() {
         <section className="section art-detail-section">
           <div className="tag-page-topbar">
             <p className="tag-page-back">
-              <Link to="/art">← Back to art</Link>
+              <Link to="/art">{t("← Back to art")}</Link>
             </p>
             <ThemeToggle theme={theme} onToggle={toggleTheme} />
           </div>
-          <p>Artwork not found.</p>
+          <p>{t("Artwork not found.")}</p>
         </section>
       </div>
     );
@@ -70,13 +73,13 @@ function ArtworkDetailPage() {
       <section className="section art-detail-section">
         <div className="tag-page-topbar">
           <p className="tag-page-back">
-            <Link to="/art">← Back to art</Link>
+            <Link to="/art">{t("← Back to art")}</Link>
           </p>
           <ThemeToggle theme={theme} onToggle={toggleTheme} />
         </div>
 
         <div className="art-detail-hero">
-          <p className="section-label">ARTWORK</p>
+          <p className="section-label">{t("ARTWORK")}</p>
           <h1 className="art-detail-title">{artwork.title}</h1>
           {artwork.subtitle && (
             <p className="art-detail-subtitle">{artwork.subtitle}</p>
@@ -111,32 +114,31 @@ function ArtworkDetailPage() {
           </div>
 
           <aside className="art-detail-sidebar">
-            <p className="art-detail-sidebar-label">作品说明</p>
+            <p className="art-detail-sidebar-label">{t("作品说明")}</p>
             {artwork.description ? (
               <p className="art-detail-description">{artwork.description}</p>
             ) : (
               <p className="art-detail-description">
-                这件作品目前还没有补充说明，后续会继续完善创作背景与过程记录。
-              </p>
+                {t("这件作品目前还没有补充说明，后续会继续完善创作背景与过程记录。")}</p>
             )}
 
             {(artwork.year || artwork.medium || artwork.series) && (
               <dl className="art-detail-facts">
                 {artwork.year && (
                   <>
-                    <dt>年份</dt>
+                    <dt>{t("年份")}</dt>
                     <dd>{artwork.year}</dd>
                   </>
                 )}
                 {artwork.medium && (
                   <>
-                    <dt>媒介</dt>
+                    <dt>{t("媒介")}</dt>
                     <dd>{artwork.medium}</dd>
                   </>
                 )}
                 {artwork.series && (
                   <>
-                    <dt>系列</dt>
+                    <dt>{t("系列")}</dt>
                     <dd>{artwork.series}</dd>
                   </>
                 )}

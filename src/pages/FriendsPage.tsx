@@ -1,5 +1,6 @@
+import { useI18n } from "../hooks/useI18n";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import Link from "../components/LocalizedLink";
 import ThemeToggle from "../components/ThemeToggle";
 import { useTheme } from "../hooks/useTheme";
 import {
@@ -13,6 +14,7 @@ import { getTagStyle, sortTags } from "../lib/tags";
 import { FriendArticle } from "../types/friendArticle";
 
 function FriendsPage() {
+  const { t, dateLocale } = useI18n();
   const { theme, toggleTheme } = useTheme();
   const [articles, setArticles] = useState<FriendArticle[]>([]);
   const [loading, setLoading] = useState(true);
@@ -40,21 +42,19 @@ function FriendsPage() {
       <section className="section friends-page-section">
         <div className="tag-page-topbar">
           <p className="tag-page-back">
-            <Link to="/">← 返回主页</Link>
+            <Link to="/">{t("← 返回主页")}</Link>
           </p>
           <ThemeToggle theme={theme} onToggle={toggleTheme} />
         </div>
 
         <div className="friends-page-hero">
           <div className="friends-page-hero-copy">
-            <p className="section-label">FRIENDS</p>
-            <h1 className="tag-page-title">投稿</h1>
+            <p className="section-label">{t("FRIENDS")}</p>
+            <h1 className="tag-page-title">{t("投稿")}</h1>
             <p className="tag-page-description">
-              这里收录朋友们发布到 Playxeld 的文章。
-            </p>
+              {t("这里收录朋友们发布到 Playxeld 的文章。")}</p>
             <p className="tag-page-subtitle">
-              当前共公开 {articles.length} 篇投稿文章。
-            </p>
+              {t("当前共公开")}{articles.length} {t("篇投稿文章。")}</p>
           </div>
 
           <div className="friends-page-hero-side friends-page-overview-strip">
@@ -72,7 +72,7 @@ function FriendsPage() {
                 >
                   <div className="friends-page-overview-card">
                     <p className="friends-page-overview-label">
-                      {meta.englishLabel}
+                      {t(meta.englishLabel)}
                     </p>
                     <div className="friends-page-overview-heading">
                       <h2>
@@ -80,7 +80,7 @@ function FriendsPage() {
                           className="friend-article-category-mark"
                           aria-hidden="true"
                         />
-                        {meta.title}
+                        {t(meta.title)}
                       </h2>
                       <span>{count}</span>
                     </div>
@@ -97,19 +97,18 @@ function FriendsPage() {
           </div>
         ) : articles.length === 0 ? (
           <div className="friends-page-empty-card">
-            <p className="friends-page-empty-label">Coming Soon</p>
-            <h2 className="friends-page-empty-title">专栏入口已经就位</h2>
+            <p className="friends-page-empty-label">{t("Coming Soon")}</p>
+            <h2 className="friends-page-empty-title">{t("专栏入口已经就位")}</h2>
             <p className="friends-page-empty-text">
-              第一篇朋友投稿上线后，这里会自动分配到故事、专题或随笔栏目。
-            </p>
+              {t("第一篇朋友投稿上线后，这里会自动分配到故事、专题或随笔栏目。")}</p>
           </div>
         ) : (
           <>
             <section className="friends-latest-section">
               <div className="friends-latest-section-head">
                 <div>
-                  <p className="friends-column-label">Recent Posts</p>
-                  <h2 className="friends-column-title">最新投稿</h2>
+                  <p className="friends-column-label">{t("Recent Posts")}</p>
+                  <h2 className="friends-column-title">{t("最新投稿")}</h2>
                 </div>
               </div>
 
@@ -134,10 +133,10 @@ function FriendsPage() {
                               className="friend-article-category-mark"
                               aria-hidden="true"
                             />
-                            {category}
+                            {t(category)}
                           </Link>
                           <span className="friends-column-featured-date">
-                            {new Date(article.published_at).toLocaleDateString()}
+                            {new Date(article.published_at).toLocaleDateString(dateLocale)}
                           </span>
                         </div>
 
@@ -159,15 +158,14 @@ function FriendsPage() {
                                 className="hero-tag-button friends-tag-chip"
                                 style={getTagStyle(tag, theme)}
                               >
-                                {tag}
+                                {t(tag)}
                               </span>
                             ))}
                           </div>
                         )}
 
                         <Link to={`/friends/${article.slug}`} className="post-link">
-                          阅读全文 →
-                        </Link>
+                          {t("阅读全文 →")}</Link>
                       </div>
 
                       <div className="friends-latest-card-side">
@@ -182,16 +180,15 @@ function FriendsPage() {
                               />
                             ) : (
                               <span className="friends-author-avatar friends-author-avatar-fallback">
-                                友
-                              </span>
+                                {t("友")}</span>
                             )}
                             <span className="friends-author-chip">
-                              作者：{article.author_name}
+                              {t("作者：")}{article.author_name}
                             </span>
                           </div>
                           <p className="friends-author-profile">
                             {article.author_profile ??
-                              "PlayxelD Friends 投稿作者，分享自己的故事、观察和创作。"}
+                              t("PlayxelD Friends 投稿作者，分享自己的故事、观察和创作。")}
                           </p>
                         </div>
                       </div>

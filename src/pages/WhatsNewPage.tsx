@@ -1,14 +1,14 @@
 import { useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useI18n } from "../hooks/useI18n";
+import type { SiteLocale } from "../lib/locale";
+import { memoreJapanese } from "../data/memore.ja";
 import SiteTopbar from "../components/SiteTopbar";
 import {
   whatsNewProjects,
-  type WhatsNewLocale,
   type WhatsNewProject,
 } from "../data/whatsNewProjects";
 import { useTheme } from "../hooks/useTheme";
 
-const canonicalUrl = "https://playxeld.com/whats-new";
 const socialImageUrl =
   "https://playxeld.com/whats-new/memore/app-icon.png";
 
@@ -53,6 +53,13 @@ const pageCopy = {
     metadataDescription:
       "Latest apps, games and creative projects from Playxeld.",
   },
+  ja: {
+    title: "最新情報", description: "完成したばかりのもの、公開したもの、制作を続けているもの。最近の取り組みを紹介します。",
+    featured: "注目のプロジェクト", type: "アプリ", highlights: "できること", screenshots: "MemoRe の画面",
+    openScreenshot: "元のサイズで画像を開く", projectDetails: "プロジェクト情報", projectIcon: (title: string) => `${title} アプリアイコン`,
+    screenCount: (count: number) => `${count} 枚の画面`, status: { "in-development": "開発中", beta: "テスト中", released: "公開中" },
+    metadataDescription: "Playxeld の新しいアプリ、ゲーム、制作中のプロジェクトをご紹介します。",
+  },
 } as const;
 
 function ProjectShowcase({
@@ -60,9 +67,14 @@ function ProjectShowcase({
   locale,
 }: {
   project: WhatsNewProject;
-  locale: WhatsNewLocale;
+  locale: SiteLocale;
 }) {
+  const { t } = useI18n();
+  const contentLocale = locale === "en" ? "en" : "zh";
   const copy = pageCopy[locale];
+  const screenshots = locale === "ja" && project.id === "memore"
+    ? [0, 3, 10, 17].map((index) => ({ src: memoreJapanese.screenshots[index].src, alt: memoreJapanese.screenshots[index].alt }))
+    : project.screenshots.map((image) => ({ src: image.src, alt: image.alt[contentLocale] }));
 
   return (
     <article className="whats-new-project-card">
@@ -86,10 +98,10 @@ function ProjectShowcase({
         </div>
 
         <p className="whats-new-project-tagline">
-          {project.tagline[locale]}
+          {t(project.tagline[contentLocale])}
         </p>
         <p className="whats-new-project-summary">
-          {project.summary[locale]}
+          {t(project.summary[contentLocale])}
         </p>
 
         <ul
@@ -113,7 +125,7 @@ function ProjectShowcase({
               {project.highlights.map((highlight, index) => (
                 <li key={`${project.id}-highlight-${index}`}>
                   <span aria-hidden="true">0{index + 1}</span>
-                  <p>{highlight[locale]}</p>
+                  <p>{t(highlight[contentLocale])}</p>
                 </li>
               ))}
             </ul>
@@ -129,7 +141,7 @@ function ProjectShowcase({
                 target="_blank"
                 rel="noreferrer"
               >
-                {link.label[locale]} ↗
+                {t(link.label[contentLocale])} ↗
               </a>
             ))}
           </div>
@@ -139,23 +151,23 @@ function ProjectShowcase({
       <div className="whats-new-project-visual">
         <div className="whats-new-screenshot-heading">
           <p>{copy.screenshots}</p>
-          <span>{copy.screenCount(project.screenshots.length)}</span>
+          <span>{copy.screenCount(screenshots.length)}</span>
         </div>
         <div className="whats-new-screenshot-grid">
-          {project.screenshots.map((screenshot, index) => (
+          {screenshots.map((screenshot, index) => (
             <a
               key={screenshot.src}
               className="whats-new-screenshot-link"
               href={screenshot.src}
               target="_blank"
               rel="noreferrer"
-              aria-label={`${copy.openScreenshot}: ${screenshot.alt[locale]}`}
+              aria-label={`${copy.openScreenshot}: ${screenshot.alt}`}
             >
               <img
                 src={screenshot.src}
-                alt={screenshot.alt[locale]}
-                width="900"
-                height="1947"
+                alt={screenshot.alt}
+                width={locale === "ja" ? 1206 : 900}
+                height={locale === "ja" ? undefined : 1947}
                 loading={index === 0 ? "eager" : "lazy"}
               />
             </a>
@@ -167,9 +179,8 @@ function ProjectShowcase({
 }
 
 function WhatsNewPage() {
-  const [searchParams] = useSearchParams();
-  const locale: WhatsNewLocale =
-    searchParams.get("lang") === "en" ? "en" : "zh";
+  const { locale, t } = useI18n();
+  const canonicalUrl = `https://playxeld.com${locale === "ja" ? "/ja" : ""}/whats-new`;
   const { theme, toggleTheme } = useTheme();
   const copy = pageCopy[locale];
   const featuredProjects = whatsNewProjects.filter(
@@ -213,8 +224,8 @@ function WhatsNewPage() {
     const previousCanonical = canonical?.href;
     const createdCanonical = !canonical;
 
-    document.title = "What's New | Playxeld";
-    document.documentElement.lang = locale === "en" ? "en" : "zh-CN";
+    document.title = `${copy.title} | Playxeld`;
+    document.documentElement.lang = locale === "zh" ? "zh-CN" : locale;
     metadataUpdates.forEach(([selector, attribute, value]) => {
       document
         .querySelector<HTMLMetaElement>(selector)
@@ -247,7 +258,7 @@ function WhatsNewPage() {
         canonical.href = previousCanonical;
       }
     };
-  }, [copy.metadataDescription, locale]);
+  }, [canonicalUrl, copy.metadataDescription, copy.title, locale]);
 
   return (
     <div className="page whats-new-page">
@@ -261,7 +272,7 @@ function WhatsNewPage() {
 
       <main className="section whats-new-page-section">
         <header className="whats-new-page-intro">
-          <p className="section-label">NOW AT PLAYXELD</p>
+          <p className="section-label">{t("NOW AT PLAYXELD")}</p>
           <h1>{copy.title}</h1>
           <p>{copy.description}</p>
         </header>

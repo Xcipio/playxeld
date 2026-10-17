@@ -1,0 +1,207 @@
+.locale-theme-actions,
+.site-topbar-preferences {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.site-topbar-preferences {
+  flex-wrap: nowrap;
+  gap: 14px;
+}
+
+.language-switcher {
+  --language-rail: rgba(255, 255, 255, 0.075);
+  --language-ink: #bbc0cd;
+  --language-hover: rgba(255, 255, 255, 0.08);
+  --language-active: #efe6d7;
+  --language-active-ink: #302b28;
+  display: inline-grid;
+  grid-template-columns: repeat(3, minmax(46px, 1fr));
+  align-items: center;
+  flex: 0 0 auto;
+  gap: 2px;
+  padding: 4px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--language-rail);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  font-family: "Avenir Next", "Hiragino Sans", "PingFang SC", system-ui, sans-serif;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+body[data-theme="light"] .language-switcher {
+  --language-rail: rgba(63, 51, 39, 0.07);
+  --language-ink: #615a55;
+  --language-hover: rgba(255, 255, 255, 0.5);
+  --language-active: #fffdf8;
+  --language-active-ink: #3b3027;
+  box-shadow: inset 0 1px 2px rgba(54, 40, 26, 0.035);
+}
+
+/* Keep the language segments independent of the primary-nav link styles. */
+.language-switcher > a.language-option,
+body .hero-nav .language-switcher > a.language-option {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  min-height: 32px;
+  padding: 7px 10px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  box-shadow: none;
+  color: var(--language-ink);
+  font: inherit;
+  font-weight: 500;
+  letter-spacing: 0.035em;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color 180ms ease, color 180ms ease, box-shadow 180ms ease;
+}
+
+.language-switcher > a.language-option::after {
+  display: none;
+}
+
+.language-switcher > a.language-option:hover,
+body .hero-nav .language-switcher > a.language-option:hover {
+  background: var(--language-hover);
+  color: var(--language-active);
+}
+
+body[data-theme="light"] .language-switcher > a.language-option:hover {
+  color: var(--language-active-ink);
+}
+
+.language-switcher > a.language-option[aria-current="page"],
+body .hero-nav .language-switcher > a.language-option[aria-current="page"] {
+  background: var(--language-active);
+  color: var(--language-active-ink);
+  box-shadow: 0 2px 7px rgba(0, 0, 0, 0.13), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  font-weight: 600;
+}
+
+.language-switcher a:focus-visible {
+  outline: 2px solid #b38964;
+  outline-offset: 3px;
+}
+
+.original-language-note {
+  color: inherit;
+  opacity: 0.75;
+  font-size: 14px;
+  line-height: 1.8;
+  padding: 14px 18px;
+  border: 1px solid color-mix(in srgb, currentColor 18%, transparent);
+  border-radius: 12px;
+}
+
+html[lang="ja"] body {
+  font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", system-ui, sans-serif;
+  line-break: strict;
+  word-break: normal;
+}
+
+html[lang="ja"] .hero-nav > a {
+  font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.025em;
+  color: #d7d9e2;
+  -webkit-font-smoothing: auto;
+}
+
+html[lang="ja"] body[data-theme="light"] .hero-nav > a {
+  color: #41434d;
+}
+
+html[lang="ja"] .english-home-wave {
+  font-size: clamp(26px, 4vw, 60px);
+  letter-spacing: 0.01em;
+}
+
+html[lang="ja"] .memore-hero-tagline {
+  line-height: 1.45;
+  letter-spacing: 0.01em;
+}
+
+@media (max-width: 760px) {
+  .tag-page-topbar,
+  .post-detail-topbar-actions {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  html[lang="ja"] .hero-nav {
+    gap: 8px 12px;
+  }
+}
+
+@media (max-width: 900px) {
+  .site-topbar {
+    position: relative;
+  }
+
+  .hero-nav > .site-topbar-preferences {
+    display: contents;
+  }
+
+  .site-topbar-preferences .language-switcher {
+    grid-column: span 2;
+    justify-self: end;
+    width: min(100%, 216px);
+    box-sizing: border-box;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .site-topbar-preferences .locale-theme-actions {
+    position: absolute;
+    top: 0;
+    right: 36px;
+  }
+
+  .site-topbar .hero-brand-group {
+    padding-right: 76px;
+  }
+
+  body .hero-nav .site-topbar-preferences .language-option {
+    padding-inline: 6px;
+  }
+
+  .hero-nav > .language-switcher {
+    grid-column: span 2;
+    justify-self: center;
+    width: min(100%, 216px);
+    box-sizing: border-box;
+  }
+
+  .hero-nav > .locale-theme-actions {
+    justify-content: center;
+  }
+
+  html[lang="ja"] .hero-nav > a {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 680px) {
+  .site-topbar-preferences .locale-theme-actions {
+    right: 20px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .language-switcher > a.language-option {
+    transition: none;
+  }
+}
+
+@media (max-width: 360px) {
+  html[lang="ja"] .memore-hero-identity h1 {
+    font-size: clamp(44px, 15vw, 54px);
+  }
+}

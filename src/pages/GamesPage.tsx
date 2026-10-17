@@ -1,5 +1,6 @@
+import { useI18n } from "../hooks/useI18n";
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import Link from "../components/LocalizedLink";
 import ThemeToggle from "../components/ThemeToggle";
 import { useTheme } from "../hooks/useTheme";
 import {
@@ -21,6 +22,7 @@ const difficultyLabels: Record<DifficultyFilter, string> = {
 };
 
 function GamesPage() {
+  const { t } = useI18n();
   const { theme, toggleTheme } = useTheme();
   const [games, setGames] = useState<Game[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
@@ -107,28 +109,25 @@ function GamesPage() {
       <section className="section games-page-section">
         <div className="tag-page-topbar">
           <p className="tag-page-back">
-            <Link to="/">← 返回主页</Link>
+            <Link to="/">{t("← 返回主页")}</Link>
           </p>
           <ThemeToggle theme={theme} onToggle={toggleTheme} />
         </div>
 
         <div className="games-page-hero">
           <div className="games-page-hero-copy">
-            <p className="section-label">GAME LIBRARY</p>
-            <h1 className="games-page-title">游戏库</h1>
+            <p className="section-label">{t("GAME LIBRARY")}</p>
+            <h1 className="games-page-title">{t("游戏库")}</h1>
             <p className="games-page-description">
-              这里把散落在文章中的小游戏重新整理成一个可浏览、可随机、可反复回访的游戏索引。
-            </p>
+              {t("这里把散落在文章中的小游戏重新整理成一个可浏览、可随机、可反复回访的游戏索引。")}</p>
             <p className="games-page-subtitle">
-              现在共收录 {games.length} 个已发布游戏。你可以按标签、难度筛选，也可以从首页直接随机抽一个开始。
-            </p>
+              {t("现在共收录")}{games.length} {t("个已发布游戏。你可以按标签、难度筛选，也可以从首页直接随机抽一个开始。")}</p>
           </div>
 
           <div className="games-page-hero-side">
-            <p className="games-page-hero-side-label">How To Use</p>
+            <p className="games-page-hero-side-label">{t("How To Use")}</p>
             <p className="games-page-hero-side-text">
-              有的游戏适合 3 分钟热身，有的适合 10 分钟沉浸思考。最稳的方式不是一次玩很多，而是挑一个反复玩几次。
-            </p>
+              {t("有的游戏适合 3 分钟热身，有的适合 10 分钟沉浸思考。最稳的方式不是一次玩很多，而是挑一个反复玩几次。")}</p>
           </div>
         </div>
 
@@ -137,7 +136,7 @@ function GamesPage() {
             <span />
           </div>
         ) : games.length === 0 ? (
-          <p className="tag-page-empty">游戏库里还没有已发布内容。</p>
+          <p className="tag-page-empty">{t("游戏库里还没有已发布内容。")}</p>
         ) : (
           <>
             <div className="games-page-filters">
@@ -147,8 +146,7 @@ function GamesPage() {
                   onClick={() => setSelectedTag(null)}
                   type="button"
                 >
-                  全部标签
-                </button>
+                  {t("全部标签")}</button>
                 {availableTags.map((tag) => (
                   <button
                     key={tag}
@@ -156,7 +154,7 @@ function GamesPage() {
                     onClick={() => setSelectedTag(tag)}
                     type="button"
                   >
-                    {tag}
+                    {t(tag)}
                   </button>
                 ))}
               </div>
@@ -169,7 +167,7 @@ function GamesPage() {
                     onClick={() => setSelectedDifficulty(difficulty)}
                     type="button"
                   >
-                    {difficultyLabels[difficulty]}
+                    {t(difficultyLabels[difficulty])}
                   </button>
                 ))}
               </div>
@@ -177,8 +175,7 @@ function GamesPage() {
 
             <div className="games-page-results-bar">
               <p className="games-page-results-text">
-                当前显示 {filteredGames.length} 个游戏
-              </p>
+                {t("当前显示")}{filteredGames.length} {t("个游戏")}</p>
               <div className="games-page-results-actions">
                 {(selectedTag || selectedDifficulty !== "all") && (
                   <button
@@ -189,14 +186,13 @@ function GamesPage() {
                     }}
                     type="button"
                   >
-                    清除筛选
-                  </button>
+                    {t("清除筛选")}</button>
                 )}
               </div>
             </div>
 
             {filteredGames.length === 0 ? (
-              <p className="tag-page-empty">当前筛选下没有匹配的游戏。</p>
+              <p className="tag-page-empty">{t("当前筛选下没有匹配的游戏。")}</p>
             ) : (
               <>
                 {randomGame && (
@@ -204,8 +200,7 @@ function GamesPage() {
                     <div className="games-page-random-copy">
                       <p className="games-page-random-label">
                         {randomGame.cover_emoji ? `${randomGame.cover_emoji} ` : ""}
-                        Lucky Pick
-                      </p>
+                        {t("Lucky Pick")}</p>
                       <div className="games-page-hero-head">
                         <div className="games-page-hero-head-copy">
                           <h2 className="games-page-random-title">{randomGame.title}</h2>
@@ -217,27 +212,27 @@ function GamesPage() {
                         <div className="games-page-random-meta">
                           <div className="games-page-random-facts">
                             <p>
-                              <span>当前池子</span>
-                              <strong>{filteredGames.length} 个游戏</strong>
+                              <span>{t("当前池子")}</span>
+                              <strong>{filteredGames.length} {t("个游戏")}</strong>
                             </p>
                             <p>
-                              <span>难度</span>
-                              <strong>{randomGame.difficulty ?? "unknown"}</strong>
+                              <span>{t("难度")}</span>
+                              <strong>{t(difficultyLabels[(randomGame.difficulty ?? "easy") as Exclude<DifficultyFilter, "all">])}</strong>
                             </p>
                             <p>
-                              <span>时长</span>
+                              <span>{t("时长")}</span>
                               <strong>
                                 {randomGame.estimated_minutes
-                                  ? `${randomGame.estimated_minutes} 分钟`
-                                  : "灵活"}
+                                  ? `${randomGame.estimated_minutes} ${t("分钟")}`
+                                  : t("灵活")}
                               </strong>
                             </p>
                             <p>
-                              <span>状态</span>
+                              <span>{t("状态")}</span>
                               <strong className="games-page-meta-status">
                                 {isGamePlayable(randomGame, publishedPostSlugs)
-                                  ? "可游玩"
-                                  : "待补全"}
+                                  ? t("可游玩")
+                                  : t("待补全")}
                               </strong>
                             </p>
                           </div>
@@ -246,7 +241,7 @@ function GamesPage() {
                             <div className="games-page-tag-row">
                               {randomGame.tags.map((tag) => (
                                 <span key={`${randomGame.id}-${tag}`} className="games-page-tag">
-                                  {tag}
+                                  {t(tag)}
                                 </span>
                               ))}
                             </div>
@@ -255,13 +250,13 @@ function GamesPage() {
                       </div>
                       {randomGame.summary && (
                         <div className="games-page-info-card">
-                          <p className="games-page-info-label">简介</p>
+                          <p className="games-page-info-label">{t("简介")}</p>
                           <p className="games-page-random-summary">{randomGame.summary}</p>
                         </div>
                       )}
                       {randomGame.rules && (
                         <div className="games-page-info-card">
-                          <p className="games-page-info-label">玩法</p>
+                          <p className="games-page-info-label">{t("玩法")}</p>
                           <p className="games-page-random-summary">{randomGame.rules}</p>
                         </div>
                       )}
@@ -272,10 +267,9 @@ function GamesPage() {
                             to={randomGame.play_url!}
                             className="hero-lucky-popout-link"
                           >
-                            游戏背景 →
-                          </Link>
+                            {t("游戏背景 →")}</Link>
                         ) : (
-                          <span className="games-page-unavailable">内容待补全</span>
+                          <span className="games-page-unavailable">{t("内容待补全")}</span>
                         )}
                         {filteredGames.length > 1 && (
                           <button
@@ -283,8 +277,7 @@ function GamesPage() {
                             onClick={refreshRandomGame}
                             type="button"
                           >
-                            换一个
-                          </button>
+                            {t("换一个")}</button>
                         )}
                       </div>
                     </div>
@@ -296,8 +289,7 @@ function GamesPage() {
                     <div className="games-page-featured-copy">
                       <p className="games-page-featured-label">
                         {featuredGame.cover_emoji ? `${featuredGame.cover_emoji} ` : ""}
-                        Featured Game
-                      </p>
+                        {t("Featured Game")}</p>
                       <div className="games-page-hero-head">
                         <div className="games-page-hero-head-copy">
                           <h2 className="games-page-featured-title">{featuredGame.title}</h2>
@@ -309,19 +301,19 @@ function GamesPage() {
                         <div className="games-page-featured-meta">
                           <div className="games-page-featured-facts">
                             <p>
-                              <span>难度</span>
-                              <strong>{featuredGame.difficulty ?? "unknown"}</strong>
+                              <span>{t("难度")}</span>
+                              <strong>{t(difficultyLabels[(featuredGame.difficulty ?? "easy") as Exclude<DifficultyFilter, "all">])}</strong>
                             </p>
                             <p>
-                              <span>时长</span>
+                              <span>{t("时长")}</span>
                               <strong>
                                 {featuredGame.estimated_minutes
-                                  ? `${featuredGame.estimated_minutes} 分钟`
-                                  : "灵活"}
+                                  ? `${featuredGame.estimated_minutes} ${t("分钟")}`
+                                  : t("灵活")}
                               </strong>
                             </p>
                             <p>
-                              <span>来源</span>
+                              <span>{t("来源")}</span>
                               <strong>
                                 {featuredGame.post_title ??
                                   featuredGame.post_slug ??
@@ -329,11 +321,11 @@ function GamesPage() {
                               </strong>
                             </p>
                             <p>
-                              <span>状态</span>
+                              <span>{t("状态")}</span>
                               <strong className="games-page-meta-status">
                                 {isGamePlayable(featuredGame, publishedPostSlugs)
-                                  ? "可游玩"
-                                  : "待补全"}
+                                  ? t("可游玩")
+                                  : t("待补全")}
                               </strong>
                             </p>
                           </div>
@@ -345,7 +337,7 @@ function GamesPage() {
                                   key={`${featuredGame.id}-${tag}`}
                                   className="games-page-tag"
                                 >
-                                  {tag}
+                                  {t(tag)}
                                 </span>
                               ))}
                             </div>
@@ -354,13 +346,13 @@ function GamesPage() {
                       </div>
                       {featuredGame.summary && (
                         <div className="games-page-info-card">
-                          <p className="games-page-info-label">简介</p>
+                          <p className="games-page-info-label">{t("简介")}</p>
                           <p className="games-page-featured-summary">{featuredGame.summary}</p>
                         </div>
                       )}
                       {featuredGame.rules && (
                         <div className="games-page-info-card">
-                          <p className="games-page-info-label">玩法</p>
+                          <p className="games-page-info-label">{t("玩法")}</p>
                           <p className="games-page-featured-summary">{featuredGame.rules}</p>
                         </div>
                       )}
@@ -371,10 +363,9 @@ function GamesPage() {
                             to={featuredGame.play_url!}
                             className="hero-lucky-popout-link"
                           >
-                            游戏背景 →
-                          </Link>
+                            {t("游戏背景 →")}</Link>
                         ) : (
-                          <span className="games-page-unavailable">内容待补全</span>
+                          <span className="games-page-unavailable">{t("内容待补全")}</span>
                         )}
                       </div>
                     </div>
@@ -389,30 +380,30 @@ function GamesPage() {
                           {game.cover_emoji ?? "🎲"}
                         </span>
                         <span className="game-card-difficulty">
-                          {difficultyLabels[(game.difficulty ?? "easy") as Exclude<DifficultyFilter, "all">]}
+                          {t(difficultyLabels[(game.difficulty ?? "easy") as Exclude<DifficultyFilter, "all">])}
                         </span>
                       </div>
 
                       <h3 className="game-card-title">{game.title}</h3>
                       <p className="game-card-hook">
-                        {game.hook ?? game.cover_text ?? game.summary ?? "一个可随时开始的小型思维游戏。"}
+                        {game.hook ?? game.cover_text ?? game.summary ?? t("一个可随时开始的小型思维游戏。")}
                       </p>
                       {game.summary && (
                         <div className="games-page-info-card game-card-info-card">
-                          <p className="games-page-info-label">简介</p>
+                          <p className="games-page-info-label">{t("简介")}</p>
                           <p className="game-card-summary">{game.summary}</p>
                         </div>
                       )}
                       {game.rules && (
                         <div className="games-page-info-card game-card-info-card">
-                          <p className="games-page-info-label">玩法</p>
+                          <p className="games-page-info-label">{t("玩法")}</p>
                           <p className="game-card-summary">{game.rules}</p>
                         </div>
                       )}
 
                       <div className="game-card-meta">
                         <span>
-                          {game.estimated_minutes ? `${game.estimated_minutes} 分钟` : "灵活时长"}
+                          {game.estimated_minutes ? `${game.estimated_minutes} ${t("分钟")}` : t("灵活时长")}
                         </span>
                         <span>{game.post_title ?? game.post_slug ?? "standalone"}</span>
                       </div>
@@ -421,7 +412,7 @@ function GamesPage() {
                         <div className="games-page-tag-row">
                           {game.tags.map((tag) => (
                             <span key={`${game.id}-${tag}`} className="games-page-tag">
-                              {tag}
+                              {t(tag)}
                             </span>
                           ))}
                         </div>
@@ -432,10 +423,9 @@ function GamesPage() {
                           to={game.play_url!}
                           className="hero-lucky-popout-link game-card-link"
                         >
-                          游戏背景 →
-                        </Link>
+                          {t("游戏背景 →")}</Link>
                       ) : (
-                        <span className="games-page-unavailable">内容待补全</span>
+                        <span className="games-page-unavailable">{t("内容待补全")}</span>
                       )}
                     </article>
                   ))}

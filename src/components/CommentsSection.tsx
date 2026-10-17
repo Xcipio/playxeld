@@ -1,3 +1,4 @@
+import { useI18n } from "../hooks/useI18n";
 import { FormEvent, useCallback, useEffect, useState } from "react";
 import {
   createComment,
@@ -35,6 +36,7 @@ function CommentsSection({
   language = "zh",
   variant = "default",
 }: CommentsSectionProps) {
+  const { t, locale } = useI18n();
   const [comments, setComments] = useState<CommentNode[]>([]);
   const [authorName, setAuthorName] = useState("");
   const [content, setContent] = useState("");
@@ -48,65 +50,66 @@ function CommentsSection({
   const [formMountedAt] = useState(() => Date.now());
   const [currentDeviceId] = useState(() => getClientDeviceId());
   const [ownedCommentIds, setOwnedCommentIds] = useState<Set<number>>(() => new Set());
+  const isEnglishUi = language === "en" && locale !== "ja";
   const copy = {
-    commentsTitle: language === "en" ? "Comments" : "评论区",
+    commentsTitle: isEnglishUi ? t("Comments") : t("评论区"),
     intro:
-      language === "en"
+      isEnglishUi
         ? variant === "friends"
           ? "If this contribution sparked a thought, leave a note for the author here."
           : "If this piece stirred a thought, leave a few words here."
         : variant === "friends"
-          ? "如果这篇投稿让你想起了什么，欢迎在这里给作者留几句话。"
-          : "如果这篇文章让你想起了什么，欢迎留下几句话。",
-    loadError: language === "en" ? "Comments are unavailable right now." : "评论暂时无法加载。",
-    submitError: language === "en" ? "Could not post right now. Try again in a moment." : "提交失败，请稍后再试。",
+          ? t("如果这篇投稿让你想起了什么，欢迎在这里给作者留几句话。")
+          : t("如果这篇文章让你想起了什么，欢迎留下几句话。"),
+    loadError: isEnglishUi ? "Comments are unavailable right now." : t("评论暂时无法加载。"),
+    submitError: isEnglishUi ? "Could not post right now. Try again in a moment." : t("提交失败，请稍后再试。"),
     tooFast:
-      language === "en"
+      isEnglishUi
         ? "That was a little too fast. Wait a moment and try again."
-        : "你提交得有点快，稍等片刻再试。",
+        : t("你提交得有点快，稍等片刻再试。"),
     cooldown:
-      language === "en"
+      isEnglishUi
         ? "You just posted a moment ago. Please wait before sending another."
-        : "刚刚已经提交过一次了，稍后再试。",
+        : t("刚刚已经提交过一次了，稍后再试。"),
     required:
-      language === "en"
+      isEnglishUi
         ? "Please enter your name and comment first."
-        : "请先填写名字和评论内容。",
+        : t("请先填写名字和评论内容。"),
     tooShort:
-      language === "en"
+      isEnglishUi
         ? "Your comment is too short. Add a little more."
-        : "评论内容太短了，再多写一点吧。",
-    replyPosted: language === "en" ? "Reply posted." : "回复已发布。",
-    commentPosted: language === "en" ? "Comment posted." : "留言已发布。",
-    loading: language === "en" ? "Loading comments..." : "评论加载中...",
+        : t("评论内容太短了，再多写一点吧。"),
+    replyPosted: isEnglishUi ? "Reply posted." : t("回复已发布。"),
+    commentPosted: isEnglishUi ? "Comment posted." : t("留言已发布。"),
+    loading: isEnglishUi ? "Loading comments..." : t("评论加载中..."),
     empty:
-      language === "en"
+      isEnglishUi
         ? "Nothing here yet. You can be the first to leave a thought."
-        : "这里还很安静。你可以成为第一个留下想法的人。",
-    honeypotPlaceholder: language === "en" ? "Leave this field empty" : "请留空",
-    replyingTo: language === "en" ? "Replying to" : "回复给",
-    cancel: language === "en" ? "Cancel" : "取消",
-    name: language === "en" ? "Name" : "名字",
-    namePlaceholder: language === "en" ? "What should I call you?" : "怎么称呼你？",
-    reply: language === "en" ? "Reply" : "回复",
-    comment: language === "en" ? "Comment" : "评论",
-    replyPlaceholder: language === "en" ? "Write your reply..." : "写下你的回复...",
-    commentPlaceholder: language === "en" ? "Write your thoughts..." : "写下你的想法...",
-    sending: language === "en" ? "Sending..." : "发送中...",
-    postReply: language === "en" ? "Post reply" : "发布回复",
-    postComment: language === "en" ? "Post comment" : "写评论",
+        : t("这里还很安静。你可以成为第一个留下想法的人。"),
+    honeypotPlaceholder: isEnglishUi ? "Leave this field empty" : t("请留空"),
+    replyingTo: isEnglishUi ? "Replying to" : t("回复给"),
+    cancel: isEnglishUi ? "Cancel" : t("取消"),
+    name: isEnglishUi ? "Name" : t("名字"),
+    namePlaceholder: isEnglishUi ? "What should I call you?" : t("怎么称呼你？"),
+    reply: isEnglishUi ? t("Reply") : t("回复"),
+    comment: isEnglishUi ? "Comment" : t("评论"),
+    replyPlaceholder: isEnglishUi ? "Write your reply..." : t("写下你的回复..."),
+    commentPlaceholder: isEnglishUi ? "Write your thoughts..." : t("写下你的想法..."),
+    sending: isEnglishUi ? "Sending..." : t("发送中..."),
+    postReply: isEnglishUi ? "Post reply" : t("发布回复"),
+    postComment: isEnglishUi ? "Post comment" : t("写评论"),
     deleteConfirm:
-      language === "en"
+      isEnglishUi
         ? "Delete this comment?"
-        : "确定删除这条评论吗？",
+        : t("确定删除这条评论吗？"),
     deleteFailed:
-      language === "en"
+      isEnglishUi
         ? "Could not delete this comment right now."
-        : "暂时无法删除这条评论。",
+        : t("暂时无法删除这条评论。"),
     deleteSuccess:
-      language === "en"
+      isEnglishUi
         ? "Comment deleted."
-        : "评论已删除。",
+        : t("评论已删除。"),
   };
 
   const refreshComments = useCallback(async () => {
@@ -268,7 +271,7 @@ function CommentsSection({
   return (
     <section className="comments-section">
       <div className="comments-header">
-        <p className="section-label">THOUGHTS</p>
+        <p className="section-label">{t("THOUGHTS")}</p>
         <h2 className="section-title comments-title">{copy.commentsTitle}</h2>
         <p className="section-text comments-intro">{copy.intro}</p>
       </div>
@@ -305,7 +308,7 @@ function CommentsSection({
 
         <form className="comment-form" onSubmit={handleSubmit}>
           <label className="comment-field comment-honeypot" aria-hidden="true">
-            <span className="comment-field-label">Website</span>
+            <span className="comment-field-label">{t("Website")}</span>
             <input
               className="comment-input"
               type="text"

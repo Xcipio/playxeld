@@ -1,5 +1,7 @@
+import { useI18n } from "../hooks/useI18n";
 import { lazy, Suspense, useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import Link from "../components/LocalizedLink";
 import CommentsSection from "../components/CommentsSection";
 import ThemeToggle from "../components/ThemeToggle";
 import { useTheme } from "../hooks/useTheme";
@@ -22,6 +24,7 @@ const PostContent = lazy(() => import("../components/PostContent"));
 const FRIEND_READ_COMPLETE_STORAGE_KEY = "friend-article-read-complete";
 
 function FriendArticlePage() {
+  const { t, dateLocale } = useI18n();
   const { slug } = useParams();
   const { theme, toggleTheme } = useTheme();
   const [article, setArticle] = useState<FriendArticle | null>(null);
@@ -97,12 +100,12 @@ function FriendArticlePage() {
         <section className="section post-page-section">
           <div className="tag-page-topbar">
             <p className="tag-page-back">
-              <Link to="/friends">← 返回 Friends</Link>
+              <Link to="/friends">{t("← 返回 Friends")}</Link>
             </p>
             <ThemeToggle theme={theme} onToggle={toggleTheme} />
           </div>
 
-          <p>文章不存在。</p>
+          <p>{t("文章不存在。")}</p>
         </section>
       </div>
     );
@@ -181,12 +184,12 @@ function FriendArticlePage() {
           text: article.excerpt ?? article.title,
           url: currentArticleUrl,
         });
-        setShareFeedback("已调起分享");
+        setShareFeedback(t("已调起分享"));
         return;
       }
 
       await navigator.clipboard.writeText(currentArticleUrl);
-      setShareFeedback("链接已复制");
+      setShareFeedback(t("链接已复制"));
     } catch (error) {
       if (error instanceof Error && error.name === "AbortError") {
         return;
@@ -194,9 +197,9 @@ function FriendArticlePage() {
 
       try {
         await navigator.clipboard.writeText(currentArticleUrl);
-        setShareFeedback("链接已复制");
+        setShareFeedback(t("链接已复制"));
       } catch {
-        setShareFeedback("暂时无法分享");
+        setShareFeedback(t("暂时无法分享"));
       }
     }
   };
@@ -206,7 +209,7 @@ function FriendArticlePage() {
       <section className="section post-page-section">
         <div className="tag-page-topbar">
           <div className="article-topbar-nav">
-            <Link className="article-home-button" to="/" aria-label="返回主页">
+            <Link className="article-home-button" to="/" aria-label={t("返回主页")}>
               <svg
                 aria-hidden="true"
                 className="article-home-icon"
@@ -217,7 +220,7 @@ function FriendArticlePage() {
               </svg>
             </Link>
             <p className="tag-page-back">
-              <Link to="/friends">← 返回 Friends</Link>
+              <Link to="/friends">{t("← 返回 Friends")}</Link>
             </p>
           </div>
           <ThemeToggle theme={theme} onToggle={toggleTheme} />
@@ -226,14 +229,14 @@ function FriendArticlePage() {
         <article className="post-detail-shell">
           <header className="post-detail-hero post-detail-enter-hero">
             <div className="friend-article-category-row">
-              <p className="section-label">{categoryMeta.englishLabel}</p>
+              <p className="section-label">{t(categoryMeta.englishLabel)}</p>
               <span className="friend-article-category-badge-shell">
                 <Link
                   to={getFriendArticleCategoryPath(category)}
                   className="friend-article-category-link"
                 >
                   <span className="friend-article-category-mark" aria-hidden="true" />
-                  {category}
+                  {t(category)}
                 </Link>
               </span>
             </div>
@@ -243,7 +246,7 @@ function FriendArticlePage() {
               <div className="post-detail-meta-row friend-article-meta-row">
                 <div className="friend-article-meta-primary">
                   <div className="post-detail-date-badge">
-                    {new Date(article.published_at).toLocaleDateString()}
+                    {new Date(article.published_at).toLocaleDateString(dateLocale)}
                   </div>
                   <div className="friends-author-summary">
                     {article.author_avatar_url ? (
@@ -255,8 +258,7 @@ function FriendArticlePage() {
                       />
                     ) : (
                       <span className="friends-author-avatar friends-author-avatar-fallback">
-                        友
-                      </span>
+                        {t("友")}</span>
                     )}
                     <span className="friends-author-chip">{article.author_name}</span>
                   </div>
@@ -270,7 +272,7 @@ function FriendArticlePage() {
                         className="hero-tag-button friends-tag-chip"
                         style={getTagStyle(tag, theme)}
                       >
-                        {tag}
+                        {t(tag)}
                       </span>
                     ))}
                   </div>
@@ -282,7 +284,7 @@ function FriendArticlePage() {
               {article.author_profile && (
                 <aside className="friend-article-author-spotlight">
                   <div className="friend-article-author-card-top">
-                    <p className="friend-article-author-label">作者简介</p>
+                    <p className="friend-article-author-label">{t("作者简介")}</p>
                   </div>
 
                   <div className="friend-article-author-card-body">
@@ -295,8 +297,7 @@ function FriendArticlePage() {
                       />
                     ) : (
                       <span className="friend-article-author-avatar friend-article-author-avatar-fallback">
-                        友
-                      </span>
+                        {t("友")}</span>
                     )}
 
                     <div className="friend-article-author-copy">
@@ -322,13 +323,13 @@ function FriendArticlePage() {
           </header>
 
           <div className="post-detail-body post-detail-enter-body">
-            <Suspense fallback={<p className="post-detail-loading">内容加载中...</p>}>
+            <Suspense fallback={<p className="post-detail-loading">{t("内容加载中...")}</p>}>
               <PostContent content={article.content} />
             </Suspense>
 
             {article.original_url && (
-              <aside className="friend-article-original-link" aria-label="原文链接">
-                <p className="friend-article-original-link-label">原文链接</p>
+              <aside className="friend-article-original-link" aria-label={t("原文链接")}>
+                <p className="friend-article-original-link-label">{t("原文链接")}</p>
                 <a
                   className="friend-article-original-link-url"
                   href={article.original_url}
@@ -347,18 +348,18 @@ function FriendArticlePage() {
                 onClick={handleCompleteReading}
                 disabled={hasCompletedReading}
               >
-                {hasCompletedReading ? "已读完" : "读完了"}
+                {hasCompletedReading ? t("已读完") : t("读完了")}
               </button>
 
               <button
                 className={`post-like-button ${hasLikedArticle ? "is-liked" : ""}`}
                 type="button"
                 onClick={() => void handleToggleLike()}
-                aria-label={hasLikedArticle ? "取消喜欢" : "喜欢这篇投稿"}
+                aria-label={hasLikedArticle ? t("取消喜欢") : t("喜欢这篇投稿")}
                 aria-pressed={hasLikedArticle}
                 disabled={likeUpdating}
               >
-                <span>{hasLikedArticle ? "已喜欢" : "喜欢"}</span>
+                <span>{hasLikedArticle ? t("已喜欢") : t("喜欢")}</span>
                 <span className="post-like-icon" aria-hidden="true">♥</span>
               </button>
 
@@ -367,14 +368,13 @@ function FriendArticlePage() {
                 type="button"
                 onClick={handleShareArticle}
               >
-                分享文章
-              </button>
+                {t("分享文章")}</button>
             </div>
 
             {shareFeedback && <p className="post-share-feedback">{shareFeedback}</p>}
 
             {authorLinks.length > 0 && (
-              <aside className="friend-article-end-links" aria-label="作者链接">
+              <aside className="friend-article-end-links" aria-label={t("作者链接")}>
                 <div className="friend-article-end-links-list">
                   {authorLinks.map((link) => (
                     <a
@@ -395,8 +395,7 @@ function FriendArticlePage() {
 
             <div className="friend-article-more">
               <Link className="friend-article-more-link" to="/friends">
-                返回 Friends 栏目页 →
-              </Link>
+                {t("返回 Friends 栏目页 →")}</Link>
             </div>
           </div>
         </article>

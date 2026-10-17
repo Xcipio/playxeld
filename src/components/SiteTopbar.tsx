@@ -1,41 +1,29 @@
-import { Link, NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
+import LanguageSwitcher from "./LanguageSwitcher";
+import { localizedPath, type SiteLocale } from "../lib/locale";
+import { useI18n } from "../hooks/useI18n";
 import type { Theme } from "../hooks/useTheme";
 import ThemeToggle from "./ThemeToggle";
 import WeatherBadge from "./WeatherBadge";
 
 type SiteTopbarProps = {
-  locale: "zh" | "en";
+  locale: SiteLocale;
   theme: Theme;
   onThemeToggle: () => void;
 };
 
 function SiteTopbar({ locale, theme, onThemeToggle }: SiteTopbarProps) {
   const { pathname } = useLocation();
+  const { locale: routeLocale } = useI18n();
+  locale = routeLocale === "ja" ? "ja" : locale;
   const isEnglish = locale === "en";
-  const homePath = isEnglish ? "/en" : "/";
+  const isJapanese = locale === "ja";
+  const homePath = isJapanese ? "/ja" : isEnglish ? "/en" : "/";
   const isHome = pathname === homePath;
   const postsHash = isEnglish ? "essays" : "posts";
-  const memorePath = isEnglish ? "/en/memore" : "/memore";
+  const memorePath = localizedPath("/memore", locale);
   const sectionHref = (section: string) =>
     isHome ? `#${section}` : `${homePath}#${section}`;
-  const englishStoryPrefix = "/en/memore/stories/";
-  const chineseStoryPrefix = "/memore/stories/";
-  const languagePath =
-    pathname.startsWith(englishStoryPrefix)
-      ? `${chineseStoryPrefix}${pathname.slice(englishStoryPrefix.length)}`
-      : pathname.startsWith(chineseStoryPrefix)
-        ? `${englishStoryPrefix}${pathname.slice(chineseStoryPrefix.length)}`
-      : pathname === "/memore" || pathname === "/en/memore"
-      ? isEnglish
-        ? "/memore"
-        : "/en/memore"
-      : pathname === "/whats-new"
-      ? isEnglish
-        ? "/whats-new"
-        : "/whats-new?lang=en"
-      : isEnglish
-        ? "/"
-        : "/en";
 
   const routeLinkClass = ({ isActive }: { isActive: boolean }) =>
     isActive ? "hero-nav-link-active" : undefined;
@@ -55,32 +43,35 @@ function SiteTopbar({ locale, theme, onThemeToggle }: SiteTopbarProps) {
 
       <nav
         className="hero-nav"
-        aria-label={isEnglish ? "Primary navigation" : "主导航"}
+        aria-label={isJapanese ? "メインナビゲーション" : isEnglish ? "Primary navigation" : "主导航"}
       >
-        <a href={sectionHref(postsHash)}>Posts</a>
-        <NavLink to="/games" className={routeLinkClass}>
-          Games
+        <a href={sectionHref(isJapanese ? "essays" : postsHash)}>{isJapanese ? "記事" : "Posts"}</a>
+        <NavLink to={localizedPath("/games", locale)} className={routeLinkClass}>
+          {isJapanese ? "ゲーム" : "Games"}
         </NavLink>
         <NavLink
-          to={isEnglish ? "/art?lang=en" : "/art"}
+          to={localizedPath("/art", locale)}
           className={routeLinkClass}
         >
-          Arts
+          {isJapanese ? "作品" : "Arts"}
         </NavLink>
-        <NavLink to="/friends" className={routeLinkClass}>
-          Friends
+        <NavLink to={localizedPath("/friends", locale)} className={routeLinkClass}>
+          {isJapanese ? "寄稿" : "Friends"}
         </NavLink>
         <NavLink to={memorePath} className={routeLinkClass}>
           MemoRe
         </NavLink>
-        <a href={sectionHref("about")}>About</a>
-        <a href={sectionHref("contact")}>Contact</a>
-        <Link to={languagePath}>{isEnglish ? "中文" : "EN"}</Link>
-        <ThemeToggle
-          theme={theme}
-          onToggle={onThemeToggle}
-          locale={locale}
-        />
+        <a href={sectionHref("about")}>{isJapanese ? "サイト紹介" : "About"}</a>
+        <a href={sectionHref("contact")}>{isJapanese ? "連絡先" : "Contact"}</a>
+        <div className="site-topbar-preferences">
+          <LanguageSwitcher />
+          <ThemeToggle
+            theme={theme}
+            onToggle={onThemeToggle}
+            locale={locale}
+            showLanguages={false}
+          />
+        </div>
       </nav>
     </div>
   );

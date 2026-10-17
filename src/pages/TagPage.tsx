@@ -1,5 +1,7 @@
+import { useI18n } from "../hooks/useI18n";
 import { useEffect, useMemo, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import Link from "../components/LocalizedLink";
 import ThemeToggle from "../components/ThemeToggle";
 import { useTheme } from "../hooks/useTheme";
 import { fetchPublishedPosts } from "../lib/posts";
@@ -25,6 +27,7 @@ const tagHeroToneMap: Record<string, string> = {
 };
 
 function TagPage() {
+  const { t, dateLocale, locale } = useI18n();
   const { tagName = "" } = useParams();
   const decodedTag = decodeURIComponent(tagName);
   const { theme, toggleTheme } = useTheme();
@@ -55,7 +58,7 @@ function TagPage() {
   const remainingPosts = featuredPost ? filteredPosts.slice(1) : filteredPosts;
   const tagDescription =
     tagDescriptions[decodedTag] ??
-    `围绕「${decodedTag}」展开的文章都收拢在这里，方便沿着同一条线索连续阅读。`;
+    (locale === "ja" ? `「${decodedTag}」に関する記事をまとめました。同じテーマをたどりながらお読みいただけます。` : `围绕「${decodedTag}」展开的文章都收拢在这里，方便沿着同一条线索连续阅读。`);
   const heroToneClass = tagHeroToneMap[decodedTag] ?? "tag-page-hero-default";
 
   const siblingTags = useMemo(
@@ -76,18 +79,17 @@ function TagPage() {
         <div className={`tag-page-hero ${heroToneClass}`}>
           <div className="tag-page-topbar">
             <p className="tag-page-back">
-              <Link to="/">← 返回主页</Link>
+              <Link to="/">{t("← 返回主页")}</Link>
             </p>
             <ThemeToggle theme={theme} onToggle={toggleTheme} />
           </div>
 
           <div className="tag-page-hero-copy">
-            <p className="section-label">TAG PAGE</p>
-            <h1 className="tag-page-title">{decodedTag}</h1>
-            <p className="tag-page-description">{tagDescription}</p>
+            <p className="section-label">{t("TAG PAGE")}</p>
+            <h1 className="tag-page-title">{t(decodedTag)}</h1>
+            <p className="tag-page-description">{t(tagDescription)}</p>
             <p className="tag-page-subtitle">
-              这里汇总了所有带有这个标签的文章。当前共 {filteredPosts.length} 篇。
-            </p>
+              {t("这里汇总了所有带有这个标签的文章。当前共")}{filteredPosts.length} {t("篇。")}</p>
           </div>
 
           {siblingTags.length > 0 && (
@@ -99,7 +101,7 @@ function TagPage() {
                   style={getTagStyle(tag, theme)}
                   to={`/tag/${encodeURIComponent(tag)}`}
                 >
-                  {tag}
+                  {t(tag)}
                 </Link>
               ))}
             </div>
@@ -107,27 +109,26 @@ function TagPage() {
         </div>
 
         {loading ? null : filteredPosts.length === 0 ? (
-          <p className="tag-page-empty">这个标签下暂时还没有文章。</p>
+          <p className="tag-page-empty">{t("这个标签下暂时还没有文章。")}</p>
         ) : (
           <>
             {featuredPost && (
               <article className="tag-page-featured-card">
                 <div className="tag-page-featured-copy">
-                  <p className="tag-page-featured-label">Featured Essay</p>
+                  <p className="tag-page-featured-label">{t("Featured Essay")}</p>
                   <h2 className="tag-page-featured-title">
                     <Link to={`/post/${featuredPost.slug}`}>{featuredPost.title}</Link>
                   </h2>
                   <p className="tag-page-featured-excerpt">{featuredPost.excerpt}</p>
                   <div className="tag-page-featured-actions">
                     <Link to={`/post/${featuredPost.slug}`} className="post-link">
-                      阅读全文 →
-                    </Link>
+                      {t("阅读全文 →")}</Link>
                   </div>
                 </div>
 
                 <div className="tag-page-featured-meta">
                   <p className="tag-page-featured-date">
-                    {new Date(featuredPost.published_at).toLocaleDateString()}
+                    {new Date(featuredPost.published_at).toLocaleDateString(dateLocale)}
                   </p>
                   <div className="tag-page-featured-tags">
                     {getPostTags(featuredPost).map((tag) => (
@@ -137,7 +138,7 @@ function TagPage() {
                         style={getTagStyle(tag, theme)}
                         to={`/tag/${encodeURIComponent(tag)}`}
                       >
-                        {tag}
+                        {t(tag)}
                       </Link>
                     ))}
                   </div>
@@ -149,7 +150,7 @@ function TagPage() {
               {remainingPosts.map((post) => (
               <article key={post.id} className="post-card">
                 <div className="post-meta">
-                  {new Date(post.published_at).toLocaleDateString()}
+                  {new Date(post.published_at).toLocaleDateString(dateLocale)}
                 </div>
 
                 <h3 className="post-title">
@@ -159,8 +160,7 @@ function TagPage() {
                 <p className="post-excerpt">{post.excerpt}</p>
 
                 <Link to={`/post/${post.slug}`} className="post-link">
-                  阅读全文 →
-                </Link>
+                  {t("阅读全文 →")}</Link>
 
                 {getPostTags(post).length > 0 && (
                   <div className="post-tag-list">
@@ -171,7 +171,7 @@ function TagPage() {
                         style={getTagStyle(tag, theme)}
                         to={`/tag/${encodeURIComponent(tag)}`}
                       >
-                        {tag}
+                        {t(tag)}
                       </Link>
                     ))}
                   </div>

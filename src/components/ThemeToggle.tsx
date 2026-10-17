@@ -1,18 +1,25 @@
 import { Theme } from "../hooks/useTheme";
+import { useI18n } from "../hooks/useI18n";
+import LanguageSwitcher from "./LanguageSwitcher";
+import type { SiteLocale } from "../lib/locale";
 
 type ThemeToggleProps = {
   theme: Theme;
   onToggle: () => void;
-  locale?: "zh" | "en";
+  locale?: SiteLocale;
+  showLanguages?: boolean;
 };
 
 function ThemeToggle({
   theme,
   onToggle,
   locale = "zh",
+  showLanguages = true,
 }: ThemeToggleProps) {
+  const { locale: routeLocale } = useI18n();
+  if (routeLocale === "ja") locale = "ja";
   const label =
-    locale === "en"
+    locale === "ja" ? (theme === "light" ? "ダーク" : "ライト") : locale === "en"
       ? theme === "light"
         ? "Dark"
         : "Light"
@@ -21,9 +28,12 @@ function ThemeToggle({
         : "浅色";
 
   return (
-    <button className="theme-toggle" onClick={onToggle}>
+    <div className="locale-theme-actions">
+    {showLanguages && <LanguageSwitcher />}
+    <button className="theme-toggle" type="button" onClick={onToggle}>
       {label}
     </button>
+    </div>
   );
 }
 

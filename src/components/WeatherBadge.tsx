@@ -3,7 +3,7 @@ import { fetchWeatherSnapshot, WeatherVisual } from "../lib/weather";
 import { requestUserCoordinates } from "../lib/userCoordinates";
 
 type WeatherBadgeProps = {
-  locale?: "zh" | "en";
+  locale?: "zh" | "en" | "ja";
 };
 
 const WEATHER_ANIMATION_STORAGE_KEY = "playxeld-weather-animation-enabled";
@@ -336,9 +336,14 @@ function WeatherBadge({ locale = "zh" }: WeatherBadgeProps) {
     }
   }, []);
 
-  const label = WEATHER_LABELS[visual][locale];
+  const japaneseLabels: Record<WeatherVisual, string> = {
+    "big-sun": "快晴", sunny: "晴れ", "partly-cloudy": "晴れ時々くもり", overcast: "くもり",
+    "light-rain": "小雨", "moderate-rain": "雨", "heavy-rain": "大雨", storm: "暴風雨",
+    lightning: "雷", windy: "強風", "light-snow": "小雪", "heavy-snow": "大雪",
+  };
+  const label = locale === "ja" ? japaneseLabels[visual] : WEATHER_LABELS[visual][locale];
   const toggleLabel =
-    locale === "en"
+    locale === "ja" ? (animationEnabled ? "天気のアニメーションを一時停止" : "天気のアニメーションを再開") : locale === "en"
       ? animationEnabled
         ? "Click to pause weather animation"
         : "Click to resume weather animation"
@@ -353,7 +358,7 @@ function WeatherBadge({ locale = "zh" }: WeatherBadgeProps) {
         animationEnabled ? "weather-badge-animated" : "weather-badge-paused"
       }`}
       aria-label={`${
-        locale === "en" ? `Local weather: ${label}` : `当地天气：${label}`
+        locale === "ja" ? `現在地の天気：${label}` : locale === "en" ? `Local weather: ${label}` : `当地天气：${label}`
       } ${toggleLabel}`}
       title={`${label} · ${toggleLabel}`}
       onClick={() => {

@@ -1,51 +1,42 @@
+import { useI18n } from "../hooks/useI18n";
 import { useEffect, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
+import Link from "../components/LocalizedLink";
 import ThemeToggle from "../components/ThemeToggle";
 import { useTheme } from "../hooks/useTheme";
 import { fetchPublishedArtworks } from "../lib/artworks";
 import { Artwork } from "../types/artwork";
 
 function ArtPage() {
+  const { t } = useI18n();
   const { theme, toggleTheme } = useTheme();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const [artworks, setArtworks] = useState<Artwork[]>([]);
   const [loading, setLoading] = useState(true);
   const isEnglish = searchParams.get("lang") === "en";
 
-  const setGalleryLanguage = (nextIsEnglish: boolean) => {
-    const nextParams = new URLSearchParams(searchParams);
-
-    if (nextIsEnglish) {
-      nextParams.set("lang", "en");
-    } else {
-      nextParams.delete("lang");
-    }
-
-    setSearchParams(nextParams, { replace: true });
-  };
-
   const pageCopy = isEnglish
     ? {
-        backHome: "← Back to home",
-        empty: "No published artworks yet.",
-        label: "ART",
+        backHome: t("← Back to home"),
+        empty: t("No published artworks yet."),
+        label: t("ART"),
         backHomePath: "/en",
-        title: "Gallery",
+        title: t("Gallery"),
         subtitle:
-          "A collection of my publicly released visual works, including standalone pieces, image series, and experimental visual projects.",
-        viewArtwork: "View artwork →",
+          t("A collection of my publicly released visual works, including standalone pieces, image series, and experimental visual projects."),
+        viewArtwork: t("View artwork →"),
         languageToggle: "中文",
         languageLabel: "Switch gallery to Chinese",
       }
     : {
-        backHome: "← Back to home",
-        empty: "这里还没有已发布的图片作品。",
-        label: "ART",
+        backHome: t("← Back to home"),
+        empty: t("这里还没有已发布的图片作品。"),
+        label: t("ART"),
         backHomePath: "/",
-        title: "图片创作",
+        title: t("图片创作"),
         subtitle:
-          "这里收录我目前公开发布的图片作品，包括单幅创作、系列图像和实验性视觉项目。",
-        viewArtwork: "查看作品 →",
+          t("这里收录我目前公开发布的图片作品，包括单幅创作、系列图像和实验性视觉项目。"),
+        viewArtwork: t("查看作品 →"),
         languageToggle: "EN",
         languageLabel: "Switch gallery to English",
       };
@@ -74,14 +65,6 @@ function ArtPage() {
             <Link to={pageCopy.backHomePath}>{pageCopy.backHome}</Link>
           </p>
           <div className="art-page-topbar-actions">
-            <button
-              className="theme-toggle art-language-toggle"
-              onClick={() => setGalleryLanguage(!isEnglish)}
-              type="button"
-              aria-label={pageCopy.languageLabel}
-            >
-              {pageCopy.languageToggle}
-            </button>
             <ThemeToggle
               theme={theme}
               onToggle={toggleTheme}
@@ -111,7 +94,7 @@ function ArtPage() {
               >
                 <Link to={`/art/${artwork.slug}`} className="art-card-image-link">
                   {index < 3 && (
-                    <span className="art-card-pin-badge" aria-label="Pinned artwork">
+                    <span className="art-card-pin-badge" aria-label={t("Pinned artwork")}>
                       <span className="art-card-pin-head" aria-hidden="true" />
                       <span className="art-card-pin-needle" aria-hidden="true" />
                     </span>

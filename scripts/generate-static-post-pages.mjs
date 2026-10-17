@@ -1,5 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import { writeJapanesePages } from "./generate-japanese-pages.mjs";
 
 const projectRoot = process.cwd();
 const distRoot = path.join(projectRoot, "dist");
@@ -439,6 +440,7 @@ async function main() {
   await writeEnglishMemoRePage(templateHtml);
   await writeMemoReStoryPages(templateHtml);
   await writeEnglishMemoReStoryPages(templateHtml);
+  await writeJapanesePages(templateHtml, distRoot);
 }
 
 main().catch((error) => {

@@ -1,5 +1,7 @@
+import { useI18n } from "../hooks/useI18n";
 import { useEffect, useMemo, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import Link from "../components/LocalizedLink";
 import ThemeToggle from "../components/ThemeToggle";
 import { useTheme } from "../hooks/useTheme";
 import { fetchPublishedArtworks } from "../lib/artworks";
@@ -11,6 +13,7 @@ const artworkTagDescriptions: Record<string, string> = {
 };
 
 function ArtworkTagPage() {
+  const { t, locale } = useI18n();
   const { tagName = "" } = useParams();
   const decodedTag = decodeURIComponent(tagName);
   const { theme, toggleTheme } = useTheme();
@@ -52,25 +55,24 @@ function ArtworkTagPage() {
 
   const tagDescription =
     artworkTagDescriptions[decodedTag] ??
-    `这里收拢的是所有带有「${decodedTag}」标签的图片作品。`;
+    (locale === "ja" ? `「${decodedTag}」のタグがついた作品を集めています。` : `这里收拢的是所有带有「${decodedTag}」标签的图片作品。`);
 
   return (
     <div className="page art-page">
       <section className="section art-page-section">
         <div className="tag-page-topbar">
           <p className="tag-page-back">
-            <Link to="/">← Back to home</Link>
+            <Link to="/">{t("← Back to home")}</Link>
           </p>
           <ThemeToggle theme={theme} onToggle={toggleTheme} />
         </div>
 
         <div className="art-page-hero art-tag-hero">
-          <p className="section-label">ART TAG</p>
-          <h1 className="art-page-title">{decodedTag}</h1>
-          <p className="art-page-subtitle">{tagDescription}</p>
+          <p className="section-label">{t("ART TAG")}</p>
+          <h1 className="art-page-title">{t(decodedTag)}</h1>
+          <p className="art-page-subtitle">{t(tagDescription)}</p>
           <p className="tag-page-subtitle">
-            这里汇总了所有带有这个标签的图片作品。当前共 {filteredArtworks.length} 件。
-          </p>
+            {t("这里汇总了所有带有这个标签的图片作品。当前共")}{filteredArtworks.length} {t("件。")}</p>
 
           {siblingTags.length > 0 && (
             <div className="tag-page-tag-row">
@@ -81,7 +83,7 @@ function ArtworkTagPage() {
                   style={getTagStyle(tag, theme)}
                   to={`/art/tag/${encodeURIComponent(tag)}`}
                 >
-                  {tag}
+                  {t(tag)}
                 </Link>
               ))}
             </div>
@@ -89,7 +91,7 @@ function ArtworkTagPage() {
         </div>
 
         {loading ? null : filteredArtworks.length === 0 ? (
-          <p className="tag-page-empty">这个标签下暂时还没有图片作品。</p>
+          <p className="tag-page-empty">{t("这个标签下暂时还没有图片作品。")}</p>
         ) : (
           <div className="art-grid">
             {filteredArtworks.map((artwork) => (
@@ -119,8 +121,7 @@ function ArtworkTagPage() {
                   )}
 
                   <Link to={`/art/${artwork.slug}`} className="post-link art-card-link">
-                    查看作品 →
-                  </Link>
+                    {t("查看作品 →")}</Link>
                 </div>
               </article>
             ))}
