@@ -1,7 +1,8 @@
 # MemoRe 隐私政策
 
 生效日期：2026 年 10 月 17 日  
-运营者：以 Playxeld 品牌运营的日本个人开发者  
+MemoRe 由独立开发者 Playxeld 开发和运营。
+
 隐私联系邮箱：[privacy@playxeld.com](mailto:privacy@playxeld.com)  
 用户支持邮箱：[support@playxeld.com](mailto:support@playxeld.com)
 
@@ -127,5 +128,6 @@ MemoRe 是一般用途的私人记忆工具，不以低龄儿童为目标受众�
 
 当 MemoRe 的数据处理方式发生变化时，我们会更新本政策及生效日期。涉及新的数据用途、接收方或需要另行授权的功能时，会按适用要求提供说明并取得必要授权，不以单纯继续使用替代依法需要的同意。
 
-运营者：以 Playxeld 品牌运营的日本个人开发者  
+MemoRe 由独立开发者 Playxeld 开发和运营。
+
 隐私联系邮箱：[privacy@playxeld.com](mailto:privacy@playxeld.com)
