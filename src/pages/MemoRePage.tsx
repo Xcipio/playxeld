@@ -362,6 +362,11 @@ function MemoRePage({ locale = "zh" }: MemoRePageProps) {
           <p>{copy.closingLead}</p>
           <h2>{copy.closingTitle}</h2>
           <span>{copy.closingMeta}</span>
+          <nav className="memore-help-links" aria-label={isEnglish ? "Support and privacy" : "支持与隐私"}>
+            <a href={`${isEnglish ? "/en" : ""}/memore/support/`}>{isEnglish ? "Support" : "使用支持"}</a>
+            <a href={`${isEnglish ? "/en" : ""}/memore/privacy/`}>{isEnglish ? "Privacy policy" : "隐私政策"}</a>
+            <a href="mailto:support@playxeld.com">support@playxeld.com</a>
+          </nav>
         </section>
       </main>
     </div>

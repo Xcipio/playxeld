@@ -1844,3 +1844,6 @@ body[data-theme="light"] .memore-story-quote p {
     padding-bottom: 64px;
   }
 }
+
+.memore-help-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px 24px; margin-top: 24px; font-size: 14px; }
+.memore-help-links a { color: inherit; text-underline-offset: 4px; overflow-wrap: anywhere; }
