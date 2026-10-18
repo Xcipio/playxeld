@@ -1,6 +1,6 @@
 # MemoRe Support
 
-MemoRe is developed and operated by independent developer Playxeld. The first release is available in Japan, the United States and Canada.
+MemoRe is developed and operated by independent developer Playxeld. The first release is available in Japan, the United States, Canada, Hong Kong, Macao, Taiwan, the United Kingdom, Australia, New Zealand, Singapore and the Philippines.
 
 ## App support
 

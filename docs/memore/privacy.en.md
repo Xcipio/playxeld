@@ -1,6 +1,6 @@
 # MemoRe Privacy Policy
 
-Effective date: October 18, 2026. Release scope: Japan, the United States and Canada.
+Effective date: October 18, 2026. Release scope: Japan, the United States, Canada, Hong Kong, Macao, Taiwan, the United Kingdom, Australia, New Zealand, Singapore and the Philippines.
 
 MemoRe is developed and operated by independent developer Playxeld. Privacy: [privacy@playxeld.com](mailto:privacy@playxeld.com). Support: [support@playxeld.com](mailto:support@playxeld.com).
 
@@ -89,7 +89,7 @@ Support and privacy correspondence and attachments are retained for 12 months af
 
 ## Service regions, minors and operator information
 
-MemoRe initially launches in Japan, the United States and Canada. It is a general-purpose private memory tool, not specifically directed to children, and does not impose a universal minimum age of 14. Mainland China, the EU and the UK are outside this initial release. The App Store age rating describes content suitability; it does not establish a user's ability to independently consent to every use of personal information.
+MemoRe initially launches in Japan, the United States, Canada, Hong Kong, Macao, Taiwan, the United Kingdom, Australia, New Zealand, Singapore and the Philippines. It is a general-purpose private memory tool, not specifically directed to children, and does not impose a universal minimum age of 14. Mainland China and the EU are outside this initial release. The App Store age rating describes content suitability; it does not establish a user's ability to independently consent to every use of personal information.
 
 Minors should review this policy and the settings for iCloud, location, photos, contacts, music, external links and sharing with a parent or guardian. Apple Account and external-service age and family rules still apply. System permission prompts, store ratings and this policy do not replace parental consent required by law.
 
